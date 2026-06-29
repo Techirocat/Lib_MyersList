@@ -1,29 +1,51 @@
-type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
-type 'a wrap = { head : 'a cell; last : 'a cell }
+type 'a cell = { 
+  next : 'a cell; 
+  jump : 'a cell; 
+  length : int; 
+  value : 'a 
+}
 
-(**************************************)
-(* High-performance functions *)
+type 'a wrap = { 
+  head : 'a cell; 
+  last : 'a cell 
+}
+
+type 'a t = 
+  | Empty
+  | Wrap of {head : 'a cell; last : 'a cell}
+
+
+let empty : 'a t = Empty
+
+let is_empty (wrap : 'a t) : bool =
+  match wrap with
+  | Empty -> true
+  | Wrap _ -> false
 
 let init' (v : 'a) : 'a cell =
-  let rec c : 'a cell = { next = c; jump = c; length = 0; value = v } in
-  c
+  let rec c : 'a cell = { next = c; jump = c; length = 0; value = v } in c
 [@@inline]
 
-let init (v : 'a) : 'a wrap =
-  let c : 'a cell = init' v in
-  { head = c; last = c }
+let init (v : 'a) : 'a t =
+  let c : 'a cell = init' v in 
+  Wrap { head = c; last = c }
 [@@inline]
 
-let cons (v : 'a) ({ head = h; last = l } : 'a wrap) : 'a wrap =
-  let h_len = h.length in
-  let h_hj = h_len - h.jump.length in
-  if h_hj == 1 || h_hj == l.next.length - l.next.jump.length
-  then let c = { next = h; jump = l.next; length = h_len + 1; value = v } in
-       { head = c; last = l.jump }
-  else let c = { next = h; jump = l; length = h_len + 1; value = v } in
-       { head = c; last = c }
+
+let cons (v : 'a) (wrap : 'a t) : 'a t =
+  match wrap with 
+  | Empty -> init v
+  | Wrap {head = h; last = l} -> 
+    let h_len = h.length in
+    let h_hj = h_len - h.jump.length in
+    if h_hj == 1 || h_hj == l.next.length - l.next.jump.length
+    then let c = { next = h; jump = l.next; length = h_len + 1; value = v } in 
+    Wrap { head = c; last = l.jump }
+    else let c = { next = h; jump = l; length = h_len + 1; value = v } in 
+    Wrap { head = c; last = c }
 [@@inline]
 
+(**
 let rec lookup (c : 'a cell) (l : int) : 'a cell =
   if c.length = l
   then c
@@ -94,3 +116,5 @@ let find_path (c : 'a cell) (l : int) : 'a cell list =
 
 let index_path (c : 'a cell) (i : int) : 'a cell list = find_path c (c.length - i)
 [@@inline]
+
+*)
