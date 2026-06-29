@@ -56,7 +56,7 @@ let return (v : 'a) : 'a t = init v
 let length (wrap : 'a t) : int = 
   match wrap with 
   | Empty -> 0 
-  | Wrap {head = h; last = _} -> h.length
+  | Wrap {head = h; last = _} -> h.length + 1
 
 let rec lookup (c : 'a cell) (l : int) : 'a cell =
   if c.length = l
@@ -84,6 +84,32 @@ let get_exn (wrap : 'a t) (i : int) : 'a =
       failwith ".get_exn : Index invalido" 
     else 
       (lookup h (h.length - i)).value
+(*
+
+let set (wrap : 'a t) (i : int) (v : 'a) : 'a t =
+  match wrap with
+  | Empty -> failwith ".set: Lista vazia"
+  | Wrap {head = h; last = l} ->
+    if i < 0 || i >= h.length + 1 then failwith ".set: Index invalido"
+    else
+      let len = h.length - i in
+      let new_last = ref l in
+      let rec path (c : 'a cell) : 'a cell =
+
+        if c.length = len then begin
+          let c' = { value = v; length = c.length; next = c.next; jump = c.jump } in
+          if c.length = l.length then new_last := c';
+          c'
+        end 
+
+        else begin
+          let p = path c.next in
+          let c' = { value = c.value; length = c.length; next = p; jump = c.jump } in
+          if c.length = l.length then new_last := c';
+          c'
+        end
+      in let new_head = path h in Wrap { head = new_head; last = !new_last } 
+*)      
 
 let to_list_rev (wrap : 'a t) : 'a list = 
   match wrap with 

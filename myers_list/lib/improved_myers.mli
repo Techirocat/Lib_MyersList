@@ -27,9 +27,7 @@ val get : 'a t -> int -> 'a option
 val get_exn : 'a t -> int -> 'a 
 (** O(log(n))*)
 
-(* val set : 'a t -> int -> 'a -> 'a t 
--> não estou a ver como implementar de forma eficiente, apenas O(i)
-*)
+(* val set : 'a t -> int -> 'a -> 'a t *) 
 
 (* val remove : 'a t -> int -> 'a t 
 -> não estou a ver como implementar de forma eficiente
@@ -66,8 +64,8 @@ val range : int -> int -> int t
 val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 
 
-
-
 val mapi : (int -> 'a -> 'b) -> 'a t -> 'b t
 
+
+val filter : f:('a -> bool) -> 'a t -> 'a t
 
