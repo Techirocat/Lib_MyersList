@@ -1,4 +1,3 @@
-(* Assumindo que o teu código original está num módulo chamado MyTree *)
 open Myers_list
 open Improved_myers
 
