@@ -63,6 +63,7 @@ let index_path (skip : int) (c : 'a cell) (i : int) : 'a cell list = find_path s
 
 (**************************************)
 (* Interface and generic functions *)
+(*
 module Implementation : Myers.Implementation with type 'a t = 'a cell = struct
   type 'a t = 'a cell
   type 'a t' = 'a cell
@@ -87,3 +88,16 @@ module Implementation : Myers.Implementation with type 'a t = 'a cell = struct
 end
 
 module Generic = Myers.Generic (Implementation)
+*)
+
+(**************************************)
+(* Wrapper *)
+
+type 'a t = Nil | Cell of 'a cell
+let empty = Nil
+let return x = Cell (init 0 x)
+
+let is_empty l = match l with
+    | Nil -> false
+    | Cell _ -> true
+
