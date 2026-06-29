@@ -38,12 +38,20 @@ let cons (v : 'a) (wrap : 'a t) : 'a t =
   | Wrap {head = h; last = l} -> 
     let h_len = h.length in
     let h_hj = h_len - h.jump.length in
-    if h_hj == 1 || h_hj == l.next.length - l.next.jump.length
-    then let c = { next = h; jump = l.next; length = h_len + 1; value = v } in 
-    Wrap { head = c; last = l.jump }
-    else let c = { next = h; jump = l; length = h_len + 1; value = v } in 
-    Wrap { head = c; last = c }
+    if h_hj == 1 || h_hj == l.next.length - l.next.jump.length then 
+      let c = { next = h; jump = l.next; length = h_len + 1; value = v } 
+      in Wrap { head = c; last = l.jump }
+    else 
+      let c = { next = h; jump = l; length = h_len + 1; value = v } 
+      in Wrap { head = c; last = c }
 [@@inline]
+
+let hd (wrap : 'a t) : 'a = 
+  match wrap with 
+  | Empty -> failwith ".hd: Argumento inválido"
+  | Wrap {head = h; last = _} -> h.value
+
+let return (v : 'a) : 'a t = init v
 
 (**
 let rec lookup (c : 'a cell) (l : int) : 'a cell =
