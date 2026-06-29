@@ -16,3 +16,7 @@ val hd : 'a t -> 'a
 (*val tl : 'a t -> 'a t - acho que esta função não faz sentido para esta estrutura*)
 
 val return : 'a -> 'a t
+(** Singleton *)
+
+val length : 'a t -> int 
+(** Number of elements*)

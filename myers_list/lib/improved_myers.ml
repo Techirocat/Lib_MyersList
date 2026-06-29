@@ -53,13 +53,26 @@ let hd (wrap : 'a t) : 'a =
 
 let return (v : 'a) : 'a t = init v
 
-(**
+let length (wrap : 'a t) : int = 
+  match wrap with 
+  | Empty -> 0 
+  | Wrap {head = h; last = _} -> h.length
+
 let rec lookup (c : 'a cell) (l : int) : 'a cell =
   if c.length = l
   then c
   else let j = c.jump in
        let c' = if j.length < l then c.next else j in
        lookup c' l
+
+
+let get (wrap : 'a t) (i : int) : 'a = 
+  match wrap with 
+  | Empty -> failwith ".get: Lista vazia"
+  | Wrap {head = h; last = _} -> (lookup h (h.length - i)).value
+
+
+(*
 
 let index (c : 'a cell) (i : int) : 'a cell = lookup c (c.length - i)
 [@@inline]
