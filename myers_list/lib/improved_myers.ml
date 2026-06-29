@@ -1,3 +1,8 @@
+(* 
+MIT License
+Copyright (c) 2025 Programming Language Innovation Lab @ NUS 
+*)
+
 type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
 type 'a wrap = { head : 'a cell; last : 'a cell }
 

@@ -97,7 +97,40 @@ type 'a t = Nil | Cell of 'a cell
 let empty = Nil
 let return x = Cell (init 0 x)
 
-let is_empty l = match l with
+let is_empty l = function
     | Nil -> false
     | Cell _ -> true
 
+let hd l = function
+    | Nil -> invalid_arg "Empty List"
+    | Cell {value} -> value
+
+let tl l = function
+    | Nil -> invalid_arg "Empty List"
+    | Cell {next} -> next
+
+let front l = function
+    | Nil -> None
+    | Cell c -> Some (c.value, c.next)
+
+let front_exn l = function
+    | Nil -> invalid_arg "Empty List"
+    | Cell c -> (c.value, c.next) 
+
+let length l = l.length + 1
+
+let get l i = match l with
+    | Nil -> None
+    | Cell c -> 
+        if i > c.length || i < 0 then
+            None
+        else
+            Some (index 0 c i)
+
+let get_exn l i = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Cell c -> 
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            index 0 c i
