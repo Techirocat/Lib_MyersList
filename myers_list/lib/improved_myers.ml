@@ -66,10 +66,125 @@ let rec lookup (c : 'a cell) (l : int) : 'a cell =
        lookup c' l
 
 
-let get (wrap : 'a t) (i : int) : 'a = 
+let get (wrap : 'a t) (i : int) : 'a option = 
   match wrap with 
-  | Empty -> failwith ".get: Lista vazia"
-  | Wrap {head = h; last = _} -> (lookup h (h.length - i)).value
+  | Empty -> None
+  | Wrap {head = h; last = _} -> 
+    if i < 0 || i > h.length then 
+      None
+    else 
+      Some (lookup h (h.length - i)).value
+
+
+let get_exn (wrap : 'a t) (i : int) : 'a = 
+  match wrap with 
+  | Empty -> failwith ".get_exn : Lista vazia"
+  | Wrap {head = h; last = _} -> 
+    if i < 0 || i > h.length then 
+      failwith ".get_exn : Index invalido" 
+    else 
+      (lookup h (h.length - i)).value
+
+let to_list_rev (wrap : 'a t) : 'a list = 
+  match wrap with 
+  | Empty -> [] 
+  | Wrap {head = h; last = _} -> 
+    let rec aux acc c = 
+      if c.length = 0 then 
+        (c.value :: acc)
+      else aux (c.value :: acc) c.next
+    in aux [] h
+   
+let to_list (wrap : 'a t) : 'a list = List.rev (to_list_rev wrap) 
+
+let to_list_map_rev (wrap : 'a t) (f : 'a -> 'b) : 'b list = 
+  match wrap with 
+  | Empty -> [] 
+  | Wrap {head = h; last = _} -> 
+    let rec aux acc c = 
+      if c.length = 0 then 
+        ((f c.value) :: acc)
+      else aux ((f c.value) :: acc) c.next
+    in aux [] h
+ 
+let to_list_map (wrap : 'a t) (f : 'a -> 'b) : 'b list = List.rev (to_list_map_rev wrap f)
+
+let to_list_mapi_rev (wrap : 'a t) (f : int -> 'a -> 'b) : 'b list = 
+  match wrap with 
+  | Empty -> [] 
+  | Wrap {head = h; last = _} -> 
+    let rec aux acc c = 
+      if c.length = 0 then 
+        ( (f c.length c.value) :: acc)
+      else aux ((f c.length c.value) :: acc) c.next
+    in aux [] h 
+
+let add_list (wrap : 'a t) (l : 'a list) : 'a t = List.fold_left (fun acc v -> cons v acc) wrap l  
+
+let add_list_map (wrap : 'b t) (l : 'a list) (f : 'a -> 'b) : 'b t = List.fold_left (fun acc v -> cons (f v) acc) wrap l
+
+let of_list (l : 'a list) : 'a t = add_list empty l
+
+let map (f : 'a -> 'b)  (wrap : 'a t) : 'b t = 
+  match wrap with 
+  | Empty -> Empty    
+  | Wrap _-> let l = to_list_map_rev wrap f in of_list l 
+
+
+let mapi (f : int -> 'a -> 'b) (wrap : 'a t) : 'b t = 
+  match wrap with 
+  | Empty -> Empty 
+  | Wrap _ -> let l = to_list_mapi_rev wrap f in of_list l
+
+
+let of_list_map (f : 'a -> 'b) (l : 'a list) : 'b t = add_list_map empty l f
+
+
+let make (n : int) (v : 'a) : 'a t = 
+  let rec aux n acc v = 
+    if n <= 0 then acc else aux (n-1) (cons v acc) v
+  in aux n empty v
+
+
+let append (l0 : 'a t) (l1 : 'a t) : 'a t =
+  let a = to_list_rev l0 in add_list l1 a
+
+
+let repeat (n : int) (l : 'a t) : 'a t =
+  let a = to_list_rev l in  
+  let rec aux acc n = 
+    if n <= 0 then acc 
+    else aux (add_list acc a) (n-1)
+  in aux empty n 
+
+
+let range i j = 
+  let rec aux i j acc = 
+    if i = j then cons i acc 
+    else if i < j then aux i (j-1) (cons j acc) 
+    else aux i (j+1) (cons j acc)
+  in aux i j empty 
+
+
+let equal (eq : 'a -> 'a -> bool) (w1 : 'a t) (w2 : 'a t) : bool = 
+  match w1, w2 with 
+  | Empty, Empty -> true
+  | Empty, Wrap _ -> false
+  | Wrap _, Empty -> false
+  | Wrap {head = h1; last = _}, Wrap {head = h2; last = _} ->
+    if h1.length != h2.length then false 
+    else 
+      let rec aux eq c1 c2 = 
+        if not (eq c1.value c2.value) then false 
+        else aux eq c1.next c2.next
+      in aux eq h1 h2 
+
+
+
+  
+        
+
+
 
 
 (*
