@@ -111,6 +111,12 @@ let set (wrap : 'a t) (i : int) (v : 'a) : 'a t =
       in let new_head = path h in Wrap { head = new_head; last = !new_last } 
 *)      
 
+let add_list (wrap : 'a t) (l : 'a list) : 'a t = List.fold_left (fun acc v -> cons v acc) wrap l  
+
+
+
+let of_list (l : 'a list) : 'a t = add_list empty l
+
 let to_list_rev (wrap : 'a t) : 'a list = 
   match wrap with 
   | Empty -> [] 
@@ -145,11 +151,28 @@ let to_list_mapi_rev (wrap : 'a t) (f : int -> 'a -> 'b) : 'b list =
       else aux ((f c.length c.value) :: acc) c.next
     in aux [] h 
 
-let add_list (wrap : 'a t) (l : 'a list) : 'a t = List.fold_left (fun acc v -> cons v acc) wrap l  
+let to_list_filter_rev (wrap : 'a t) (f : 'a -> bool) : 'a list =
+   match wrap with 
+   | Empty -> []
+   | Wrap {head = h; last = _} -> 
+    let rec aux acc c = 
+      if c.length = 0 then
+        if (f c.value) then (c.value :: acc) 
+        else acc 
+      else 
+        if (f c.value) then aux (c.value :: acc) c.next 
+        else aux acc c.next
+    in aux [] h 
+
+
+let to_list_filter (wrap : 'a t) (f : 'a -> bool) : 'a list = List.rev (to_list_filter_rev wrap f)
+
+let filter (f : 'a -> bool) (wrap : 'a t) : 'a t = 
+  let l = to_list_filter_rev wrap f in of_list l  
+
 
 let add_list_map (wrap : 'b t) (l : 'a list) (f : 'a -> 'b) : 'b t = List.fold_left (fun acc v -> cons (f v) acc) wrap l
 
-let of_list (l : 'a list) : 'a t = add_list empty l
 
 let map (f : 'a -> 'b)  (wrap : 'a t) : 'b t = 
   match wrap with 

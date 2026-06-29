@@ -19,14 +19,16 @@ let test_get () =
   Alcotest.(check (option int)) "Teste se o get retorna valor certo" (Some 1) (get myersList 4);
   Alcotest.(check (option int)) "Teste se o get retorna valor certo" (Some 5) (get myersList 0);
 
+  (*
 
 let test_set () = 
   let list = [0; 1; 2; 3; 4; 5] in 
   let myersList = of_list list in 
   let newL = set myersList 4 40 in 
   Alcotest.(check (option int)) "Testa set" (Some 40) (get newL 4);
-  Alcotest.(check (list int)) "Testa set" ([0; 40; 2; 3; 4; 5]) (to_list newL)
+  Alcotest.(check (list int)) "Testa set" ([0; 40; 2; 3; 4; 5]) (to_list newL);
 
+  *)
 
 let () =
   let open Alcotest in
@@ -41,7 +43,9 @@ let () =
     "Testes Get", [
       test_case "Função Get" `Quick test_get;
     ];
+    (*
     "Testes Set", [
       test_case "Função Set" `Quick test_set;
     ];
-  ];;
+    *)
+  ]

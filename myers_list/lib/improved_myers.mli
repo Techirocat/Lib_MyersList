@@ -67,5 +67,5 @@ val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 val mapi : (int -> 'a -> 'b) -> 'a t -> 'b t
 
 
-val filter : f:('a -> bool) -> 'a t -> 'a t
+val filter : ('a -> bool) -> 'a t -> 'a t
 
