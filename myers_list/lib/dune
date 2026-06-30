@@ -1,2 +1,2 @@
 (library
- (name Lib_Myers))
+ (name myers_list))
