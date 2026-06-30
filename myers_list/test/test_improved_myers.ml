@@ -16,19 +16,32 @@ let test_cons () =
 let test_get () = 
   let list = [0; 1; 2; 3; 4; 5] in 
   let myersList = of_list list in 
-  Alcotest.(check (option int)) "Teste se o get retorna valor certo" (Some 1) (get myersList 4);
-  Alcotest.(check (option int)) "Teste se o get retorna valor certo" (Some 5) (get myersList 0);
+  Alcotest.(check (option int)) "Testa se o get retorna valor certo" (Some 1) (get myersList 4);
+  Alcotest.(check (option int)) "Testa se o get retorna valor certo" (Some 5) (get myersList 0)
 
-  (*
+let test_rev () =
+  let list = [0; 1; 2; 3; 4; 5] in
+  let myersList = of_list list in
+  let reversed = rev myersList in
+  Alcotest.(check (list int)) "Testa rev" [5; 4; 3; 2; 1; 0] (to_list reversed)
 
-let test_set () = 
-  let list = [0; 1; 2; 3; 4; 5] in 
-  let myersList = of_list list in 
-  let newL = set myersList 4 40 in 
-  Alcotest.(check (option int)) "Testa set" (Some 40) (get newL 4);
-  Alcotest.(check (list int)) "Testa set" ([0; 40; 2; 3; 4; 5]) (to_list newL);
+let test_rev_empty () =
+  let myersList = empty in
+  let reversed = rev myersList in
+  Alcotest.(check bool) "Testa rev em lista vazia" true (is_empty reversed)
 
-  *)
+let test_rev_map () =
+  let list = [0; 1; 2; 3; 4; 5] in
+  let myersList = of_list list in
+  let reversed = rev_map (fun x -> x * 10) myersList in
+  Alcotest.(check (list int)) "Testa rev_map" [50; 40; 30; 20; 10; 0] (to_list reversed)
+
+let test_rev_map_empty () =
+  let myersList = empty in
+  let reversed = rev_map (fun x -> x * 10) myersList in
+  Alcotest.(check bool) "Testa rev_map em lista vazia" true (is_empty reversed)
+
+
 
 let () =
   let open Alcotest in
@@ -43,9 +56,10 @@ let () =
     "Testes Get", [
       test_case "Função Get" `Quick test_get;
     ];
-    (*
-    "Testes Set", [
-      test_case "Função Set" `Quick test_set;
+    "Testes Rev", [
+      test_case "Função rev" `Quick test_rev;
+      test_case "Função rev em lista vazia" `Quick test_rev_empty;
+      test_case "Função rev_map" `Quick test_rev_map;
+      test_case "Função rev_map em lista vazia" `Quick test_rev_map_empty;
     ];
-    *)
   ]
