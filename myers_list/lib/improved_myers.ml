@@ -14,6 +14,9 @@ type 'a t =
   | Empty
   | Wrap of {head : 'a cell; last : 'a cell}
 
+type 'a iter = ('a -> unit) -> unit
+type 'a gen = unit -> 'a option
+
 
 let empty : 'a t = Empty
 
@@ -223,15 +226,222 @@ let equal (eq : 'a -> 'a -> bool) (w1 : 'a t) (w2 : 'a t) : bool =
   | Wrap {head = h1; last = _}, Wrap {head = h2; last = _} ->
     if h1.length != h2.length then false 
     else 
-      let rec aux eq c1 c2 = 
+      let rec aux c1 c2 = 
         if not (eq c1.value c2.value) then false 
-        else aux eq c1.next c2.next
-      in aux eq h1 h2 
+        else aux c1.next c2.next
+      in aux h1 h2 
+
+
+let iter (f : 'a -> unit) (wrap : 'a t) : unit = 
+  match wrap with 
+  | Empty -> () 
+  | Wrap {head = h; last = _ } -> 
+    let rec aux c =
+      if c.length = 0 then f c.value 
+      else  f c.value; aux c.next
+    in aux h
 
 
 
+let iteri (f : int -> 'a -> unit) (wrap : 'a t) : unit = 
+  match wrap with 
+  | Empty -> () 
+  | Wrap {head = h; last = _} -> 
+    let rec aux c = 
+      if c.length = 0 then (f c.length c.value)
+      else (f c.length c.value); aux c.next 
+    in aux h 
+
+
+let fold (f : 'b -> 'a -> 'b)  (x : 'b) (wrap : 'a t) : 'b = 
+    match wrap with 
+    | Empty -> x 
+    | Wrap {head = h; last = _} -> 
+      let rec aux acc c = 
+        if c.length = 0 then f x c.value 
+        else aux (f acc c.value) c.next 
+      in aux x h 
+
+
+
+let fold_rev (f : 'b -> 'a -> 'b)  (x : 'b) (wrap : 'a t) : 'b = 
+    match wrap with 
+    | Empty -> x 
+    | Wrap {head = h; last = _} ->
+      let rec aux c = 
+        if c.length = 0 then f x c.value 
+        else f (aux c.next) c.value 
+      in aux h 
+
+
+let rev  (wrap : 'a t) : 'a t = 
+    match wrap with 
+    | Empty -> Empty
+    | Wrap _-> 
+      let list = to_list_rev wrap in of_list list
   
-        
+
+let rev_map (f : 'a -> 'b) (wrap : 'a t) : 'b t = 
+  match wrap with 
+  | Empty -> Empty
+  | Wrap _ -> 
+    let list = to_list_map_rev wrap f in of_list list 
+     
+
+let add_array (wrap :'a t) (arr : 'a array) : 'a t = Array.fold_left (fun acc v -> cons v acc) wrap arr
+ 
+let of_array (arr : 'a array) : 'a t = add_array empty arr
+
+
+let to_array (wrap : 'a t) : 'a array = 
+  match wrap with 
+  | Empty -> [||]
+  | Wrap {head = h; last = _} -> 
+    let a = Array.make (h.length + 1) h.value in 
+    let rec fill i c = 
+      if c.length = 0 then 
+        Array.unsafe_set a i c.value
+      else begin
+        Array.unsafe_set a i c.value; 
+        fill (i+1) c.next
+      end
+    in fill 0 h; a
+ 
+
+let filter_map (f : 'a -> 'b option) (wrap : 'a t) : 'b t = 
+   match wrap with
+   | Empty -> Empty
+   | Wrap _ ->
+
+    let func acc v = 
+      match f v with 
+      | Some x -> x :: acc
+      | None -> acc
+    in  
+    let list = fold func [] wrap in of_list list
+
+
+let flat_map (f : 'a -> 'b t) (wrap : 'a t) : 'b t =
+  fold_rev (fun acc v -> append acc (f v)) empty wrap
+
+
+let take (n : int) (wrap : 'a t) : 'a t = 
+  match wrap with 
+  | Empty -> Empty 
+  | Wrap {head = h; last = _} -> 
+    let rec aux acc c i =
+      if i >= n then
+        of_list acc
+      else if c.length = 0 then 
+        of_list (c.value :: acc) 
+      else aux (c.value :: acc) c.next (i + 1)  
+    in aux [] h 0
+
+let take_while  (f : 'a -> bool)  (wrap : 'a t) : 'a t = 
+  match wrap with 
+  | Empty -> Empty
+  | Wrap {head = h; last = _} -> 
+      let rec aux acc c = 
+        if (f c.value) then 
+          if c.length = 0 then of_list (c.value :: acc)
+          else aux (c.value :: acc) c.next
+        else of_list acc 
+      in aux [] h
+
+
+let drop (n : int) (wrap : 'a t) : 'a t = 
+  match wrap with 
+  | Empty -> Empty
+  | Wrap {head = h; last = _} -> 
+    if n < 0 || n > h.length then failwith "Argumento inválido" 
+    else 
+      let rec aux acc c i = 
+        if i <= n then aux acc c.next (i+1) 
+        else 
+          if c.length = 0 then 
+            of_list (c.value :: acc)
+          else
+            aux (c.value :: acc) c.next (i+1)
+      in aux [] h 0
+
+let drop_while (f : 'a -> bool) (wrap : 'a t) : 'a t =
+  match wrap with
+  | Empty -> Empty
+  | Wrap {head = h; last = _} ->
+    let rec count n c =
+      if f c.value then
+        if c.length = 0 then n + 1
+        else count (n + 1) c.next
+      else n
+    in
+    drop (count 0 h) wrap
+
+
+(*
+    n=3   [1; 2; 3; 4; 5; 6; 7; 8]
+
+    Resultado:
+    acc1 = [1; 2; 3]
+    acc2 = [4; 5; 6; 7; 8]
+
+
+    n=8   [1; 2; 3; 4; 5; 6; 7; 8]
+
+    Resultado: 
+    acc1 = [1; 2; 3; 4; 5; 6; 7; 8]
+    acc2 = Empty
+*)
+
+let take_drop (n : int) (wrap : 'a t) : 'a t * 'a t = take n wrap, drop n wrap 
+
+
+
+let add_iter (wrap : 'a t) (s : 'a iter) : 'a t = 
+  let l1 = ref empty in s (fun x -> l1 := cons x !l1); 
+  fold (fun acc x -> cons x acc) wrap !l1
+
+let of_iter  (s : 'a iter) : 'a t =  add_iter empty s 
+
+let to_iter (wrap : 'a t) : 'a iter =  fun f -> iter f wrap
+
+let rec gen_iter_ f g = match g() with 
+  | None -> ()
+  | Some x -> f x; gen_iter_ f g
+
+let add_gen (wrap : 'a t) (g : 'a gen) : 'a t = 
+  let w1 = ref empty in 
+  gen_iter_  (fun x -> w1 := cons x !w1) g; 
+  fold (fun acc x -> cons x acc) wrap !w1
+
+let of_gen  (g : 'a gen) : 'a t = add_gen empty g 
+
+let to_gen (wrap : 'a t) : 'a gen = 
+  match wrap with 
+  | Empty -> (fun () -> None)
+  | Wrap {head = h; last = _} -> 
+    let curr = ref h in 
+    let flag = ref false in 
+    let next () = 
+      if !flag then None 
+      else begin 
+        let va = !curr.value in 
+        if !curr.length = 0 then 
+          flag := true
+        else curr := !curr.next;
+        Some va 
+      end
+    in next
+
+
+
+
+
+
+
+
+
+
+
 
 
 
