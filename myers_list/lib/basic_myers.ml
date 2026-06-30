@@ -1,3 +1,8 @@
+(* 
+MIT License
+Copyright (c) 2025 Programming Language Innovation Lab @ NUS 
+*)
+
 (* Original: 3 floor(lg(n+1)) - 2 *)
 
 type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
@@ -10,7 +15,7 @@ let init (_skip : int) (v : 'a) : 'a cell =
   c
 [@@inline]
 
-let cons (_skip : int) (v : 'a) (c : 'a cell) : 'a cell =
+let cons_ (_skip : int) (v : 'a) (c : 'a cell) : 'a cell =
   let j = c.jump in
   let j' = if c.length - j.length == j.length - j.jump.length then j.jump else c in
   { next = c; jump = j'; length = c.length + 1; value = v }
@@ -29,7 +34,7 @@ let index (skip : int) (c : 'a cell) (i : int) : 'a cell = lookup skip c (c.leng
 let make_list_rev (skip : int) (v : 'a) (vs : 'a list) : 'a cell =
   let rec go (c : 'a cell) : 'a list -> 'a cell = function
   | [] -> c
-  | v :: vs -> go (cons skip v c) vs in
+  | v :: vs -> go (cons_ skip v c) vs in
   go (init skip v) vs
 
 let make_tree_rev (skip : int) (height : int) (v : 'a) (vs : 'a list) : 'a cell =
@@ -134,3 +139,91 @@ let get_exn l i = match l with
             invalid_arg "Invalid Index"
         else
             index 0 c i
+
+let cons x l = match l with
+    | Nil -> return x
+    | Cell c -> Cell (cons_ 0 x c)
+
+let cons' xs x = cons x xs
+
+let rec fold f acc l = match l with
+    | Nil -> acc
+    | Cell c -> match c with
+        | {length = 0} -> f acc c.value
+        | _ -> fold f (f acc c.value) (Cell (c.next))
+
+let rec fold_rev f acc l = match l with
+    | Nil -> acc
+    | Cell c -> match c with
+        | {length = 0} -> f acc c.value
+        | _ -> 
+            let acc' = fold_rev f acc (Cell (c.next)) in
+            f acc' c.value
+
+(*
+let map f l = match l with
+    | Nil -> Nil
+    | Cell c ->
+        let rec go (acc: 'a list) (f: 'a -> 'b) (curr: 'a cell) = match curr with 
+            | {length = 0} -> f curr.value :: acc
+            | _ -> go (f curr.value :: acc) f curr.next in
+        List.fold_left cons' Nil (go [] f c)
+*)
+
+let map f l =
+    let func acc x = cons (f x) acc in
+    fold_rev func Nil l
+
+(* TODO: tentar refazer com fold_rev *)
+let mapi i f l = match l with
+    | Nil -> Nil
+    | Cell c ->
+        let rec go (idx: int) (acc: 'a list) (f: int -> 'a -> 'b) (curr: 'a cell) = match curr with 
+            | {length = 0} -> (f idx curr.value) :: acc
+            | _ -> go (idx + 1) ((f idx curr.value) :: acc) f curr.next in
+        List.fold_left cons' Nil (go 0 [] f c)
+
+let set l i v = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Cell c ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec go acc len curr =
+                if curr.length == len then
+                    (acc, curr.next)
+                else
+                    go (curr.value :: acc) len curr.next in
+            let info = go [] (c.length - i) c in
+            let info' = (v :: (fst info), snd info) in
+            List.fold_left cons' (Cell (snd info')) (fst info')
+
+let remove l i = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Cell c ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec go acc len curr =
+                if curr.length == len then
+                    (acc, curr.next)
+                else
+                    go (curr.value :: acc) len curr.next in
+            let info = go [] (c.length - i) c in
+            List.fold_left cons' (Cell (snd info)) (fst info)
+
+let get_and_remove_exn l i = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Cell c ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec go acc len curr =
+                if curr.length == len then
+                    (acc, curr)
+                else
+                    go (curr.value :: acc) len curr.next in
+            let info = go [] (c.length - i) c in
+            ((snd info).value, List.fold_left cons' (Cell ((snd info).next)) (fst info))
+
+let append l1 l2 = fold_rev cons' l2 l1
