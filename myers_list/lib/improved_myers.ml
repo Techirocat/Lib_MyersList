@@ -54,6 +54,8 @@ let hd (wrap : 'a t) : 'a =
   | Empty -> failwith ".hd: Argumento inválido"
   | Wrap {head = h; last = _} -> h.value
 
+
+
 let return (v : 'a) : 'a t = init v
 
 let length (wrap : 'a t) : int = 
@@ -150,8 +152,8 @@ let to_list_mapi_rev (wrap : 'a t) (f : int -> 'a -> 'b) : 'b list =
   | Wrap {head = h; last = _} -> 
     let rec aux acc c = 
       if c.length = 0 then 
-        ( (f c.length c.value) :: acc)
-      else aux ((f c.length c.value) :: acc) c.next
+        ( (f (h.length - c.length) c.value) :: acc)
+      else aux ((f (h.length - c.length) c.value) :: acc) c.next
     in aux [] h 
 
 let to_list_filter_rev (wrap : 'a t) (f : 'a -> bool) : 'a list =
@@ -248,8 +250,8 @@ let iteri (f : int -> 'a -> unit) (wrap : 'a t) : unit =
   | Empty -> () 
   | Wrap {head = h; last = _} -> 
     let rec aux c = 
-      if c.length = 0 then (f c.length c.value)
-      else (f c.length c.value); aux c.next 
+      if c.length = 0 then (f (h.length - c.length) c.value)
+      else (f (h.length - c.length) c.value); aux c.next 
     in aux h 
 
 
@@ -329,13 +331,16 @@ let take (n : int) (wrap : 'a t) : 'a t =
   match wrap with 
   | Empty -> Empty 
   | Wrap {head = h; last = _} -> 
-    let rec aux acc c i =
-      if i >= n then
-        of_list acc
-      else if c.length = 0 then 
-        of_list (c.value :: acc) 
-      else aux (c.value :: acc) c.next (i + 1)  
-    in aux [] h 0
+    if n > h.length then wrap
+    else if n < 0 then failwith "Argumento inválifo"
+    else 
+      let rec aux acc c i =
+        if i >= n then
+          of_list acc
+        else if c.length = 0 then 
+          of_list (c.value :: acc) 
+        else aux (c.value :: acc) c.next (i + 1)  
+      in aux [] h 0
 
 let take_while  (f : 'a -> bool)  (wrap : 'a t) : 'a t = 
   match wrap with 
@@ -434,6 +439,200 @@ let to_gen (wrap : 'a t) : 'a gen =
 
 
 
+let compare (cmp : 'a -> 'a -> int) (w1 : 'a t) (w2 : 'a t) : int =
+  match w1, w2 with 
+  | Empty, Empty -> 0
+  | Empty, Wrap _ -> -1 
+  | Wrap _, Empty -> 1 
+  | Wrap {head = h1; last = _}, Wrap {head = h2; last = _} -> 
+    let rec aux c1 c2 =
+      let res = cmp c1.value c2.value in 
+      if res != 0 then res 
+      else
+        match c1.length = 0, c2.length = 0 with 
+        | true, true -> 0
+        | false, true -> 1 
+        | true, false -> -1 
+        | false, false -> aux c1.next c1.next
+    in aux h1 h2
+
+
+
+let index (wrap : 'a t) (i : int) : 'a cell = 
+  match wrap with 
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} -> lookup h (h.length - i)
+[@@inline]
+
+
+let rec rec_idx (n : int) =
+  if n = 1 then 0
+  else if n = 2 then 0
+  else
+    let rec largest k = if (1 lsl (k+1)) - 1 <= n then 
+      largest (k+1) else k 
+    in
+
+    let k = largest 0 in (* 2^k - 1 <= n*)
+    let s = (1 lsl k) - 1 in
+    let r = n - s in
+
+    if r = 0 then n - 1 (*bloco perfeito - index = ultimo elemento*)
+    else if r = s then s - 1 (*dois blocos com o mesmo tamanho - index = *)
+    else rec_idx r (*nenhum dos casos então repete*)
+
+let last_idx n = if n = 2 then 1 else rec_idx n
+
+
+let get_last_index (n : int) (i : int) : int = (i + 1) + last_idx (n - i -1)
+
+let set (wrap : 'a t) (i : int) (va : 'a) : 'a t =
+  match wrap with
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} ->
+    if i < 0 || i > h.length then failwith "Index invalido"
+    else
+      let rec path acc c =
+        if c.length = (h.length - i) then begin
+          if c.length = 0 then
+            add_list empty (va :: acc)
+          else
+            let last_index = get_last_index (h.length + 1) i in
+            let l = index wrap last_index in
+            let w = Wrap { head = c.next; last = l } in
+            add_list w (va :: acc)
+        end
+        else path (c.value :: acc) c.next
+      in path [] h
+
+let remove (wrap : 'a t) (i : int) : 'a t = 
+  match wrap with 
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} ->
+    if i < 0 || i > h.length then failwith "Index inválido"
+    else 
+      let rec path acc c =
+        if c.length = (h.length - i) then begin
+          if c.length = 0 then
+            add_list empty acc
+          else 
+            let last_index = get_last_index h.length i in 
+            let l = index wrap last_index in 
+            let w = Wrap {head = c.next; last = l} in 
+            add_list w acc
+        end 
+        else path (c.value :: acc) c.next
+      in path [] h 
+
+
+
+let get_and_remove_exn (wrap : 'a t) (i : int) : 'a * 'a t = 
+  match wrap with 
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} ->
+    if i < 0 || i > h.length then failwith "Index inválido"
+    else 
+      let rec path acc c =
+        if c.length = (h.length - i) then begin
+          if c.length = 0 then
+            (c.value, add_list empty acc)
+          else 
+            let last_index = get_last_index h.length i in 
+            let l = index wrap last_index in 
+            let w = Wrap {head = c.next; last = l} in 
+            (c.value, add_list w acc)
+        end 
+        else path (c.value :: acc) c.next
+      in path [] h 
+
+
+let tl (wrap : 'a t) : 'a t = 
+  match wrap with 
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} ->
+    if h.length = 0 then empty
+    else
+      let last_index = get_last_index h.length (h.length - 1) in 
+      let l = index wrap last_index in
+      Wrap {head = h.next; last = l}
+
+let front (wrap : 'a t) : ('a * 'a t) option = 
+  match wrap with 
+  | Empty -> None
+  | Wrap {head = h; last = _} ->
+    if h.length = 0 then Some (h.value, empty)
+    else
+      let last_index = get_last_index h.length (h.length - 1) in 
+      let l = index wrap last_index in
+      Some (h.value, Wrap {head = h.next; last = l})
+
+
+let front_exn (wrap : 'a t) : ('a * 'a t) = 
+  match wrap with 
+  | Empty -> failwith "Lista vazia"
+  | Wrap {head = h; last = _} ->
+    if h.length = 0 then (h.value, empty)
+    else
+      let last_index = get_last_index h.length (h.length - 1) in 
+      let l = index wrap last_index in
+      (h.value, Wrap {head = h.next; last = l})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(** FUNCOES AUXILIARES - APAGAR NO FINAL*)
+
+
+
+
+
+
+
+let print_wrap (wrap : 'a t) (f : 'a -> string) : unit = 
+  match wrap with 
+  | Empty -> Printf.printf "Empty"
+  | Wrap {head = h; last = l} -> 
+    Printf.printf "head = %s, last = %s" (f h.value) (f l.value)
+
+      
+let print_IML (wrap : 'a t) (f : 'a -> string) : unit = 
+  match wrap with 
+  | Empty -> Printf.printf "Empty" 
+  | Wrap {head = h; last = _} -> 
+    let rec aux c = 
+
+      Printf.printf 
+      "{\n Indice = %d\n value = %s\n next = %s\n jump = %s\n}\n" (h.length - c.length) (f c.value) (f c.next.value) (f c.jump.value);
+      if c.length = 0 then () 
+      else aux c.next
+    in aux h 
 
 
 
@@ -448,8 +647,6 @@ let to_gen (wrap : 'a t) : 'a gen =
 
 (*
 
-let index (c : 'a cell) (i : int) : 'a cell = lookup c (c.length - i)
-[@@inline]
 
 (* Avoiding wrap until the top level improves the performance:
 | make-list/3lgn/1_000_000 |     0.99 |  67.99ms | -2.29% +2.53% |  5.00Mw |   4.87Mw |   4.87Mw |     98.12% |
@@ -513,3 +710,4 @@ let index_path (c : 'a cell) (i : int) : 'a cell list = find_path c (c.length - 
 [@@inline]
 
 *)
+                      
