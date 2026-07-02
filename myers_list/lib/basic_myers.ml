@@ -227,3 +227,173 @@ let get_and_remove_exn l i = match l with
             ((snd info).value, List.fold_left cons' (Cell ((snd info).next)) (fst info))
 
 let append l1 l2 = fold_rev cons' l2 l1
+
+let filter f l = 
+    let func acc x = if (f x) then (cons x acc) else acc in
+    fold_rev func Nil l
+
+let filter_map f l = 
+    let func acc x = match (f x) with
+        | Some y -> (cons y acc)
+        | None -> acc in
+    fold_rev func Nil l
+
+let flat_map f l =
+    let func acc x = append (f x) acc in
+    fold_rev func Nil l
+
+(* TODO: refazer com append *)
+let flatten lists =  fold_rev (fold_rev cons') Nil lists
+
+let app funs l =
+    let func acc f = fold_rev (fun acc x -> cons (f x) acc) acc l in
+    fold_rev func Nil funs
+
+let rec take_ n l acc = match l with
+    | Nil -> Nil
+    | Cell c -> 
+        if n == 0 then
+            acc     (* TODO: ver se ainda tenho q juntar o c.value *)
+        else if c.length == 0 then
+            cons c.value acc
+        else
+            let acc' = take_ (n - 1) (Cell (c.next)) acc in
+            cons c.value acc'
+
+let rec take n l = 
+    if n < 0 then
+        Nil
+    else
+        take_ n l Nil
+
+let rec take_while_ f l acc = match l with
+    | Nil -> Nil
+    | Cell c -> 
+        if !(f c.value) then
+            acc     (* TODO: ver se ainda tenho q juntar o c.value *)
+        else if c.length == 0 then
+            cons c.value acc
+        else
+            let acc' = take_while_ f (Cell (c.next)) acc in
+            cons c.value acc'
+
+let rec take_while f l = take_while_ f l Nil
+
+let rec drop n l = match l with
+    | Nil -> Nil
+    | Cell c ->    
+        if n == 0 then 
+            l
+        else if c.length == 0 then
+            Nil
+        else
+            drop (n-1) (Cell (c.next))
+
+let rec drop_while f l = match l with
+    | Nil -> Nil
+    | Cell c ->    
+        if !(f c.value) then 
+            l
+        else if c.length == 0 then
+            Nil
+        else
+            drop_while f (Cell (c.next))
+
+let rec take_drop_ n l acc = match l with
+    | Nil -> (Nil, l)
+    | Cell c -> 
+        if n == 0 then
+            (acc, l)     (* TODO: ver se ainda tenho q juntar o c.value *)
+        else if c.length == 0 then
+            (cons c.value acc, Nil)
+        else
+            let (acc', xs)  = take_drop_ (n - 1) (Cell (c.next)) acc in
+            (cons c.value acc', xs)
+
+let rec take_drop n l = 
+    if n < 0 then
+        (Nil, l)
+    else
+        take_drop_ n l Nil
+
+let rec iter f l = match l with
+    | Nil -> ()
+    | Cell c -> match c with
+        | {length = 0} -> f c.value
+        | _ -> f c.value; iter f (Cell (c.next))
+
+let rec iteri_ i f l = match l with
+    | Nil -> ()
+    | Cell c -> match c with
+        | {length = 0} -> f i c.value
+        | _ -> f i c.value; iteri_ (i+1) f (Cell (c.next))
+
+let iteri = iteri_ 0
+
+let rev_map f l =
+    let func acc x = cons (f x) acc in
+    fold func Nil l
+
+let rev = fold cons' Nil
+
+let equal eq l1 l2 = match (l1, l2) with
+    | (Nil, Nil) -> true
+    | (Nil, Cell _)
+    | (Cell _, Nil) -> false
+    | (Cell c1, Cell c2) ->
+        if c1.length != c2.length then
+            false
+        else
+            let rec equal' eq c1 c2 =
+                if !(eq c1.value c2.value) then
+                    false
+                else if c1.length == 0 then
+                    true
+                else
+                    equal' eq c1.next c2.next in
+            equal' eq c1 c2
+
+let compare cmp l1 l2 = match (l1, l2) with
+    | (Nil, Nil) -> 0
+    | (Nil, Cell _) -> 1
+    | (Cell _, Nil) -> -1
+    | (Cell c1, Cell c2) ->
+        if c1.length < c2.length then
+            -1    
+        else if c1.length > c2.length then
+            1
+        else
+            let rec compare' comp c1 c2 =
+                let res = cmp c1.value c2.value in
+                if res != 0 || c1.length == 0 then
+                    res
+                else
+                    compare' cmp c1.next c2.next in
+            compare' cmp c1 c2
+
+let make n x =
+    let rec aux n acc x =
+        if n <= 0 then
+            acc
+        else
+            aux (n - 1) (cons x acc) x in
+    aux n Nil x
+
+let repeat n l =
+    let rec aux n l acc =
+        if n <= 0 then
+            acc
+        else
+            aux (n - 1) l (append l acc) in
+    aux n l Nil
+
+let range i j =
+    let rec aux i j acc =
+        if i = j then
+            cons i acc
+        else if i < j then
+            aux i (j - 1) (cons j acc)
+        else
+            aux i (j + 1) (cons j acc) in
+    aux i j Nil
+
