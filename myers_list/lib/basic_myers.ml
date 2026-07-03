@@ -160,16 +160,6 @@ let rec fold_rev f acc l = match l with
             let acc' = fold_rev f acc (Cell (c.next)) in
             f acc' c.value
 
-(*
-let map f l = match l with
-    | Nil -> Nil
-    | Cell c ->
-        let rec go (acc: 'a list) (f: 'a -> 'b) (curr: 'a cell) = match curr with 
-            | {length = 0} -> f curr.value :: acc
-            | _ -> go (f curr.value :: acc) f curr.next in
-        List.fold_left cons' Nil (go [] f c)
-*)
-
 let map f l =
     let func acc x = cons (f x) acc in
     fold_rev func Nil l
@@ -190,7 +180,7 @@ let set l i v = match l with
             invalid_arg "Invalid Index"
         else
             let rec go acc len curr =
-                if curr.length == len then
+                if curr.length = len then
                     (acc, curr.next)
                 else
                     go (curr.value :: acc) len curr.next in
@@ -205,7 +195,7 @@ let remove l i = match l with
             invalid_arg "Invalid Index"
         else
             let rec go acc len curr =
-                if curr.length == len then
+                if curr.length = len then
                     (acc, curr.next)
                 else
                     go (curr.value :: acc) len curr.next in
@@ -219,7 +209,7 @@ let get_and_remove_exn l i = match l with
             invalid_arg "Invalid Index"
         else
             let rec go acc len curr =
-                if curr.length == len then
+                if curr.length = len then
                     (acc, curr)
                 else
                     go (curr.value :: acc) len curr.next in
@@ -252,9 +242,9 @@ let app funs l =
 let rec take_ n l acc = match l with
     | Nil -> Nil
     | Cell c -> 
-        if n == 0 then
+        if n = 0 then
             acc     (* TODO: ver se ainda tenho q juntar o c.value *)
-        else if c.length == 0 then
+        else if c.length = 0 then
             cons c.value acc
         else
             let acc' = take_ (n - 1) (Cell (c.next)) acc in
@@ -271,7 +261,7 @@ let rec take_while_ f l acc = match l with
     | Cell c -> 
         if !(f c.value) then
             acc     (* TODO: ver se ainda tenho q juntar o c.value *)
-        else if c.length == 0 then
+        else if c.length = 0 then
             cons c.value acc
         else
             let acc' = take_while_ f (Cell (c.next)) acc in
@@ -282,9 +272,9 @@ let rec take_while f l = take_while_ f l Nil
 let rec drop n l = match l with
     | Nil -> Nil
     | Cell c ->    
-        if n == 0 then 
+        if n = 0 then 
             l
-        else if c.length == 0 then
+        else if c.length = 0 then
             Nil
         else
             drop (n-1) (Cell (c.next))
@@ -294,7 +284,7 @@ let rec drop_while f l = match l with
     | Cell c ->    
         if !(f c.value) then 
             l
-        else if c.length == 0 then
+        else if c.length = 0 then
             Nil
         else
             drop_while f (Cell (c.next))
@@ -302,9 +292,9 @@ let rec drop_while f l = match l with
 let rec take_drop_ n l acc = match l with
     | Nil -> (Nil, l)
     | Cell c -> 
-        if n == 0 then
+        if n = 0 then
             (acc, l)     (* TODO: ver se ainda tenho q juntar o c.value *)
-        else if c.length == 0 then
+        else if c.length = 0 then
             (cons c.value acc, Nil)
         else
             let (acc', xs)  = take_drop_ (n - 1) (Cell (c.next)) acc in
@@ -341,13 +331,13 @@ let equal eq l1 l2 = match (l1, l2) with
     | (Nil, Cell _)
     | (Cell _, Nil) -> false
     | (Cell c1, Cell c2) ->
-        if c1.length != c2.length then
+        if c1.length <> c2.length then
             false
         else
             let rec equal' eq c1 c2 =
                 if !(eq c1.value c2.value) then
                     false
-                else if c1.length == 0 then
+                else if c1.length = 0 then
                     true
                 else
                     equal' eq c1.next c2.next in
@@ -365,7 +355,7 @@ let compare cmp l1 l2 = match (l1, l2) with
         else
             let rec compare' comp c1 c2 =
                 let res = cmp c1.value c2.value in
-                if res != 0 || c1.length == 0 then
+                if res <> 0 || c1.length = 0 then
                     res
                 else
                     compare' cmp c1.next c2.next in
@@ -397,3 +387,99 @@ let range i j =
             aux i (j + 1) (cons j acc) in
     aux i j Nil
 
+let range_excl_ i j =
+    if i = j then
+        Nil
+    else if i < j then
+        range i (j - 1)
+    else
+        range i (j + 1)
+
+
+let add_list l1 l2 = List.fold_right cons l2 l1 (* TODO: talvez usar fold_left pois é TR *)
+
+let of_list l = List.fold_right cons l Nil (* TODO: talvez usar fold_left pois é TR *)
+
+let to_list l = fold_rev (fun acc x -> x :: acc) [] l
+
+let of_list f l = List.fold_right (fun x acc -> cons (f x) acc) l Nil (* TODO: talvez usar fold_left pois é TR *)
+
+let of_array a = Array.fold_right (fun x acc -> cons x acc) a Nil
+
+let add_array l a = Array.fold_right (fun x acc -> cons x acc) a l
+
+let to_array l = match l with
+    | Nil ->  [||]
+    | Cell c -> 
+        let a = Array.make (c.length + 1) c.value in
+        iteri (fun i x -> Array.set a i x) (Cell c.next);
+        a
+
+let add_iter l it = 
+    let res = ref Nil in
+    it (fun x -> res := cons x !res);
+    fold cons' l !res
+
+let of_iter it = 
+    let l = ref Nil in
+    it (fun x -> l := cons x !l);
+    rev !l
+
+(* TODO: rever função *)
+let to_iter l yield = iter yield l 
+
+(* TODO: rever função *)
+let add_gen l g =
+    let rec gen_iter f g =
+        match g () with
+        | None -> ()
+        | Some x ->
+            f x;
+            gen_iter f g in
+    let res = ref Nil in
+    gen_iter (fun x -> res := cons x !res) g;
+    fold (fun acc x -> cons x acc) l !res
+
+let of_gen g = add_gen Nil g
+
+(* TODO: rever função *)
+let to_gen l = match l with
+    | Nil -> (fun () -> None)
+    | Cell c -> 
+        let curr = ref c in 
+        let flag = ref false in 
+        let go () = 
+            if !flag then 
+                None 
+            else 
+                begin 
+                let va = !curr.value in 
+                if !curr.length = 0 then 
+                    flag := true
+                else 
+                    curr := !curr.next;
+                Some va 
+                end in 
+        go
+
+module Infix = struct
+    let ( @+ ) = cons
+    let ( >>= ) l f = flat_map f l
+    let ( >|= ) l f = map f l
+    let ( <*> ) = app
+    let ( -- ) = range
+    let ( --^ ) = range_excl_
+end
+
+include Infix
+
+(* TODO: rever função *)
+let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
+    let first = ref true in
+    iter (fun x ->
+        if !first then
+            first := false
+        else
+            pp_sep fmt ();
+        pp_item fmt x) l;
+    ()
