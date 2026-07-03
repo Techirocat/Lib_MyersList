@@ -120,12 +120,12 @@ let set wrap i v =
 			let rec path acc c =
 			if c.length = (h.length - i) then begin
 		  		if c.length = 0 then
-					add_list empty (v :: acc)
+					List.fold_left (fun w_acc x -> cons x w_acc) empty (v :: acc)
 		  		else
 					let last_index = get_last_index (h.length + 1) (i + 1) in
 					let l = index wrap last_index in
 					let w = Wrap { head = c.next; last = l } in
-					add_list w (v :: acc)
+					List.fold_left (fun w_acc x -> cons x w_acc) w (v :: acc)
 			end
 			else 
 				path (c.value :: acc) c.next
@@ -197,12 +197,12 @@ let get_and_remove_exn wrap i =
 	  		let rec path acc c =
 			if c.length = (h.length - i) then begin
 		  		if c.length = 0 then
-					(c.value, add_list empty acc)
+					(c.value, List.fold_left (fun w_acc x -> cons x w_acc) empty acc)
 		  		else 
 					let last_index = get_last_index (h.length + 1) (i + 1) in 
 					let l = index wrap last_index in 
 					let w = Wrap {head = c.next; last = l} in 
-					(c.value, add_list w acc)
+					(c.value, List.fold_left (fun w_acc x -> cons x w_acc) w acc)
 			end 
 			else 
 				path (c.value :: acc) c.next
@@ -219,14 +219,15 @@ let remove wrap i =
 	  		let rec path acc c =
 			if c.length = (h.length - i) then begin
 		 		if c.length = 0 then
-					add_list empty acc
+					List.fold_left (fun w_acc x -> cons x w_acc) empty acc
 		  		else 
 					let last_index = get_last_index (h.length + 1) (i + 1) in 
 					let l = index wrap last_index in 
 					let w = Wrap {head = c.next; last = l} in 
-					add_list w acc
+					List.fold_left (fun w_acc x -> cons x w_acc) w acc
 			end 
-			else path (c.value :: acc) c.next
+			else 
+				path (c.value :: acc) c.next
 	  		in path [] h 
 	
 
@@ -242,25 +243,17 @@ let fold f x wrap =
 	  	in aux x h 
 
 
-let rev wrap = fold (fun acc x -> cons x acc) empty wrap
-
-
-let to_list wrap = 
-	match wrap with 
-	| Empty -> [] 
-	| Wrap {head = h; last = _} -> 
-    	let rec aux acc c = 
-      		if c.length = 0 then 
-        		(c.value :: acc)
-      		else 
-				aux (c.value :: acc) c.next
-    	in aux [] h
-
-
-let to_list_rev wrap = List.rev (to_list wrap) 
+let to_list_rev wrap = fold (fun acc x -> x :: acc) [] wrap
 
 
 let fold_rev f x wrap = List.fold_left f x (to_list_rev wrap)
+
+
+let to_list wrap = fold_rev (fun acc x -> x :: acc) [] wrap
+
+
+
+let rev wrap = fold (fun acc x -> cons x acc) empty wrap
 
 
 let map f wrap = fold_rev (fun acc x -> cons (f x) acc) empty wrap
@@ -286,7 +279,7 @@ let mapi f wrap =
 	| Empty -> Empty 
 	| Wrap _ -> 
 		let l = to_list_mapi_rev wrap f in 
-		of_list l
+		of_list (List.rev l)
 
 
 let iter f wrap = fold (fun () x -> f x) () wrap
@@ -299,9 +292,10 @@ let iteri f wrap =
 		let rec aux c = 
 	  		if c.length = 0 then 
 				(f (h.length - c.length) c.value)
-	  		else 
+	  		else begin
 				(f (h.length - c.length) c.value); 
 				aux c.next 
+			end
 		in aux h 
 
 
@@ -323,10 +317,10 @@ let filter_map f wrap =
 	  		| Some x -> x :: acc
 	  		| None -> acc
 		in  
-		let list = fold func [] wrap in of_list list
+		let list = fold func [] wrap in of_list (List.rev list)
 
 
-let flat_map f wrap = fold_rev (fun acc v -> append acc (f v)) empty wrap
+let flat_map f wrap = fold (fun acc v -> append acc (f v)) empty wrap
 
 
 let flatten wrap = fold_rev (fun acc l -> append l acc) empty wrap
@@ -338,18 +332,18 @@ let app funs wrap =
 
 let take n wrap = 
 	match wrap with 
-	| Empty -> Empty 
+	| Empty -> Empty
 	| Wrap {head = h; last = _} -> 
 		if n > h.length then 
 			wrap
 		else if n < 0 then 
-			invalid_arg "Invalid Index"
+			Empty
 		else 
 	  		let rec aux acc c i =
 				if i >= n then
-		 			of_list acc
+		 			of_list (List.rev acc)
 				else if c.length = 0 then 
-		  			of_list (c.value :: acc) 
+		  			of_list (List.rev (c.value :: acc)) 
 				else 
 					aux (c.value :: acc) c.next (i + 1)  
 			in aux [] h 0
@@ -362,10 +356,11 @@ let take_while f wrap =
 		let rec aux acc c = 
 			if (f c.value) then 
 		  		if c.length = 0 then 
-					of_list (c.value :: acc)
+					of_list (List.rev (c.value :: acc))
 		  		else 
 					aux (c.value :: acc) c.next
-			else of_list acc 
+			else 
+				of_list (List.rev acc) 
 		in aux [] h
 
 
@@ -373,18 +368,17 @@ let drop n wrap =
 	match wrap with 
   	| Empty -> Empty
   	| Wrap {head = h; last = _} -> 
-		if n < 0 || n > h.length then 
-			invalid_arg "Invalid Index"
+		if n < 0 || n > h.length + 1 then 
+			invalid_arg "Invalid Argument"
+		else if n = h.length + 1 then 
+			empty
+		else if n = 0 then 
+			wrap
 		else 
-	  		let rec aux acc c i = 
-				if i <= n then 
-					aux acc c.next (i+1) 
-				else 
-		  			if c.length = 0 then 
-						of_list (c.value :: acc)
-		  			else
-						aux (c.value :: acc) c.next (i+1)
-	  		in aux [] h 0
+	  		let new_head = index wrap n in 
+			let last_index = get_last_index (h.length + 1) n in 
+			let new_last = index wrap last_index in 
+			Wrap {head = new_head; last = new_last}
 
 
 let drop_while f wrap =
@@ -414,11 +408,14 @@ let equal eq w1 w2 =
 		if h1.length != h2.length then 
 			false 
 		else 
-	  		let rec aux c1 c2 = 
+	  		let rec aux n c1 c2 = 
 				if not (eq c1.value c2.value) then 
 					false 
-				else aux c1.next c2.next
-	  		in aux h1 h2 
+				else if n = 0 then 
+					true
+				else 
+					aux (n - 1) c1.next c2.next
+	  		in aux h1.length h1 h2 
 
 
 let make n v = 
@@ -432,13 +429,15 @@ let make n v =
 
 
 let repeat n wrap =
-	let a = to_list_rev wrap in  
-	let rec aux acc n = 
-		if n <= 0 then 
-			acc 
-		else 
-			aux (add_list acc a) (n-1)
-  	in aux empty n 
+	if n < 0 then 
+		invalid_arg "Invalid Argument"
+	else 
+		let rec aux n acc = 
+			if n = 0 then 
+				acc 
+			else
+				aux (n - 1) (append wrap acc)
+		in aux n empty 
 
 
 let range i j = 
@@ -467,7 +466,7 @@ type 'a iter = ('a -> unit) -> unit
 type 'a gen = unit -> 'a option
 
 
-let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap l
+let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap (List.rev l)
 
 
 let to_list_map wrap f = fold_rev (fun acc v -> (f v) :: acc) [] wrap
@@ -572,4 +571,18 @@ module Infix = struct
 end
 
 include Infix
+
+
+type 'a printer = Format.formatter -> 'a -> unit
+
+
+let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
+    let first = ref true in
+    iter (fun x ->
+        if !first then
+            first := false
+        else
+            pp_sep fmt ();
+        pp_item fmt x) l;
+    ()
 

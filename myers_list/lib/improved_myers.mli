@@ -1,13 +1,5 @@
 (* .mli Improved Myers List*)
 
-(*
-TODO:
-- Criar testes e testar todas as Funções
-- ocamldoc
-- Colocar execeptions melhores
-*)
-
-
 (**
 Random-Access Lists 
 
@@ -42,16 +34,19 @@ val mapi : (int -> 'a -> 'b) -> 'a t -> 'b t
 val hd : 'a t -> 'a
 (**
     First element of the list, or 
-    Raise ...
+    Raise Invalid_argument
     if the list is empty
 *)
 
 val last : 'a t -> 'a
-(** AINDA VAZIO*)
+(** last l returns the last element of l. O(log(n))
+    Raise Invalid_argument 
+    if the list is empty
+*)
 
 val tl : 'a t -> 'a t
 (** Remove the first element from the list, or
-    Raises ...
+    Raises Invalid_argument
     if the list is empty
 *)
 
@@ -60,7 +55,7 @@ val front : 'a t -> ('a * 'a t) option
 
 val front_exn : 'a t -> 'a * 'a t
 (** Unsafe version of front 
-    Raises ...
+    Raises Invalid_argument
     if the list is empty
 *)
 
@@ -72,39 +67,49 @@ val get : 'a t -> int -> 'a option
 
 val get_exn : 'a t -> int -> 'a 
 (** Unsafe version of get
-    Raises ...
+    Raises Invalid_argument
     if the list has less than i+1 elements
 *)
 
 val set : 'a t -> int -> 'a -> 'a t 
 (** set l i v sets the i-th element of the list to v. O(i)
-    Raise ...
+    Raise Invalid_argument
     if the list has les than i+1 elements or is empty
 *)
 
 val remove : 'a t -> int -> 'a t
-(** AINDA VAZIO*)
+(** remove l i returns a copy of l without its i-th element. O(i)
+    Raise Invalid_argument 
+    if the list has less than i+1 elements or is empty
+*)
 
 val get_and_remove_exn : 'a t -> int -> 'a * 'a t
 (** get_and_remove_exn l i accesses and removes the i-th element of l
-    Raise ...
+    Raise Invalid_argument
     if the list has less than i+1 elements
 *)
 
 val append : 'a t -> 'a t -> 'a t
-(** Ainda vazio*)
+(** append l1 l2 returns a new list containing the elements of l1
+    followed by the elements of l2.
+*)
 
 val filter : ('a -> bool) -> 'a t -> 'a t
 (** filter f l returns all the elements of the list l that satisfy the predicate f*)
 
 val filter_map : ('a -> 'b option) -> 'a t -> 'b t
-(** AINDA VAZIO*)
+(** filter_map f l applies f to every element of l and keeps only
+    the elements for which f returns Some _, unwrapping the option. *)
+
 
 val flat_map : ('a -> 'b t) -> 'a t -> 'b t
-(** AINDA VAZIO*)
+(** flat_map f l applies f to every element of l, producing a list
+    for each one, and concatenates all the resulting lists in order. *)
+
 
 val flatten : 'a t t -> 'a t
-(** AINDA VAZIO*)
+(** flatten l concatenates a list of lists into a single list,
+    preserving the order of both the outer and the inner lists. *)
 
 val app : ('a -> 'b) t -> 'a t -> 'b t
 (* app funs l applies every function to every value (Cartesian product). Ex: [f; g] applied to [1; 2] results in [f 1; f 2; g 1; g 2]. *)
@@ -115,11 +120,11 @@ val take : int -> 'a t -> 'a t
 val take_while : ('a -> bool) -> 'a t -> 'a t
 (** take_while p l is the longest (possibly empty) prefix of l containing only elements that satisfy p.*)
 
-val drop : int -> 'a t -> 'a t (** TODO: Refazer com a ideia da função set*)
-(** AINDA VAZIO - Rever esta função e tentar implementaar de forma a partilhar os elementos com as outras lista e não criar uma lista nova do zero*)
+val drop : int -> 'a t -> 'a t
+(**drop n l returns the suffix of l after skipping n elements*)
 
-val drop_while : ('a -> bool) -> 'a t -> 'a t (** TODO: Refazer com a ideia da função set*)
-(** Mesma coisa que em drop*)
+val drop_while : ('a -> bool) -> 'a t -> 'a t
+(** drop_while p l drops elements from the front of l as long as p evaluates to true, returning the remaining list. *)
 
 val take_drop : int -> 'a t -> 'a t * 'a t
 (* take_drop n l splits l into a, b such that length a = n if length l >= n, and such that append a b = l. *)
@@ -144,16 +149,21 @@ val rev : 'a t -> 'a t
 (** Reverse the list*)
 
 val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
-(** AINDA VAZIO*)
+(** equal eq l1 l2 returns true if l1 and l2 have the same length
+    and eq returns true on every pair of elements at the same
+    position, false otherwise. *)
+
 
 val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int
-(** AINFA VAZIO*)
+(** compare cmp l1 l2 performs a lexicographic comparison of l1 and
+    l2 using cmp on their elements. If one list is a strict prefix
+    of the other, the shorter list is considered smaller. *)
 
 
 (** UTILS*)
 
 val make : int -> 'a -> 'a t
-(** AINDA VAZIO*)
+(** make n v returns a list of length n where every element is v. *)
 
 val repeat : int -> 'a t -> 'a t
 (** repeat n l is append l (append l ... l) n times.*) 
@@ -165,16 +175,15 @@ val range : int -> int -> int t
 (** CONVERSIONS*)
 
 type 'a iter = ('a -> unit) -> unit
-(** AINDA VAZIO*)
 
 type 'a gen = unit -> 'a option
-(** AINDA VAZIO*)
 
 
 (** LIST*)
 
 val add_list : 'a t -> 'a list -> 'a t
-(**AINDA VAZIO*)
+(** add_list l elts returns a new list containing the elements of
+    elts (in the same order) followed by the elements of l. *)
 
 val of_list : 'a list -> 'a t
 (** Converts a list to a Improved Myers List*)
@@ -189,7 +198,8 @@ val of_list_map : ('a -> 'b) -> 'a list -> 'b t
 (** ARRAY*)
 
 val add_array : 'a t -> 'a array -> 'a t
-(** AINDA VAZIO*)
+(** add_array l arr returns a new list containing the elements of
+    arr (in the same order) followed by the elements of l. *)
 
 val of_array : 'a array -> 'a t
 (** Converts an array into a Improved Myers List*)
@@ -201,7 +211,8 @@ val to_array : 'a t -> 'a array
 (** ITERATOR*)
 
 val add_iter : 'a t -> 'a iter -> 'a t
-(** AINDA VAZIO*)
+(** add_iter l it returns a new list containing the elements produced
+    by it (in the same order) followed by the elements of l. *)
 
 val of_iter : 'a iter -> 'a t
 (** Converts a iterator into a Improved Myers List*)
@@ -213,13 +224,19 @@ val to_iter : 'a t -> 'a iter
 (** GENERATOR*)
 
 val add_gen : 'a t -> 'a gen -> 'a t
-(** AINDA VAZIO*)
+(** add_gen l g returns a new list containing the elements produced
+    by g (in the same order) followed by the elements of l. *)
+
 
 val of_gen : 'a gen -> 'a t
-(** AINDA VAZIO*)
+(** of_gen g consumes the generator g entirely and returns a list
+    containing the elements it produced, in the order they were
+    produced. *)
 
 val to_gen : 'a t -> 'a gen
-(** AINDA VAZIO*)
+(** to_gen l returns a generator that yields the elements of l, in
+    order, one at a time, and None once every element has been
+    produced. *)
 
 
 (** INFIX*)
@@ -247,4 +264,11 @@ module Infix : sig
 end 
 
 include module type of Infix
+
+
+(** IO *)
+
+type 'a printer = Format.formatter -> 'a -> unit
+
+val pp : ?pp_sep:unit printer -> 'a printer -> 'a t printer
 
