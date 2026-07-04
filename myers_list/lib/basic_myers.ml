@@ -103,16 +103,20 @@ let empty = Nil
 let return x = Cell (init 0 x)
 
 let is_empty = function
-    | Nil -> false
-    | Cell _ -> true
+    | Nil -> true
+    | Cell _ -> false
 
 let hd = function
     | Nil -> invalid_arg "Empty List"
-    | Cell {value} -> value
+    | Cell c -> c.value
 
 let tl = function
     | Nil -> invalid_arg "Empty List"
-    | Cell {next} -> Cell next
+    | Cell c ->
+        if c.length = 0 then
+            Nil
+        else
+            Cell c.next
 
 let rec last_ c =
     if c.length = 0 then
@@ -176,7 +180,7 @@ let map ~f l =
     let func acc x = cons (f x) acc in
     fold_rev ~f:func ~x:Nil l
 
-(* TODO: tentar refazer com fold_rev *)
+(* TODO: evitar o uso da list auxiliar *)
 let mapi ~f l = match l with
     | Nil -> Nil
     | Cell c ->
@@ -185,6 +189,7 @@ let mapi ~f l = match l with
             | _ -> go (idx + 1) ((f idx curr.value) :: acc) f curr.next in
         List.fold_left cons' Nil (go 0 [] f c)
 
+(* TODO: evitar o uso da list auxiliar *)
 let set l i v = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
@@ -193,13 +198,17 @@ let set l i v = match l with
         else
             let rec go acc len curr =
                 if curr.length = len then
-                    (acc, curr.next)
+                    if len = 0 then
+                        (acc, Nil)
+                    else
+                        (acc, Cell curr.next)
                 else
                     go (curr.value :: acc) len curr.next in
             let info = go [] (c.length - i) c in
             let info' = (v :: (fst info), snd info) in
-            List.fold_left cons' (Cell (snd info')) (fst info')
+            List.fold_left cons' (snd info') (fst info')
 
+(* TODO: evitar o uso da list auxiliar *)
 let remove l i = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
@@ -208,12 +217,16 @@ let remove l i = match l with
         else
             let rec go acc len curr =
                 if curr.length = len then
-                    (acc, curr.next)
+                    if len = 0 then
+                        (acc, Nil)
+                    else
+                        (acc, Cell curr.next)
                 else
                     go (curr.value :: acc) len curr.next in
             let info = go [] (c.length - i) c in
-            List.fold_left cons' (Cell (snd info)) (fst info)
+            List.fold_left cons' (snd info) (fst info)
 
+(* TODO: evitar o uso da list auxiliar *)
 let get_and_remove_exn l i = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
@@ -282,14 +295,21 @@ let rec take_while_ f l acc = match l with
 let rec take_while ~f l = take_while_ f l Nil
 
 let rec drop n l = match l with
-    | Nil -> Nil
-    | Cell c ->    
-        if n = 0 then 
-            l
-        else if c.length = 0 then
+    | Nil ->
+        if n > 1 || n < 0 then
+            invalid_arg "Invalid Argument"
+        else 
             Nil
+    | Cell c ->    
+        if n > (c.length + 1) || n < 0 then
+            invalid_arg "Invalid Argument"
         else
-            drop (n-1) (Cell (c.next))
+            if n = 0 then 
+                l
+            else if c.length = 0 then
+                Nil
+            else
+                drop (n-1) (Cell (c.next))
 
 let rec drop_while ~f l = match l with
     | Nil -> Nil
@@ -382,12 +402,15 @@ let make n x =
     aux n Nil x
 
 let repeat n l =
-    let rec aux n l acc =
-        if n <= 0 then
-            acc
-        else
-            aux (n - 1) l (append l acc) in
-    aux n l Nil
+    if n < 0 then
+        invalid_arg "Invalid Argument"
+    else
+        let rec aux n l acc =
+            if n <= 0 then
+                acc
+            else
+                aux (n - 1) l (append l acc) in
+        aux n l Nil
 
 let range i j =
     let rec aux i j acc =
@@ -424,7 +447,8 @@ let to_array l = match l with
     | Nil ->  [||]
     | Cell c -> 
         let a = Array.make (c.length + 1) c.value in
-        iteri ~f:(fun i x -> Array.set a i x) (Cell c.next);
+        if c.length <> 0 then
+            iteri ~f:(fun i x -> Array.set a (i+1) x) (Cell c.next);
         a
 
 type 'a iter = ('a -> unit) -> unit

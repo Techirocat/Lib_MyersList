@@ -216,7 +216,7 @@ let test_take_while () =
 
 
 
-
+(* TODO: rever testes *)
 let test_drop () = 
 	let l = of_list [1; 2; 3; 4; 5] in
   	Alcotest.(check (list int)) "Test drop" [3; 4; 5] (to_list (drop 2 l));
