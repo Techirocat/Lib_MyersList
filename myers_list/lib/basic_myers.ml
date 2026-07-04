@@ -114,6 +114,16 @@ let tl = function
     | Nil -> invalid_arg "Empty List"
     | Cell {next} -> Cell next
 
+let rec last_ c =
+    if c.length = 0 then
+        c.value
+    else
+        last_ c.jump
+
+let last = function
+    | Nil -> invalid_arg "Empty List"
+    | Cell c -> last_ c
+
 let front = function
     | Nil -> None
     | Cell c -> Some (c.value, Cell c.next)

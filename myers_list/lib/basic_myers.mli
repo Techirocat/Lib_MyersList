@@ -49,6 +49,10 @@ val tl : 'a t -> 'a t
 (** Remove the first element from the list, or
     @raise Invalid_argument if the list is empty. *)
 
+val last : 'a t -> 'a
+(** Last element of the list, or
+    @raise Invalid_argument if the list is empty. *)
+
 val front : 'a t -> ('a * 'a t) option
 (** Remove and return the first element of the list. *)
 
