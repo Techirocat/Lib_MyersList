@@ -180,66 +180,70 @@ let map ~f l =
     let func acc x = cons (f x) acc in
     fold_rev ~f:func ~x:Nil l
 
-(* TODO: evitar o uso da list auxiliar *)
 let mapi ~f l = match l with
     | Nil -> Nil
-    | Cell c ->
-        let rec go (idx: int) (acc: 'b list) (f: int -> 'a -> 'b) (curr: 'a cell) = match curr with 
-            | {length = 0} -> (f idx curr.value) :: acc
-            | _ -> go (idx + 1) ((f idx curr.value) :: acc) f curr.next in
-        List.fold_left cons' Nil (go 0 [] f c)
+    | Cell c -> 
+        let rec aux i f acc c = match c with
+            | {length = 0} -> return (f i c.value)
+            | _ -> 
+                let acc' = aux (i+1) f acc c.next in
+                cons (f i c.value) acc'
+        in
+        aux 0 f Nil c
 
-(* TODO: evitar o uso da list auxiliar *)
 let set l i v = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
         if i > c.length || i < 0 then
             invalid_arg "Invalid Index"
         else
-            let rec go acc len curr =
+            let rec aux len v acc curr =
                 if curr.length = len then
                     if len = 0 then
-                        (acc, Nil)
+                        return v
                     else
-                        (acc, Cell curr.next)
+                        cons v (Cell curr.next)
                 else
-                    go (curr.value :: acc) len curr.next in
-            let info = go [] (c.length - i) c in
-            let info' = (v :: (fst info), snd info) in
-            List.fold_left cons' (snd info') (fst info')
+                    let acc' = aux len v acc curr.next in
+                    cons curr.value acc'
+            in
+            aux (c.length - i) v Nil c
 
-(* TODO: evitar o uso da list auxiliar *)
 let remove l i = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
         if i > c.length || i < 0 then
             invalid_arg "Invalid Index"
         else
-            let rec go acc len curr =
+            let rec aux len acc curr =
                 if curr.length = len then
                     if len = 0 then
-                        (acc, Nil)
+                        Nil
                     else
-                        (acc, Cell curr.next)
+                        Cell curr.next
                 else
-                    go (curr.value :: acc) len curr.next in
-            let info = go [] (c.length - i) c in
-            List.fold_left cons' (snd info) (fst info)
+                    let acc' = aux len acc curr.next in
+                    cons curr.value acc'
+            in
+            aux (c.length - i) Nil c
 
-(* TODO: evitar o uso da list auxiliar *)
 let get_and_remove_exn l i = match l with
     | Nil -> invalid_arg "Empty List"
     | Cell c ->
         if i > c.length || i < 0 then
             invalid_arg "Invalid Index"
         else
-            let rec go acc len curr =
+            let rec aux len acc curr =
                 if curr.length = len then
-                    (acc, curr)
+                    if len = 0 then
+                        (curr.value, Nil)
+                    else
+                        (curr.value, Cell curr.next)
                 else
-                    go (curr.value :: acc) len curr.next in
-            let info = go [] (c.length - i) c in
-            ((snd info).value, List.fold_left cons' (Cell ((snd info).next)) (fst info))
+                    let (v, acc') = aux len acc curr.next in
+                    (v, cons curr.value acc')
+            in
+            aux (c.length - i) Nil c
 
 let append l1 l2 = fold_rev ~f:cons' ~x:l2 l1
 
@@ -257,8 +261,7 @@ let flat_map f l =
     let func acc x = append (f x) acc in
     fold_rev ~f:func ~x:Nil l
 
-(* TODO: refazer com append *)
-let flatten lists = fold_rev ~f:(fun acc l -> fold_rev ~f:cons' ~x:acc l) ~x:Nil lists
+let flatten lists = fold_rev ~f:(fun acc l -> append l acc) ~x:Nil lists
 
 let app funs l =
     let func acc f = fold_rev ~f:(fun acc x -> cons (f x) acc) ~x:acc l in
@@ -268,7 +271,7 @@ let rec take_ n l acc = match l with
     | Nil -> Nil
     | Cell c -> 
         if n = 0 then
-            acc     (* TODO: ver se ainda tenho q juntar o c.value *)
+            acc
         else if c.length = 0 then
             cons c.value acc
         else
@@ -285,7 +288,7 @@ let rec take_while_ f l acc = match l with
     | Nil -> Nil
     | Cell c -> 
         if not (f c.value) then
-            acc     (* TODO: ver se ainda tenho q juntar o c.value *)
+            acc
         else if c.length = 0 then
             cons c.value acc
         else
@@ -325,7 +328,7 @@ let rec take_drop_ n l acc = match l with
     | Nil -> (Nil, l)
     | Cell c -> 
         if n = 0 then
-            (acc, l)     (* TODO: ver se ainda tenho q juntar o c.value *)
+            (acc, l)
         else if c.length = 0 then
             (cons c.value acc, Nil)
         else
@@ -431,13 +434,13 @@ let range_excl_ i j =
         range i (j + 1)
 
 
-let add_list l1 l2 = List.fold_right cons l2 l1 (* TODO: talvez usar fold_left pois é TR *)
+let add_list l1 l2 = List.fold_left cons' l1 (List.rev l2)
 
-let of_list l = List.fold_right cons l Nil (* TODO: talvez usar fold_left pois é TR *)
+let of_list l = List.fold_left cons' Nil (List.rev l)
 
 let to_list l = fold_rev ~f:(fun acc x -> x :: acc) ~x:[] l
 
-let of_list_map ~f l = List.fold_right (fun x acc -> cons (f x) acc) l Nil (* TODO: talvez usar fold_left pois é TR *)
+let of_list_map ~f l = List.fold_left (fun acc x -> cons (f x) acc) Nil (List.rev l)
 
 let of_array a = Array.fold_right (fun x acc -> cons x acc) a Nil
 
