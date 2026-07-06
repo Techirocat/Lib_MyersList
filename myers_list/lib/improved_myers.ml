@@ -231,7 +231,7 @@ let remove wrap i =
 	  		in path [] h 
 	
 
-let fold f x wrap = 
+let fold ~f ~x wrap = 
 	match wrap with 
 	| Empty -> x 
 	| Wrap {head = h; last = _} -> 
@@ -243,20 +243,20 @@ let fold f x wrap =
 	  	in aux x h 
 
 
-let to_list_rev wrap = fold (fun acc x -> x :: acc) [] wrap
+let to_list_rev wrap = fold ~x:[] wrap ~f:(fun acc x -> x :: acc)
 
 
-let fold_rev f x wrap = List.fold_left f x (to_list_rev wrap)
+let fold_rev ~f ~x wrap = List.fold_left f x (to_list_rev wrap)
 
 
-let to_list wrap = fold_rev (fun acc x -> x :: acc) [] wrap
+let to_list wrap = fold_rev ~f:(fun acc x -> x :: acc) ~x:[] wrap
 
 
 
-let rev wrap = fold (fun acc x -> cons x acc) empty wrap
+let rev wrap = fold ~f:(fun acc x -> cons x acc) ~x:empty wrap
 
 
-let map f wrap = fold_rev (fun acc x -> cons (f x) acc) empty wrap
+let map ~f wrap = fold_rev ~x:empty wrap ~f:(fun acc x -> cons (f x) acc)
 
 
 let to_list_mapi_rev wrap f = 
@@ -274,7 +274,7 @@ let to_list_mapi_rev wrap f =
 let of_list l = add_list empty l
 
 
-let mapi f wrap = 
+let mapi ~f wrap = 
 	match wrap with 
 	| Empty -> Empty 
 	| Wrap _ -> 
@@ -282,10 +282,10 @@ let mapi f wrap =
 		of_list (List.rev l)
 
 
-let iter f wrap = fold (fun () x -> f x) () wrap
+let iter ~f wrap = fold ~f:(fun () x -> f x) ~x:() wrap
 
 
-let iteri f wrap = 
+let iteri ~f wrap = 
 	match wrap with 
   	| Empty -> () 
   	| Wrap {head = h; last = _} -> 
@@ -299,16 +299,16 @@ let iteri f wrap =
 		in aux h 
 
 
-let rev_map f wrap = fold (fun acc x -> cons (f x) acc) empty wrap
+let rev_map ~f wrap = fold ~f:(fun acc x -> cons (f x) acc) ~x:empty wrap
 
 
-let append l0 l1 = fold_rev (fun acc x -> cons x acc) l1 l0
+let append l0 l1 = fold_rev ~f:(fun acc x -> cons x acc) ~x:l1 l0
 
 
-let filter f wrap = fold_rev (fun acc x -> if f x then cons x acc else acc) empty wrap
+let filter ~f wrap = fold_rev ~f:(fun acc x -> if f x then cons x acc else acc) ~x:empty wrap
 
 
-let filter_map f wrap = 
+let filter_map ~f wrap = 
 	match wrap with
    	| Empty -> Empty
 	| Wrap _ ->
@@ -317,17 +317,17 @@ let filter_map f wrap =
 	  		| Some x -> x :: acc
 	  		| None -> acc
 		in  
-		let list = fold func [] wrap in of_list (List.rev list)
+		let list = fold ~f:func ~x:[] wrap in of_list (List.rev list)
 
 
-let flat_map f wrap = fold (fun acc v -> append acc (f v)) empty wrap
+let flat_map f wrap = fold ~f:(fun acc v -> append acc (f v)) ~x:empty wrap
 
 
-let flatten wrap = fold_rev (fun acc l -> append l acc) empty wrap
+let flatten wrap = fold_rev ~f:(fun acc l -> append l acc) ~x:empty wrap
 
 
 let app funs wrap =
-	fold_rev (fun acc f -> fold_rev (fun acc x -> cons (f x) acc) acc wrap) empty funs
+	fold_rev ~f:(fun acc f -> fold_rev ~f:(fun acc x -> cons (f x) acc) ~x:acc wrap) ~x:empty funs
 
 
 let take n wrap = 
@@ -349,7 +349,7 @@ let take n wrap =
 			in aux [] h 0
 
 
-let take_while f wrap = 
+let take_while ~f wrap = 
 	match wrap with 
 	| Empty -> Empty
 	| Wrap {head = h; last = _} -> 
@@ -381,7 +381,7 @@ let drop n wrap =
 			Wrap {head = new_head; last = new_last}
 
 
-let drop_while f wrap =
+let drop_while ~f wrap =
 	match wrap with
 	| Empty -> Empty
 	| Wrap {head = h; last = _} ->
@@ -399,7 +399,7 @@ let drop_while f wrap =
 let take_drop n wrap = (take n wrap, drop n wrap)
 
 
-let equal eq w1 w2 = 
+let equal ~eq w1 w2 = 
 	match w1, w2 with 
 	| Empty, Empty -> true
 	| Empty, Wrap _ -> false
@@ -469,10 +469,10 @@ type 'a gen = unit -> 'a option
 let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap (List.rev l)
 
 
-let to_list_map wrap f = fold_rev (fun acc v -> (f v) :: acc) [] wrap
+let to_list_map wrap f = fold_rev ~f:(fun acc v -> (f v) :: acc) ~x:[] wrap
 
 
-let of_list_map f l = add_list_map empty l f
+let of_list_map ~f l = add_list_map empty l f
 
 
 let add_array wrap arr = Array.fold_right (fun v acc -> cons v acc) arr wrap
@@ -498,13 +498,13 @@ let to_array wrap =
 
 let add_iter wrap s = 
 	let l1 = ref empty in s (fun x -> l1 := cons x !l1); 
-	fold (fun acc x -> cons x acc) wrap !l1
+	fold ~f:(fun acc x -> cons x acc) ~x:wrap !l1
 
 
 let of_iter s =  add_iter empty s 
 
 
-let to_iter wrap =  fun f -> iter f wrap
+let to_iter wrap =  fun f -> iter ~f wrap
 
 
 let rec gen_iter_ f g = 
@@ -516,7 +516,7 @@ let rec gen_iter_ f g =
 let add_gen wrap g = 
   	let w1 = ref empty in 
   	gen_iter_  (fun x -> w1 := cons x !w1) g; 
-  	fold (fun acc x -> cons x acc) wrap !w1
+  	fold ~f:(fun acc x -> cons x acc) ~x:wrap !w1
 
 
 let of_gen g = add_gen empty g 
@@ -542,7 +542,7 @@ let to_gen wrap =
 
 
 
-let compare cmp w1 w2 =
+let compare ~cmp w1 w2 =
   	match w1, w2 with 
   	| Empty, Empty -> 0
   	| Empty, Wrap _ -> -1 
@@ -564,7 +564,7 @@ let compare cmp w1 w2 =
 module Infix = struct
 	let (@+) = cons
 	let (>>=) l f = flat_map f l
-	let (>|=) l f = map f l
+	let (>|=) l f = map ~f l
 	let (<*>) = app
 	let (--) = range
 	let (--^) = range_r_open_
@@ -578,7 +578,7 @@ type 'a printer = Format.formatter -> 'a -> unit
 
 let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
     let first = ref true in
-    iter (fun x ->
+    iter ~f:(fun x ->
         if !first then
             first := false
         else

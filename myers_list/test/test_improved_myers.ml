@@ -37,16 +37,16 @@ let test_map () =
 	let f = (fun x -> x * 2) in 
 	let l = of_list [1; 2; 3; 4; 5] in 
 	let expected = [2; 4; 6; 8 ; 10] in 
-	Alcotest.(check (list int)) "Test map" expected (to_list (map f l));
-	Alcotest.(check (list int)) "Test map" [] (to_list (map f empty))
+	Alcotest.(check (list int)) "Test map" expected (to_list (map ~f l));
+	Alcotest.(check (list int)) "Test map" [] (to_list (map ~f empty))
 
 
 let test_mapi () = 
 	let f = (fun i x -> x * i) in 
 	let l = of_list [1; 2; 3; 4; 5] in 
 	let expected = [0; 2; 6; 12 ; 20] in 
-	Alcotest.(check (list int)) "Test mapi" expected (to_list (mapi f l));
-	Alcotest.(check (list int)) "Test mapi" [] (to_list(mapi f empty))
+	Alcotest.(check (list int)) "Test mapi" expected (to_list (mapi ~f l));
+	Alcotest.(check (list int)) "Test mapi" [] (to_list(mapi ~f empty))
 
 
 let test_hd () = 
@@ -164,14 +164,14 @@ let test_append () =
 
 let test_filter () = 
 	let lst = of_list [1; 2; 3; 4; 5; 6] in
-  	let fil = filter (fun x -> x mod 2 = 0) lst in
+  	let fil = filter ~f:(fun x -> x mod 2 = 0) lst in
   	Alcotest.(check (list int)) "Test filter" [2; 4; 6] (to_list fil)
 
 
 let test_filter_map () =
 	let lst = of_list [1; 2; 3; 4; 5] in
     let f x = if x mod 2 = 0 then Some (x * 10) else None in
-    Alcotest.(check (list int)) "Test filter_map" [20; 40] (to_list (filter_map f lst))
+    Alcotest.(check (list int)) "Test filter_map" [20; 40] (to_list (filter_map ~f lst))
 
 
 let test_flat_map () = 
@@ -184,7 +184,7 @@ let test_flat_map () =
 
 let test_flatten () =
 	let l = of_list [of_list [1; 2]; of_list [3; 4]] in
-  	Alcotest.(check (list int)) "Test flatten" [1; 2; 3; 4] (to_list (flatten l)) 
+  Alcotest.(check (list int)) "Test flatten" [1; 2; 3; 4] (to_list (flatten l)) 
 
 
 let test_app () = 
@@ -200,7 +200,7 @@ let test_take () =
 	let l = of_list [1; 2; 3; 4; 5] in 
 	let expected = [1; 2; 3] in 
 
-  	Alcotest.(check (list int)) "Test take" expected (to_list (take 3 l));
+  Alcotest.(check (list int)) "Test take" expected (to_list (take 3 l));
 	Alcotest.(check bool) "Test take" true (is_empty(take 1 empty));
 	Alcotest.(check bool) "Test take" true (is_empty(take (-10) l))
 
@@ -211,15 +211,15 @@ let test_take_while () =
 	let f = (fun x -> x < 3) in 
 	let f1 = (fun x -> x > 100) in 
 
-  	Alcotest.(check (list int)) "Test take while" [1; 2] (to_list (take_while f l));
-	Alcotest.(check (list int)) "Test take while" [] (to_list (take_while f1 l))
+  Alcotest.(check (list int)) "Test take while" [1; 2] (to_list (take_while ~f l));
+	Alcotest.(check (list int)) "Test take while" [] (to_list (take_while ~f:f1 l))
 
 
 
 
 let test_drop () = 
 	let l = of_list [1; 2; 3; 4; 5] in
-  	Alcotest.(check (list int)) "Test drop" [3; 4; 5] (to_list (drop 2 l));
+  Alcotest.(check (list int)) "Test drop" [3; 4; 5] (to_list (drop 2 l));
 	Alcotest.check_raises "Test drop invalid" (Invalid_argument "Invalid Argument") (fun () -> ignore (drop (-1) l));
 	Alcotest.check_raises "Test drop invalid" (Invalid_argument "Invalid Argument") (fun () -> ignore (drop 10 l));
 	Alcotest.(check (list int)) "Test drop" [] (to_list (drop 5 l))
@@ -231,8 +231,8 @@ let test_drop_while () =
 	let f = (fun x -> x < 3) in 
 	let f1 = (fun x -> x > 100) in 
 
-  	Alcotest.(check (list int)) "Test drop while" [3; 4; 1] (to_list (drop_while f l));
-	Alcotest.(check (list int)) "Test drop while" [1; 2; 3; 4; 1] (to_list (drop_while f1 l))
+  Alcotest.(check (list int)) "Test drop while" [3; 4; 1] (to_list (drop_while ~f l));
+	Alcotest.(check (list int)) "Test drop while" [1; 2; 3; 4; 1] (to_list (drop_while ~f:f1 l))
 
 
 
@@ -246,32 +246,32 @@ let test_take_drop () =
 let test_iter () = 
 	let l = of_list [1; 2; 3] in
   	let sum = ref 0 in
-  	iter (fun x -> sum := !sum + x) l;
+  	iter ~f:(fun x -> sum := !sum + x) l;
   	Alcotest.(check int) "Test iter (soma com refs)" 6 !sum
 
 
 let test_iteri () = 
 	let l = of_list [10; 20] in
   	let sum = ref 0 in
-  	iteri (fun i x -> sum := !sum + (i * x)) l;
+  	iteri ~f:(fun i x -> sum := !sum + (i * x)) l;
   	Alcotest.(check int) "Test iteri" 20 !sum
 
 
 let test_fold () = 
 	let l = of_list [1; 2; 3; 4] in
-  	let sum = fold (fun acc x -> acc + x) 0 l in
+  	let sum = fold ~f:(fun acc x -> acc + x) ~x:0 l in
   	Alcotest.(check int) "Test fold" 10 sum
 
 
 let test_fold_rev () = 
 	let l = of_list [1; 2; 3] in
-  	let res = fold_rev (fun acc x -> x :: acc) [] l in
+  	let res = fold_rev ~f:(fun acc x -> x :: acc) ~x:[] l in
   	Alcotest.(check (list int)) "Test fold_rev" [1; 2; 3] res
 
 
 let test_rev_map () = 
 	let l = of_list [1; 2; 3] in
-  Alcotest.(check (list int)) "Test rev_map" [30; 20; 10] (to_list (rev_map (fun x -> x * 10) l))
+  Alcotest.(check (list int)) "Test rev_map" [30; 20; 10] (to_list (rev_map ~f:(fun x -> x * 10) l))
 
 
 let test_rev () = 
@@ -288,11 +288,11 @@ let test_equal () =
 	let l4 = of_list [1; 2; 99] in
 	let l5 = of_list [10] in 
 
-  	Alcotest.(check bool) "Test equals" true (equal (=) l1 l2);
-  	Alcotest.(check bool) "Test equals" false (equal (=) l1 l3);
-	Alcotest.(check bool) "Test equals" false (equal (=) l1 l4);
-	Alcotest.(check bool) "Test equals" false (equal (=) l1 l5);
-	Alcotest.(check bool) "Test equals" true (equal (=) l5 l5)
+  Alcotest.(check bool) "Test equals" true (equal ~eq:(=) l1 l2);
+  Alcotest.(check bool) "Test equals" false (equal ~eq:(=) l1 l3);
+	Alcotest.(check bool) "Test equals" false (equal ~eq:(=) l1 l4);
+	Alcotest.(check bool) "Test equals" false (equal ~eq:(=) l1 l5);
+	Alcotest.(check bool) "Test equals" true (equal ~eq:(=) l5 l5)
 
 
 
@@ -302,12 +302,12 @@ let test_compare () =
     let l3 = of_list [1; 2; 3] in
 	let l4 = of_list [1; 2] in
 	let cmp = Stdlib.compare in
-    Alcotest.(check int) "Test compare" 0 (compare cmp l1 l3);
-    Alcotest.(check int) "Test compare" (-1) (compare cmp l1 l2);
-    Alcotest.(check int) "Test compare" 1 (compare cmp l2 l1);
+  Alcotest.(check int) "Test compare" 0 (compare ~cmp l1 l3);
+  Alcotest.(check int) "Test compare" (-1) (compare ~cmp l1 l2);
+    Alcotest.(check int) "Test compare" 1 (compare ~cmp l2 l1);
 
-	Alcotest.(check int) "Test compare" (-1) (compare cmp l4 l1);
-	Alcotest.(check int) "Test compare" 1 (compare cmp l1 l4)
+	Alcotest.(check int) "Test compare" (-1) (compare ~cmp l4 l1);
+	Alcotest.(check int) "Test compare" 1 (compare ~cmp l1 l4)
 
 
 
@@ -362,7 +362,7 @@ let test_to_list () =
 
 
 let test_of_list_map () =
-	let l = of_list_map (fun x -> x * 2) [1; 2; 3] in
+	let l = of_list_map ~f:(fun x -> x * 2) [1; 2; 3] in
   	Alcotest.(check (list int)) "Test of_list_map" [2; 4; 6] (to_list l) 
 
 
@@ -441,7 +441,7 @@ let test_infix_map () =
 	let l = of_list [1; 2; 3] in
 	let f x = x * 2 in
 	Alcotest.(check (list int)) "Test (>|=)" [2; 4; 6] (to_list (l >|= f));
-	Alcotest.(check (list int)) "Test (>|=)" (to_list (map f l)) (to_list (l >|= f))
+	Alcotest.(check (list int)) "Test (>|=)" (to_list (map ~f l)) (to_list (l >|= f))
 
 
 let test_infix_app () = 

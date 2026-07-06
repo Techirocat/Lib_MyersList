@@ -129,7 +129,7 @@ val drop_while : f:('a -> bool) -> 'a t -> 'a t
 val take_drop : int -> 'a t -> 'a t * 'a t
 (* take_drop n l splits l into a, b such that length a = n if length l >= n, and such that append a b = l. *)
 
-val iter : ('a -> unit) -> 'a t -> unit
+val iter : f:('a -> unit) -> 'a t -> unit
 (** iterate on the list's elements*)
 
 val iteri : f:(int -> 'a -> unit) -> 'a t -> unit
