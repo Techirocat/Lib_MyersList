@@ -24,11 +24,11 @@ val cons : 'a -> 'a t -> 'a t
 val return : 'a -> 'a t
 (** Singleton *)
 
-val map : ('a -> 'b) -> 'a t -> 'b t
+val map : f:('a -> 'b) -> 'a t -> 'b t
 (** Map on elements*)
 
 
-val mapi : (int -> 'a -> 'b) -> 'a t -> 'b t
+val mapi : f:(int -> 'a -> 'b) -> 'a t -> 'b t
 (** Map with index*)
 
 val hd : 'a t -> 'a
@@ -94,10 +94,10 @@ val append : 'a t -> 'a t -> 'a t
     followed by the elements of l2.
 *)
 
-val filter : ('a -> bool) -> 'a t -> 'a t
+val filter : f:('a -> bool) -> 'a t -> 'a t
 (** filter f l returns all the elements of the list l that satisfy the predicate f*)
 
-val filter_map : ('a -> 'b option) -> 'a t -> 'b t
+val filter_map : f:('a -> 'b option) -> 'a t -> 'b t
 (** filter_map f l applies f to every element of l and keeps only
     the elements for which f returns Some _, unwrapping the option. *)
 
@@ -117,13 +117,13 @@ val app : ('a -> 'b) t -> 'a t -> 'b t
 val take : int -> 'a t -> 'a t
 (** take n l returns the prefix of l of length n, or l if n > length*)
 
-val take_while : ('a -> bool) -> 'a t -> 'a t
+val take_while : f:('a -> bool) -> 'a t -> 'a t
 (** take_while p l is the longest (possibly empty) prefix of l containing only elements that satisfy p.*)
 
 val drop : int -> 'a t -> 'a t
 (**drop n l returns the suffix of l after skipping n elements*)
 
-val drop_while : ('a -> bool) -> 'a t -> 'a t
+val drop_while : f:('a -> bool) -> 'a t -> 'a t
 (** drop_while p l drops elements from the front of l as long as p evaluates to true, returning the remaining list. *)
 
 val take_drop : int -> 'a t -> 'a t * 'a t
@@ -132,29 +132,29 @@ val take_drop : int -> 'a t -> 'a t * 'a t
 val iter : ('a -> unit) -> 'a t -> unit
 (** iterate on the list's elements*)
 
-val iteri : (int -> 'a -> unit) -> 'a t -> unit
+val iteri : f:(int -> 'a -> unit) -> 'a t -> unit
 (** Same as iter, but the function is applied to the index of the element as first argument, 
 and the element itself as second argument*)
 
-val fold : ('b -> 'a -> 'b) -> 'b -> 'a t -> 'b
+val fold : f:('b -> 'a -> 'b) -> x:'b -> 'a t -> 'b
 (** fold on the list's elements*)
 
-val fold_rev : ('b -> 'a -> 'b) -> 'b -> 'a t -> 'b
+val fold_rev : f:('b -> 'a -> 'b) -> x:'b -> 'a t -> 'b
 (* A implementação que eu fiz não é tail recursive, pode ser  preciso alterar*)
 
-val rev_map : ('a -> 'b) -> 'a t -> 'b t
+val rev_map : f:('a -> 'b) -> 'a t -> 'b t
 (** rev_map f l is the same as map f (rev l)*)
 
 val rev : 'a t -> 'a t
 (** Reverse the list*)
 
-val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
+val equal : eq:('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 (** equal eq l1 l2 returns true if l1 and l2 have the same length
     and eq returns true on every pair of elements at the same
     position, false otherwise. *)
 
 
-val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int
+val compare : cmp:('a -> 'a -> int) -> 'a t -> 'a t -> int
 (** compare cmp l1 l2 performs a lexicographic comparison of l1 and
     l2 using cmp on their elements. If one list is a strict prefix
     of the other, the shorter list is considered smaller. *)
@@ -191,7 +191,7 @@ val of_list : 'a list -> 'a t
 val to_list : 'a t -> 'a list 
 (** to_list l return the list of all the elements of l*)
 
-val of_list_map : ('a -> 'b) -> 'a list -> 'b t
+val of_list_map : f:('a -> 'b) -> 'a list -> 'b t
 (** Combination of of_list and map*)
 
 
