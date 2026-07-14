@@ -57,7 +57,7 @@ let get_exn wrap i=
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} -> 
-		if i < 0 || i > h.length then 
+		if i < 0 || i >= h.length then 
 			invalid_arg "Invalid Index"
 		else 
 	  		(lookup h (h.length - i)).value
@@ -586,3 +586,11 @@ let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
         pp_item fmt x) l;
     ()
 
+
+
+
+let return__wrap_last_value wrap = 
+  match wrap with
+  | Empty -> -10000000000
+  | Wrap {head=_; last=l} -> l.value
+ 
