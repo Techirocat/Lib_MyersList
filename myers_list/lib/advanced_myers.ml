@@ -75,3 +75,23 @@ let index l i = lookup l (l.length - i + 1)
 let empty = Nil
 
 (* TODO: adicionar ficheiro .mli e fazer funções *)
+
+
+let is_leaf (len : int) : bool = (*Recebe como argumento o length da nova célula a ser inserida*)
+    let rec aux len = 
+        match len with 
+        | 1 -> true 
+        | 0 -> false 
+        | _ -> 
+            let rec largest_tree k = 
+			    if (1 lsl (k+1)) - 1 <= len then 
+	  			    largest_tree (k+1) 
+                else 
+                    k
+            in
+		    let k = largest_tree 0 in
+            let resto = len - ((1 lsl k)- 1) in 
+            aux resto 
+    in aux len 
+
+
