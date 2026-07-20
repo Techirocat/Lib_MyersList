@@ -152,14 +152,14 @@ let cons (v: 'a) (list: 'a t) =
                 (* 4. definir inc *)
                 let inc = find_inc h (rhd + 1) in
                 (* 5. definir uncle *)
-                let unc = find_unc l rhd (k length) in
+                let unc = find_unc h rhd (k length) in
                 Leaf (
                     (match unc with Some i -> i | None -> next), 
                     (match inc with Some i -> i | None -> next)
                 )
             else if skip then
                 (* 5. definir uncle *)
-                let unc = find_unc l rhd (k length) in
+                let unc = find_unc l.jump rhd (k length) in
                 Skip (match unc with Some i -> i | None -> next)
             else 
                 Normal in
@@ -174,11 +174,15 @@ let cons (v: 'a) (list: 'a t) =
         Wrap { head = c; last = last; sigma = s }
 
 let rec lookup_descent cell len =
+    (*
     print_string "lookup_descent ";
     print_int cell.length;
     print_newline ();
+    *)
     if cell.length = len then
         cell
+    else if cell.length = 1 then
+        failwith "Unable to find cell"
     else if cell.jump.length >= len then
         lookup_descent cell.jump len
     else
@@ -186,9 +190,11 @@ let rec lookup_descent cell len =
 
 (* TODO: rever lookup_leaf *)
 let rec lookup_leaf cell len d sigma =
+    (*
     print_string "lookup_leaf ";
     print_int cell.length;
     print_newline ();
+    *)
     match cell.more with
     | Leaf (u,i) ->
         if cell.rhd = d then
@@ -202,14 +208,42 @@ let rec lookup_leaf cell len d sigma =
     | _ -> failwith "Impossible state: lookup_leaf"
 
 let rec lookup_uncle cell len d sigma =
+    (*
     print_string "lookup_uncle ";
     print_int cell.length;
+    print_string "    red-uncle: ";
+    print_int d;
+    print_string "    rhd: ";
+    print_int cell.rhd;
+    print_string "    red: ";
+    print_int cell.red;
+    print_string "    height: ";
+    print_int ((k cell.length) - cell.red);
     print_newline ();
+    *)
     (* TODO: rever find_branch *)
     let find_branch c =
         let delta = d - c.rhd in
         let height = (k c.length) - c.red in
-        if (delta >= 0) && (delta > height || (height - delta) mod sigma == 0) then
+        (*
+        let do_jump =
+            if delta <= 0 then
+                false
+            else if delta > height then
+                true
+            else if (height mod sigma) = (delta mod sigma) then
+                true
+            else if height + cell.rhd <= d then
+                true
+            else 
+                false
+        in
+        if do_jump then
+            lookup_uncle cell.jump len d sigma
+        else
+            lookup_uncle cell.next len d sigma
+        *)
+        if (delta >= 0) && (delta > height || (height - delta) mod sigma = 0) then
             lookup_uncle cell.jump len d sigma
         else
             lookup_uncle cell.next len d sigma
@@ -221,15 +255,18 @@ let rec lookup_uncle cell len d sigma =
         if cell.rhd = d then
             lookup_descent u len
         else
-            find_branch cell.next
+            find_branch cell
     | Leaf _ -> lookup_leaf cell len d sigma
     
-(* TODO: rever lookup_cell *)
-let lookup_cell list len sigma =
-    print_string "lookup_cell ";
+let rec lookup_cell list len sigma = 
+    (*
+    print_string "lookup ";
     print_int list.length;
     print_newline ();
+    *)
+    (* Verificar os 4 casos possiveis e escolher a estratégia mais apropriada *)
     if is_parent list len then
+        (* Caso 1: Descent *)
         lookup_descent list len
     else
         let tur = target_uncle_red list.length len in
@@ -238,41 +275,82 @@ let lookup_cell list len sigma =
         match list.more with 
         | Leaf _ -> 
             if list.rhd > d then
-                failwith "Impossible case: lookup_cell"
+                (* Caso 4: Next *)
+                lookup_cell list.next len sigma
             else
                 lookup_uncle list len d sigma
         | _ ->
+            (* Caso 2: Procurar Skip *)
+            (* Caso 3: Procurar Folhas *)
             lookup_uncle list len d sigma
 
-let lookup list len = 
-    print_string "lookup ";
-    print_int list.head.length;
-    print_newline ();
-    (* Verificar os 4 casos possiveis e escolher a estratégia mais apropriada *)
-    if list.last.length <= len then
-        (* Caso 1: Descent *)
-        lookup_descent list.head len
+let index l i = lookup_cell l.head (l.head.length - i + 1) l.sigma
+
+let lookup_t list len = match list with
+    | Nil -> failwith "TODO"    (* TODO *)  
+    | Wrap w -> (lookup_cell w.head len w.sigma).length
+
+(* Benchmark Functions *)
+
+let rec lookup_descent_bench cell len count =
+    if cell.length = len then
+        cell, count
+    else if cell.jump.length >= len then
+        lookup_descent_bench cell.jump len (count+1)
     else
-        let tur = target_uncle_red list.head.length len in
+        lookup_descent_bench cell.next len (count+1)
+
+let rec lookup_leaf_bench cell len d sigma count =
+    match cell.more with
+    | Leaf (u,i) ->
+        if cell.rhd = d then
+            lookup_descent_bench u len (count+1)
+        else if is_parent cell.next len then 
+            lookup_descent_bench cell.next len (count+1)
+        else if is_parent cell.jump.next len then
+            lookup_descent_bench cell.jump.next len (count+1)
+        else
+            lookup_leaf_bench i len d sigma (count+1)
+    | _ -> failwith "Impossible state: lookup_leaf"
+
+let rec lookup_uncle_bench cell len d sigma count =
+    let find_branch c =
+        let delta = d - c.rhd in
+        let height = (k c.length) - c.red in
+        if (delta >= 0) && (delta > height || (height - delta) mod sigma == 0) then
+            lookup_uncle_bench cell.jump len d sigma (count+1)
+        else
+            lookup_uncle_bench cell.next len d sigma (count+1)
+        in
+    
+    match cell.more with
+    | Normal -> find_branch cell
+    | Skip u -> 
+        if cell.rhd = d then
+            lookup_descent_bench u len (count+1)
+        else
+            find_branch cell
+    | Leaf _ -> lookup_leaf_bench cell len d sigma count
+    
+let rec lookup_cell_bench list len sigma count = 
+    if is_parent list len then
+        (* Caso 1: Descent *)
+        lookup_descent_bench list len count
+    else
+        let tur = target_uncle_red list.length len in
         let d = snd tur in
         
-        match list.head.more with 
+        match list.more with 
         | Leaf _ -> 
-            if list.head.rhd > d then
+            if list.rhd > d then
                 (* Caso 4: Next *)
-                lookup_cell list.head.next len list.sigma (* aqui não temos wrap *)
+                lookup_cell_bench list.next len sigma (count+1)
             else
-                lookup_uncle list.head len d list.sigma
+                lookup_uncle_bench list len d sigma count
         | _ ->
             (* Caso 2: Procurar Skip *)
             (* Caso 3: Procurar Folhas *)
-            lookup_uncle list.head len d list.sigma
-
-let index l i = lookup l (l.head.length - i + 1)
-
-let lookup_t list len = match list with
-    | Nil -> failwith "a"  
-    | Wrap w -> (lookup w len).length
+            lookup_uncle_bench list len d sigma count
 
 (* Library Functions *)
 
@@ -357,3 +435,29 @@ let rec create_test n acc =
     else
         let c = cons n acc in
         create_test (n - 1) c
+
+let rec lookup_seq_test len list acc worst wlen = match list with
+    | Nil -> failwith "a"    
+    | Wrap w -> 
+        let res = lookup_cell_bench w.head len w.sigma 0 in
+        let nworst = max (snd res) worst in
+        let nacc = acc + (snd res) in
+        let nwlen = if nworst > worst then len else wlen in
+        if len = 1 then
+            nacc, nworst, nwlen
+        else
+            lookup_seq_test (len-1) list nacc nworst nwlen
+            
+let rec lookup_all_test list n max = 
+    (* let list = create_test n Nil in *)
+    let total, worst, wlen = lookup_seq_test n list 0 0 0 in
+    Printf.printf "len: %d    worst: %d (%d)    avg:%f \n%!" n worst wlen ((float @@ total) /. (float n));
+    if n = max then 
+        ()
+    else
+        lookup_all_test (cons n list) (n+1) max
+
+(*
+let () =
+    lookup_all_test (cons 0 Nil) 1 100000
+*)
