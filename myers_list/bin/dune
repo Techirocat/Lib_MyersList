@@ -1,4 +1,4 @@
 (executable
- (public_name myers_list)
- (name main)
- (libraries myers_list))
+ (name iarass_bench)
+ (libraries myers_list core_bench))
+ 
