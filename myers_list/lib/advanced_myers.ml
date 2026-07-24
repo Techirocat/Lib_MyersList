@@ -221,6 +221,7 @@ let rec lookup_descent cell len =
         lookup_descent cell.jump len
     else
         lookup_descent cell.next len
+[@@inline]
 
 let rec lookup_leaf cell len d sigma =
     (*
@@ -332,6 +333,7 @@ let rec lookup_descent_bench cell len count =
         lookup_descent_bench cell.jump len (count+1)
     else
         lookup_descent_bench cell.next len (count+1)
+[@@inline]
 
 let rec lookup_leaf_bench cell len d sigma count =
     match cell.more with
@@ -388,6 +390,10 @@ let rec lookup_cell_bench list len sigma count =
             (* Caso 2: Procurar Skip *)
             (* Caso 3: Procurar Folhas *)
             lookup_uncle_bench list len d sigma count
+
+let lookup_t_bench list len = match list with
+    | Nil -> failwith "TODO"    (* TODO *)  
+    | Wrap w -> snd @@ (lookup_cell_bench w.head len w.sigma 0)
 
 (* Library Functions *)
 
