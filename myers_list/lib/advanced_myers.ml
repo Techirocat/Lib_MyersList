@@ -11,7 +11,6 @@ type 'a t = Nil | Wrap of 'a wrap
 
 (* NOTA: LEMBRAR QUE O LENGTH COMEÇA NO 1 *)
 (* NOTA: RHD's indefinidos são marcados com números negativos *)
-(* TODO: fazer algo acerca das potencias de 2 *)
 
 let init (v: 'a) : 'a cell =
     let rec c : 'a cell = { next = c; jump = c; more = Leaf (c, c) ; length = 1; value = v; rhd = -1; red = 0 } in
@@ -24,8 +23,18 @@ let pow2 n =
         1 lsl n
     else
         invalid_arg "pow2: n must be zero or positive"
+[@@inline]
 
+(** Hacker's Delight Second Edition p106 *)
+let floor_log2 i = if i <= 0 then failwith "floor_log2: invalid input" else Sys.int_size - 1 - Ocaml_intrinsics_kernel.Int.count_leading_zeros i
+[@@inline]
+
+let k len = floor_log2 len
+[@@inline]
+
+(*
 let k len = int_of_float @@ floor @@ Float.log2 @@ float len
+*)
 
 (* TODO: rever caso length = 2 *)
 let is_not_leaf h l =
@@ -34,6 +43,7 @@ let is_not_leaf h l =
     (not (h.length = 1)) && (xj = 1 || xj = rj)
 
 let is_leaf h l = not (is_not_leaf h l)
+[@@inline]
 
 let calc_red (next : 'a cell) (leaf : bool) : int =  
   let len = next.length + 1 in
@@ -43,6 +53,7 @@ let calc_red (next : 'a cell) (leaf : bool) : int =
     match leaf with 
     | true -> k len 
     | false -> next.red - 1 
+[@@inline]
 
 let calc_rhd (c : 'a cell) (leaf : bool) : int = 
   if c.next.rhd < 0 then 
@@ -54,6 +65,7 @@ let calc_rhd (c : 'a cell) (leaf : bool) : int =
       c.jump.rhd - 1
     else 
       c.red - c.next.red
+[@@inline]
    
 (** Forma ineficiente de procurar ponteiro inc, através do RHD desejado *)
 let rec find_inc c rhd = match c.more with 
@@ -91,6 +103,7 @@ let rec find_unc c red kn =
             else
                 find_unc c.next red kn
 
+(*
 let target_uncle_red src dst =
     if (k src) <> (k dst) then
         -1, 0 (* saber o length do target uncle aqui é irrelevante *)
@@ -113,9 +126,28 @@ let target_uncle_red src dst =
             ((pow2 (ks + 1)) - 2)
             (pow2 ks)
             1 ks src dst
+*)
+
+let target_uncle_red src dst =
+    if (k src) <> (k dst) then
+        0
+    else
+        let rec descent s d depth =
+            let ks = k s in
+            let diff = (pow2 ks) - 1 in
+            let s' = s - diff in
+            let d' = d - diff in
+            let ks' = k s' in
+            if ks' <> (k d') then
+                depth + (ks - ks')
+            else
+                descent s' d' (depth + (ks - ks'))
+        in
+        descent src dst 1
 
 let is_parent src dst =
     src.length >= dst && dst >= src.length - (pow2 ((((k src.length) - src.red) + 1))) + 2
+[@@inline]
 
 (* Essential Functions *)
 
@@ -181,14 +213,15 @@ let rec lookup_descent cell len =
     *)
     if cell.length = len then
         cell
+    (*
     else if cell.length = 1 then
         failwith "Unable to find cell"
+    *)
     else if cell.jump.length >= len then
         lookup_descent cell.jump len
     else
         lookup_descent cell.next len
 
-(* TODO: rever lookup_leaf *)
 let rec lookup_leaf cell len d sigma =
     (*
     print_string "lookup_leaf ";
@@ -199,9 +232,15 @@ let rec lookup_leaf cell len d sigma =
     | Leaf (u,i) ->
         if cell.rhd = d then
             lookup_descent u len
+        (*
         else if is_parent cell.next len then 
             lookup_descent cell.next len
         else if is_parent cell.jump.next len then
+            lookup_descent cell.jump.next len
+        *)
+        else if cell.next.red = d then 
+            lookup_descent cell.next len
+        else if cell.jump.next.red = d then
             lookup_descent cell.jump.next len
         else
             lookup_leaf i len d sigma
@@ -225,24 +264,6 @@ let rec lookup_uncle cell len d sigma =
     let find_branch c =
         let delta = d - c.rhd in
         let height = (k c.length) - c.red in
-        (*
-        let do_jump =
-            if delta <= 0 then
-                false
-            else if delta > height then
-                true
-            else if (height mod sigma) = (delta mod sigma) then
-                true
-            else if height + cell.rhd <= d then
-                true
-            else 
-                false
-        in
-        if do_jump then
-            lookup_uncle cell.jump len d sigma
-        else
-            lookup_uncle cell.next len d sigma
-        *)
         if (delta >= 0) && (delta > height || (height - delta) mod sigma = 0) then
             lookup_uncle cell.jump len d sigma
         else
@@ -269,9 +290,7 @@ let rec lookup_cell list len sigma =
         (* Caso 1: Descent *)
         lookup_descent list len
     else
-        let tur = target_uncle_red list.length len in
-        let d = snd tur in
-        
+        let d = target_uncle_red list.length len in
         match list.more with 
         | Leaf _ -> 
             if list.rhd > d then
@@ -284,11 +303,25 @@ let rec lookup_cell list len sigma =
             (* Caso 3: Procurar Folhas *)
             lookup_uncle list len d sigma
 
+let rec lookup_wrap list len sigma last = 
+    if len >= last.length then
+        lookup_descent list len
+    else
+        let d = target_uncle_red list.length len in
+        match list.more with 
+        | Leaf _ -> 
+            if list.rhd > d then
+                lookup_cell list.next len sigma
+            else
+                lookup_uncle list len d sigma
+        | _ ->
+            lookup_uncle list len d sigma
+
 let index l i = lookup_cell l.head (l.head.length - i + 1) l.sigma
 
 let lookup_t list len = match list with
     | Nil -> failwith "TODO"    (* TODO *)  
-    | Wrap w -> (lookup_cell w.head len w.sigma).length
+    | Wrap w -> (lookup_wrap w.head len w.sigma w.last).length
 
 (* Benchmark Functions *)
 
@@ -305,9 +338,15 @@ let rec lookup_leaf_bench cell len d sigma count =
     | Leaf (u,i) ->
         if cell.rhd = d then
             lookup_descent_bench u len (count+1)
+(*
         else if is_parent cell.next len then 
             lookup_descent_bench cell.next len (count+1)
         else if is_parent cell.jump.next len then
+            lookup_descent_bench cell.jump.next len (count+1)
+*)
+        else if cell.next.red = d then 
+            lookup_descent_bench cell.next len (count+1)
+        else if cell.jump.next.red = d then
             lookup_descent_bench cell.jump.next len (count+1)
         else
             lookup_leaf_bench i len d sigma (count+1)
@@ -337,9 +376,7 @@ let rec lookup_cell_bench list len sigma count =
         (* Caso 1: Descent *)
         lookup_descent_bench list len count
     else
-        let tur = target_uncle_red list.length len in
-        let d = snd tur in
-        
+        let d = target_uncle_red list.length len in
         match list.more with 
         | Leaf _ -> 
             if list.rhd > d then
@@ -457,7 +494,3 @@ let rec lookup_all_test list n max =
     else
         lookup_all_test (cons n list) (n+1) max
 
-(*
-let () =
-    lookup_all_test (cons 0 Nil) 1 100000
-*)

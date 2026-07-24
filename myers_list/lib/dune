@@ -1,2 +1,3 @@
 (library
- (name myers_list))
+ (name myers_list)
+ (libraries ocaml_intrinsics_kernel))

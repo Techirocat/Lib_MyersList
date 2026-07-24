@@ -1,4 +1,9 @@
 (executable
- (public_name myers_list)
+ (public_name myers_list_bench)
  (name advanced_bench)
  (libraries myers_list core_bench))
+
+(executable
+ (public_name myers_list)
+ (name main)
+ (libraries myers_list))
