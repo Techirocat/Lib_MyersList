@@ -1,73 +1,182 @@
-(** Titulo*)
 
-type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
-
-
-type 'a wrap = { head : 'a cell; last : 'a cell }
-
+type 'a cell = 
+  | Normal of {
+        next : 'a cell; 
+        jump : 'a cell; 
+        length : int; 
+        value : 'a; 
+        height : int
+    }
+  | Skip of {
+        next : 'a cell; 
+        jump : 'a cell; 
+        length : int; 
+        value : 'a; 
+        height : int; 
+        shortcut : 'a cell
+    }
 
 type 'a t = 
-	| Empty
-	| Wrap of {head : 'a cell; last : 'a cell}
+  | Empty 
+  | Wrap of {
+       head : 'a cell; 
+       last : 'a cell
+    }
 
+let empty = Empty 
 
-(** Algum titulo*)
+let init' v : 'a cell = 
+  let rec c : 'a cell = Skip {next = c; jump = c; length = 0; value = v; height = 0; shortcut = c} in c 
 
-
-let empty = Empty
-
-
-let init' (v : 'a) : 'a cell =
-	let rec c : 'a cell = { next = c; jump = c; length = 0; value = v } in c
+let get_height (c : 'a cell) = 
+  match c with 
+  | Normal c -> c.height
+  | Skip c -> c.height
 [@@inline]
 
 
-let init (v : 'a) : 'a t =
-	let c : 'a cell = init' v in 
-	Wrap { head = c; last = c }
+let get_length (c: 'a cell) = 
+  match c with 
+  | Normal c -> c.length
+  | Skip c -> c.length
+[@@inline]
+
+let get_next (c : 'a cell) = 
+  match c with 
+  | Normal c -> c.next 
+  | Skip c -> c.next 
 [@@inline]
 
 
-let return (v : 'a) : 'a t = init v
+let get_jump (c : 'a cell) = 
+  match c with 
+  | Normal c -> c.jump 
+  | Skip c -> c.jump 
+[@@inline]
 
+let get_shortcut (c : 'a cell) = 
+  match c with 
+  | Normal _ -> invalid_arg "get_shortcut: cell has no shortcut (not a Skip cell)"
+  | Skip c -> c.shortcut
+[@@inline]
+
+let get_last wrap = 
+  match wrap with
+  | Empty -> failwith "Error"
+  | Wrap {head = _; last = l} -> l
+[@@inline]
+
+let get_value (c : 'a cell) = 
+  match c with 
+  | Normal c -> c.value
+  | Skip c -> c.value
+[@@inline]
+
+let init v : 'a t = 
+  let c : 'a cell = init' v in 
+  Wrap {head = c; last = c} 
+[@@inline]
+
+
+let return v : 'a t = init v 
 
 let is_empty wrap = 
-	match wrap with
-	| Empty -> true
-	| Wrap _ -> false
+  match wrap with 
+  | Empty -> true 
+  | Wrap _ -> false
 
 
-let rec lookup (c : 'a cell) (l : int) : 'a cell =
-	if c.length = l then 
-		c
-	else 
-		let j = c.jump in
-		let c' = if j.length < l then c.next else j in
-		lookup c' l
+let is_not_leaf h l =
+    let xj = (get_length h) - (get_length (get_jump h)) in
+    let rj = (get_length (get_next l)) - (get_length (get_jump (get_next l))) in
+    (not (get_length h = 0)) && (xj = 1 || xj = rj)
 
+let is_leaf hn l = not (is_not_leaf hn l)
+
+let cons v wrap = 
+  match wrap with 
+  | Empty -> init v
+  | Wrap {head = h; last = l} ->
+      let sigma = 2 in
+      let h_len = get_length h in 
+      let h_hj = h_len - (get_length (get_jump h)) in 
+      
+      let condition = 
+        h_hj = 1 || h_hj = (get_length (get_next l)) - (get_length (get_jump (get_next l))) 
+      in 
+      
+      let c_jump = if condition then get_next l else l in 
+      
+      let c_height = if is_leaf h l then 0 else (get_height h) + 1 in 
+      
+      let c = 
+        if c_height mod sigma = 0 then 
+          let new_uncle = 
+            if c_height <> 0 then get_jump l else get_jump (get_jump c_jump)
+          in
+          Skip {next = h; jump = c_jump; length = h_len + 1; value = v; height = c_height; shortcut = new_uncle}
+        else 
+          Normal {next = h; jump = c_jump; length = h_len + 1; value = v; height = c_height}
+      in 
+      
+      let new_last = if condition then get_jump l else c 
+    in Wrap {head = c; last = new_last}
+
+
+let rec lookup c l =   
+  match c with
+  | Normal { next; jump; length=len; height=hei; _ } ->
+      if len = l then 
+        c
+      else if hei > 0 && len - (1 lsl hei) >= l then 
+        lookup jump l
+      else 
+        lookup next l
+
+  | Skip { next; jump; shortcut; length=len; height=hei; _ } ->
+      if len = l then 
+        c
+      else if hei > 0 then
+        let jump_dist = 1 lsl hei in
+        if len - (jump_dist lsl 1) + 2 >= l then 
+          lookup shortcut l
+        else if len - jump_dist >= l then 
+          lookup jump l
+        else 
+          lookup next l
+      else
+        if get_length shortcut >= l then lookup shortcut l
+        else if get_length jump >= l then lookup jump l
+        else lookup next l
+
+let get_exn wrap i = 
+  match wrap with 
+  | Empty -> invalid_arg "Empty List"
+  | Wrap {head = h; last = _} -> 
+    let h_len = get_length h in 
+    if i < 0 || i > h_len then 
+      invalid_arg "Invalid Index"
+    else 
+      let target = h_len - i in 
+      get_value (lookup h target)
+
+let get wrap i = try Some (get_exn wrap i) with Invalid_argument _ -> None
 
 let index (wrap : 'a t) (i : int) : 'a cell = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->  
-		if i < 0 || i > h.length then 
-			invalid_arg "Invalid Index"
-		else 
-      lookup h (h.length - i)
+	| Wrap {head = h; last = _} -> 
+    let lenh = get_length h in 
+    if i < 0 || i > lenh then 
+      invalid_arg "Invalid Index"
+    else 
+      lookup h (lenh - i)
+
 [@@inline]
 
 
-let get_exn wrap i= 
-	match wrap with 
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> 
-		if i < 0 || i > h.length then 
-			invalid_arg "Invalid Index"
-		else 
-	  		(lookup h (h.length - i)).value
+let add_list wrap l = List.fold_left (fun acc v -> cons v acc) wrap (List.rev l)  
 
-
-let get wrap i = try Some (get_exn wrap i) with Invalid_argument _ -> None
 
 
 let rec rec_idx (n : int) : int=
@@ -96,98 +205,86 @@ let last_idx (n : int) : int =
 let get_last_index (n : int) (i : int) : int = i + last_idx (n - i)
 
 
-let cons v wrap =
-	match wrap with 
-	| Empty -> init v
-	| Wrap {head = h; last = l} -> 
-		let h_len = h.length in
-		let h_hj = h_len - h.jump.length in
-		if h_hj == 1 || h_hj == l.next.length - l.next.jump.length then 
-	  		let c = { next = h; jump = l.next; length = h_len + 1; value = v } 
-	  		in Wrap { head = c; last = l.jump }
-		else 
-	  		let c = { next = h; jump = l; length = h_len + 1; value = v } 
-	  		in Wrap { head = c; last = c }
-[@@inline]
-
-
-let add_list wrap l = List.fold_left (fun acc v -> cons v acc) wrap (List.rev l)  
-
-
 let set wrap i v =
 	match wrap with
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} ->
-		if i < 0 || i > h.length then 
+    let lenh = get_length h in 
+		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
 		else
 			let rec path acc c =
-			if c.length = (h.length - i) then begin
-		  		if c.length = 0 then
+      let lenc = get_length c in 
+			if lenc = (lenh - i) then begin
+		  		if lenc = 0 then
 					List.fold_left (fun w_acc x -> cons x w_acc) empty (v :: acc)
 		  		else
-					let last_index = get_last_index (h.length + 1) (i + 1) in
+					let last_index = get_last_index (lenh + 1) (i + 1) in
 					let l = index wrap last_index in
-					let w = Wrap { head = c.next; last = l } in
+					let w = Wrap { head = (get_next c); last = l } in
 					List.fold_left (fun w_acc x -> cons x w_acc) w (v :: acc)
 			end
 			else 
-				path (c.value :: acc) c.next
+				path ((get_value c) :: acc) (get_next c)
 			in path [] h
+
 
 
 let hd wrap = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> h.value
+	| Wrap {head = h; last = _} -> get_value h
 
 
-let last wrap = 
+  let last wrap = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> get_exn wrap h.length
+	| Wrap {head = h; last = _} -> get_exn wrap (get_length h)
 
 
 let tl wrap = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} ->
-		if h.length = 0 then 
+    let lenh = get_length h in 
+		if lenh = 0 then 
 			empty
 		else
-	  		let last_index = get_last_index (h.length + 1) (h.length - 1) in 
+	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		Wrap {head = h.next; last = l}
+	  		Wrap {head = (get_next h); last = l}
 
 
 let length wrap = 
 	match wrap with 
 	| Empty -> 0 
-	| Wrap {head = h; last = _} -> h.length + 1
+	| Wrap {head = h; last = _} -> (get_length h) + 1
 
 
 let front wrap = 
 	match wrap with 
 	| Empty -> None
 	| Wrap {head = h; last = _} ->
-		if h.length = 0 then 
-			Some (h.value, empty)
+    let lenh = get_length h in 
+		if lenh = 0 then 
+			Some ((get_value h), empty)
 		else
-	  		let last_index = get_last_index (h.length + 1) (h.length - 1) in 
+	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		Some (h.value, Wrap {head = h.next; last = l})
+	  		Some ((get_value h), Wrap {head = (get_next h); last = l})
 
 
 let front_exn wrap = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} ->
-		if h.length = 0 then 
-			(h.value, empty)
+    let lenh = get_length h in 
+		if lenh = 0 then 
+			(get_value h, empty)
 		else
-	  		let last_index = get_last_index (h.length + 1) (h.length - 1) in 
+	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		(h.value, Wrap {head = h.next; last = l})
+	  		(get_value h, Wrap {head = get_next h; last = l})
 
 
 
@@ -195,43 +292,49 @@ let get_and_remove_exn wrap i =
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} ->
-		if i < 0 || i > h.length then 
+    let lenh = get_length h in 
+		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
 		else 
-	  		let rec path acc c =
-			if c.length = (h.length - i) then begin
-		  		if c.length = 0 then
-					(c.value, List.fold_left (fun w_acc x -> cons x w_acc) empty acc)
+	  	let rec path acc c =
+        let lenc = get_length c in 
+			  if lenc = lenh - i then begin
+		  		if lenc = 0 then
+					(get_value c, List.fold_left (fun w_acc x -> cons x w_acc) empty acc)
 		  		else 
-					let last_index = get_last_index (h.length + 1) (i + 1) in 
+					let last_index = get_last_index (lenh + 1) (i + 1) in 
 					let l = index wrap last_index in 
-					let w = Wrap {head = c.next; last = l} in 
-					(c.value, List.fold_left (fun w_acc x -> cons x w_acc) w acc)
+					let w = Wrap {head = get_next c; last = l} in 
+					(get_value c, List.fold_left (fun w_acc x -> cons x w_acc) w acc)
 			end 
 			else 
-				path (c.value :: acc) c.next
+				path ((get_value c) :: acc) (get_next c)
 	  		in path [] h 
+
+
 
 
 let remove wrap i = 
 	match wrap with 
 	| Empty -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} ->
-		if i < 0 || i > h.length then 
+    let lenh = get_length h in 
+		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
 		else 
-	  		let rec path acc c =
-			if c.length = (h.length - i) then begin
-		 		if c.length = 0 then
+	  	let rec path acc c =
+        let lenc = get_length c in 
+			  if lenc = lenh - i then begin
+		 		if lenc = 0 then
 					List.fold_left (fun w_acc x -> cons x w_acc) empty acc
 		  		else 
-					let last_index = get_last_index (h.length + 1) (i + 1) in 
+					let last_index = get_last_index (lenh + 1) (i + 1) in 
 					let l = index wrap last_index in 
-					let w = Wrap {head = c.next; last = l} in 
+					let w = Wrap {head = get_next c; last = l} in 
 					List.fold_left (fun w_acc x -> cons x w_acc) w acc
 			end 
 			else 
-				path (c.value :: acc) c.next
+				path ((get_value c) :: acc) (get_next c)
 	  		in path [] h 
 	
 
@@ -240,10 +343,10 @@ let fold ~f ~x wrap =
 	| Empty -> x 
 	| Wrap {head = h; last = _} -> 
 		let rec aux acc c = 
-			if c.length = 0 then 
-				f acc c.value 
+			if get_length c = 0 then 
+				f acc (get_value c)
 			else 
-				aux (f acc c.value) c.next 
+				aux (f acc (get_value c)) (get_next c)
 	  	in aux x h 
 
 
@@ -263,15 +366,18 @@ let rev wrap = fold ~f:(fun acc x -> cons x acc) ~x:empty wrap
 let map ~f wrap = fold_rev ~x:empty wrap ~f:(fun acc x -> cons (f x) acc)
 
 
+
 let to_list_mapi_rev wrap f = 
 	match wrap with 
 	| Empty -> [] 
 	| Wrap {head = h; last = _} -> 
+    let lenh = get_length h in 
 		let rec aux acc c = 
-	  		if c.length = 0 then 
-				((f (h.length - c.length) c.value) :: acc)
+        let lenc = get_length c in 
+	  		if lenc  = 0 then 
+				  ((f (lenh - lenc ) (get_value c)) :: acc)
 	  		else
-				aux ((f (h.length - c.length) c.value) :: acc) c.next
+				  aux ((f (lenh - lenc ) (get_value c)) :: acc) (get_next c)
 		in aux [] h 
 
 
@@ -293,12 +399,14 @@ let iteri ~f wrap =
 	match wrap with 
   	| Empty -> () 
   	| Wrap {head = h; last = _} -> 
+    let lenh = get_length h in 
 		let rec aux c = 
-	  		if c.length = 0 then 
-				(f (h.length - c.length) c.value)
+        let lenc = get_length c in
+	  		if lenc = 0 then 
+				(f (lenh - lenc) (get_value c))
 	  		else begin
-				(f (h.length - c.length) c.value); 
-				aux c.next 
+				(f (lenh - lenc) (get_value c)); 
+				aux (get_next c)
 			end
 		in aux h 
 
@@ -327,6 +435,7 @@ let filter_map ~f wrap =
 let flat_map f wrap = 
     fold_rev ~f:(fun acc v -> append (f v) acc) ~x:empty wrap
 
+
 let flatten wrap = fold_rev ~f:(fun acc l -> append l acc) ~x:empty wrap
 
 
@@ -338,7 +447,7 @@ let take n wrap =
 	match wrap with 
 	| Empty -> Empty
 	| Wrap {head = h; last = _} -> 
-		if n > h.length then 
+		if n > (get_length h) then 
 			wrap
 		else if n < 0 then 
 			Empty
@@ -346,10 +455,10 @@ let take n wrap =
 	  		let rec aux acc c i =
 				if i >= n then
 		 			of_list (List.rev acc)
-				else if c.length = 0 then 
-		  			of_list (List.rev (c.value :: acc)) 
+				else if get_length c = 0 then 
+		  			of_list (List.rev ((get_value c) :: acc)) 
 				else 
-					aux (c.value :: acc) c.next (i + 1)  
+					aux ((get_value c) :: acc) (get_next c) (i + 1)  
 			in aux [] h 0
 
 
@@ -358,11 +467,11 @@ let take_while ~f wrap =
 	| Empty -> Empty
 	| Wrap {head = h; last = _} -> 
 		let rec aux acc c = 
-			if (f c.value) then 
-		  		if c.length = 0 then 
-					of_list (List.rev (c.value :: acc))
+			if (f (get_value c)) then 
+		  		if get_length c = 0 then 
+					of_list (List.rev ((get_value c) :: acc))
 		  		else 
-					aux (c.value :: acc) c.next
+					aux ((get_value c) :: acc) (get_next c)
 			else 
 				of_list (List.rev acc) 
 		in aux [] h
@@ -372,15 +481,16 @@ let drop n wrap =
 	match wrap with 
   	| Empty -> Empty
   	| Wrap {head = h; last = _} -> 
-		if n < 0 || n > h.length + 1 then 
+    let lenh = get_length h in 
+		if n < 0 || n > lenh + 1 then 
 			invalid_arg "Invalid Argument"
-		else if n = h.length + 1 then 
+		else if n = lenh + 1 then 
 			empty
 		else if n = 0 then 
 			wrap
 		else 
 	  		let new_head = index wrap n in 
-			let last_index = get_last_index (h.length + 1) n in 
+			let last_index = get_last_index (lenh + 1) n in 
 			let new_last = index wrap last_index in 
 			Wrap {head = new_head; last = new_last}
 
@@ -390,11 +500,11 @@ let drop_while ~f wrap =
 	| Empty -> Empty
 	| Wrap {head = h; last = _} ->
 		let rec count n c =
-			if f c.value then
-				if c.length = 0 then 
+			if f (get_value c) then
+				if (get_length c) = 0 then 
 					n + 1
 				else 
-					count (n + 1) c.next
+					count (n + 1) (get_next c)
 	  		else 
 				n
 		in drop (count 0 h) wrap
@@ -409,17 +519,17 @@ let equal ~eq w1 w2 =
 	| Empty, Wrap _ -> false
 	| Wrap _, Empty -> false
 	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} ->
-		if h1.length <> h2.length then 
+		if get_length h1 <> get_length h2 then 
 			false 
 		else 
 	  		let rec aux n c1 c2 = 
-				if not (eq c1.value c2.value) then 
+				if not (eq (get_value c1) (get_value c2)) then 
 					false 
 				else if n = 0 then 
 					true
 				else 
-					aux (n - 1) c1.next c2.next
-	  		in aux h1.length h1 h2 
+					aux (n - 1) (get_next c1) (get_next c2)
+	  		in aux (get_length h1) h1 h2 
 
 
 let make n v = 
@@ -489,13 +599,13 @@ let to_array wrap =
 	match wrap with 
 	| Empty -> [||]
 	| Wrap {head = h; last = _} -> 
-		let a = Array.make (h.length + 1) h.value in 
+		let a = Array.make ((get_length h) + 1) (get_value h) in 
 		let rec fill i c = 
-	  		if c.length = 0 then 
-				Array.unsafe_set a i c.value
+	  		if (get_length c) = 0 then 
+				Array.unsafe_set a i (get_value c)
 	  		else begin
-				Array.unsafe_set a i c.value; 
-				fill (i+1) c.next
+				Array.unsafe_set a i (get_value c); 
+				fill (i+1) (get_next c)
 	  		end
 		in fill 0 h; a
  
@@ -536,10 +646,10 @@ let to_gen wrap =
 	  		if !flag then 
 				None 
 	  		else begin 
-				let va = !curr.value in 
-				if !curr.length = 0 then 
+				let va = get_value !curr in 
+				if get_length !curr = 0 then 
 		  			flag := true
-				else curr := !curr.next;
+				else curr := get_next !curr;
 					Some va 
 	 		end
 		in next
@@ -553,15 +663,15 @@ let compare ~cmp w1 w2 =
   	| Wrap _, Empty -> 1 
   	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} -> 
 		let rec aux c1 c2 =
-	  	let res = cmp c1.value c2.value in 
+	  	let res = cmp (get_value c1) (get_value c2) in 
 	  		if res <> 0 then 
 				res 
 	  		else
-				match c1.length = 0, c2.length = 0 with 
+				match get_length c1 = 0, get_length c2 = 0 with 
 				| true, true -> 0
 				| false, true -> 1 
 				| true, false -> -1 
-				| false, false -> aux c1.next c2.next
+				| false, false -> aux (get_next c1) (get_next c2)
 		in aux h1 h2
 
 
@@ -589,4 +699,5 @@ let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
             pp_sep fmt ();
         pp_item fmt x) l;
     ()
+
 
