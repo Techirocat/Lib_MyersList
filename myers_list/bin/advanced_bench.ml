@@ -3,28 +3,12 @@ open Advanced_myers
 open Core.Staged
 open Core_bench
 
+(*
 let get = function
     | Some v -> v
     | None -> raise (Invalid_argument "option is None")
 
 let () = 
-    (*
-    Command_unix.run (Bench.make_command [
-        Bench.Test.create_indexed
-            ~name:"Create"
-            ~args:[1;10;100;1000;10000;100000]
-            (fun len -> Staged.stage (fun () -> ignore (create_test len Nil)));
-        Bench.Test.create_indexed
-            ~name:"Lookup_Half"
-            ~args:[10;100;1000;10000;100000]
-            (fun len -> 
-                let l = create_test len Nil in
-                Staged.stage (fun () -> 
-                    lookup_t l (len/2)
-                )
-            );
-    ])
-    *)
     let conf = Bench.Run_config.create ~quota:(Bench.Quota.Num_calls 1) () in
     let test =
     [ 
@@ -70,7 +54,7 @@ let () =
                 stage (fun () -> Printf.printf "cons skip %d\n%!" len; cons 1 list));
         Bench.Test.create_indexed
             ~name:"Cons (Leaf)"
-            ~args:[8;995;9996;99995]
+            ~args:[8;9;995;9996;99995]
             (fun len ->
                 let list = create_test (len-1) Nil in
                 stage (fun () -> Printf.printf "cons leaf %d\n%!" len; cons 1 list));
@@ -78,5 +62,5 @@ let () =
     let mes = Bench.measure ~run_config:conf test in
     let ana = List.fold_left (fun l m -> (Result.get_ok (Bench.analyze ~analysis_configs:Bench.Analysis_config.default m)):: l) [] (List.rev mes) in
     Bench.display ana
-    (* TODO: benchmark individual functions in the lookup process *)
 
+*)

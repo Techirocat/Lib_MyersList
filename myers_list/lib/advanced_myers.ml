@@ -103,31 +103,6 @@ let rec find_unc c red kn =
             else
                 find_unc c.next red kn
 
-(*
-let target_uncle_red src dst =
-    if (k src) <> (k dst) then
-        -1, 0 (* saber o length do target uncle aqui é irrelevante *)
-    else
-        let ks = k src in
-        let rec descent max min red kn s d =
-            let f = kn - red in
-            let lmin = max - (pow2 f) + 1 in
-            let lmax = max - 1 in
-            let rmin = min in
-            let rmax = max - (pow2 f) in
-            if s >= lmin && s <= lmax && d >= lmin && d <= lmax then
-                descent lmax lmin (red + 1) kn s d
-            else if s >= rmin && s <= rmax && d >= rmin && d <= rmax then
-                descent rmax rmin (red + 1) kn s d
-            else
-                (rmax, red + 1) (* length do target uncle é o rmax *)
-        in
-        descent
-            ((pow2 (ks + 1)) - 2)
-            (pow2 ks)
-            1 ks src dst
-*)
-
 let target_uncle_red src dst =
     if (k src) <> (k dst) then
         0
@@ -155,9 +130,9 @@ let cons (v: 'a) (list: 'a t) =
     match list with 
     | Nil -> 
         let c = init v in
-        Wrap { head = c; last = c; sigma = 2 }
+        Wrap { head = c; last = c; sigma = 2 } (*maybe remove hardcoded default sigma*)
     | Wrap {head = h; last = l; sigma = s} -> 
-        (* 1. definir next e jump, como na improved *)
+        (* 1. define next and jump *)
         let length: int = h.length + 1 in
         let leaf: bool = is_leaf h l in
         let next: 'a cell = h in
@@ -170,27 +145,27 @@ let cons (v: 'a) (list: 'a t) =
 	  		    l 
         in 
 
-        (* 2. calcular red e rhd *)
+        (* 2. calculate red and rhd *)
         let red: int = calc_red next leaf in 
         let temp: 'a cell =  { next = h; jump = jump; more = Normal; length = length; value = v; rhd = -1; red = red } in 
         let temp_rhd = calc_rhd temp leaf in
         let rhd: int = if temp_rhd < 0 then -1 else temp_rhd in
 
-        (* 3. determinar se é normal, skip ou leaf *)
+        (* 3. determine if this node is normal, skip or leaf *)
         let skip: bool = (((k length) - red) mod s = 0) in
 
         let more = 
             if leaf then 
-                (* 4. definir inc *)
+                (* 4. find inc *)
                 let inc = find_inc h (rhd + 1) in
-                (* 5. definir uncle *)
+                (* 5. find uncle *)
                 let unc = find_unc h rhd (k length) in
                 Leaf (
                     (match unc with Some i -> i | None -> next), 
                     (match inc with Some i -> i | None -> next)
                 )
             else if skip then
-                (* 5. definir uncle *)
+                (* 5. find uncle *)
                 let unc = find_unc l.jump rhd (k length) in
                 Skip (match unc with Some i -> i | None -> next)
             else 
@@ -318,7 +293,7 @@ let rec lookup_wrap list len sigma last =
         | _ ->
             lookup_uncle list len d sigma
 
-let index l i = lookup_cell l.head (l.head.length - i + 1) l.sigma
+let index l i = lookup_wrap l.head (l.head.length - i) l.sigma l.last
 
 let lookup_t list len = match list with
     | Nil -> failwith "TODO"    (* TODO *)  
@@ -395,11 +370,462 @@ let lookup_t_bench list len = match list with
     | Nil -> failwith "TODO"    (* TODO *)  
     | Wrap w -> snd @@ (lookup_cell_bench w.head len w.sigma 0)
 
+(* Helper Library Functions *)
+
+let wrap c s =
+    let rec find_last c =
+        if c.red = k c.length || c.length = 1 then
+            c
+        else
+            find_last c.jump
+        in
+    Wrap {head = c; last = find_last c; sigma = s}
+
 (* Library Functions *)
 
 let empty = Nil
 
-(* TODO: adicionar ficheiro .mli e fazer funções *)
+let return x = 
+    let c = init x in
+    Wrap { head = c; last = c; sigma = 2 }
+
+let return_sigma x s = 
+    let c = init x in
+    Wrap { head = c; last = c; sigma = s }
+
+let is_empty = function
+    | Nil -> true
+    | Wrap _ -> false
+
+let hd = function
+    | Nil -> invalid_arg "Empty List"
+    | Wrap c -> c.head.value
+
+let tl = function
+    | Nil -> invalid_arg "Empty List"
+| Wrap {head = c; sigma = s; _} ->
+        if c.length = 1 then
+            Nil
+        else
+            wrap c.next s
+
+let last = function
+    | Nil -> invalid_arg "Empty List"
+    | Wrap c -> 
+        let rec go c =
+            if c.length = 1 then
+                c.value
+            else
+                go c.jump
+        in
+        go c.head
+
+let front = function
+    | Nil -> None
+    | Wrap {head = c; sigma = s; _} -> 
+        Some (c.value, wrap c.next s)
+
+let front_exn = function
+    | Nil -> invalid_arg "Empty List"
+    | Wrap {head = c; sigma = s; _} -> 
+        (c.value, wrap c.next s)
+
+let length = function
+    | Nil -> 0
+    | Wrap c -> c.head.length
+
+let get l i = match l with
+    | Nil -> None
+    | Wrap c -> 
+        if i > c.head.length || i < 0 then
+            None
+        else
+            Some (index c i).value
+
+let get_exn l i = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Wrap c -> 
+        if i > c.head.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            (index c i).value
+
+let cons' xs x = cons x xs
+
+let fold ~f ~x wrap = 
+	match wrap with 
+	| Nil -> x 
+	| Wrap {head = h; _} -> 
+		let rec aux acc c = 
+			if c.length = 1 then 
+				f acc c.value 
+			else 
+				aux (f acc c.value) c.next 
+	  	in aux x h 
+
+let fold_rev ~f ~x wrap = 
+	match wrap with 
+	| Nil -> x 
+	| Wrap {head = h; _} -> 
+		let rec aux fnc acc c = 
+			if c.length = 1 then 
+				fnc acc c.value 
+			else 
+                let acc' = aux fnc acc c.next in
+				fnc acc' c.value 
+	  	in aux f x h 
+
+let map ~f l =
+    let func acc x = cons (f x) acc in
+    fold_rev ~f:func ~x:Nil l
+
+let mapi ~f l = match l with
+    | Nil -> Nil
+    | Wrap {head = c; _} -> 
+        let rec aux i f acc c = match c with
+            | {length = 1} -> return (f i c.value)
+            | _ -> 
+                let acc' = aux (i+1) f acc c.next in
+                cons (f i c.value) acc'
+        in
+        aux 0 f Nil c
+
+let set l i v = match l with
+    | Nil -> invalid_arg "Empty List"
+    | Wrap {head = c; sigma = s; _} ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec aux len v acc curr =
+                if curr.length = len then
+                    if len = 1 then
+                        return v
+                    else
+                        cons v (wrap curr.next s)
+                else
+                    let acc' = aux len v acc curr.next in
+                    cons curr.value acc'
+            in
+            aux (c.length - i) v Nil c
+
+let remove l i = match l with
+    | Nil -> invalid_arg "Empty List"
+| Wrap {head = c; sigma = s; _} ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec aux len acc curr =
+                if curr.length = len then
+                    if len = 1 then
+                        Nil
+                    else
+                        wrap curr.next s
+                else
+                    let acc' = aux len acc curr.next in
+                    cons curr.value acc'
+            in
+            aux (c.length - i) Nil c
+
+let get_and_remove_exn l i = match l with
+    | Nil -> invalid_arg "Empty List"
+| Wrap {head = c; sigma = s; _} ->
+        if i > c.length || i < 0 then
+            invalid_arg "Invalid Index"
+        else
+            let rec aux len acc curr =
+                if curr.length = len then
+                    if len = 1 then
+                        (curr.value, Nil)
+                    else
+                        (curr.value, wrap curr.next s)
+                else
+                    let (v, acc') = aux len acc curr.next in
+                    (v, cons curr.value acc')
+            in
+            aux (c.length - i) Nil c
+
+let append l1 l2 = fold_rev ~f:cons' ~x:l2 l1
+
+let filter ~f l = 
+    let func acc x = if (f x) then (cons x acc) else acc in
+    fold_rev ~f:func ~x:Nil l
+
+let filter_map ~f l = 
+    let func acc x = match (f x) with
+        | Some y -> (cons y acc)
+        | None -> acc in
+    fold_rev ~f:func ~x:Nil l
+
+let flat_map f l =
+    let func acc x = append (f x) acc in
+    fold_rev ~f:func ~x:Nil l
+
+let flatten lists = fold_rev ~f:(fun acc l -> append l acc) ~x:Nil lists
+
+let app funs l =
+    let func acc f = fold_rev ~f:(fun acc x -> cons (f x) acc) ~x:acc l in
+    fold_rev ~f:func ~x:Nil funs
+
+let rec take_ n l acc = match l with
+    | Nil -> Nil
+    | Wrap {head = c; sigma = s ; _} -> 
+        if n = 0 then
+            acc
+        else if c.length = 1 then
+            cons c.value acc
+        else
+            let acc' = take_ (n - 1) (wrap c.next s) acc in
+            cons c.value acc'
+
+let rec take n l = 
+    if n < 0 then
+        Nil
+    else
+        take_ n l Nil
+
+let rec take_while_ f l acc = match l with
+    | Nil -> Nil
+    | Wrap {head = c; sigma = s; _} -> 
+        if not (f c.value) then
+            acc
+        else if c.length = 1 then
+            cons c.value acc
+        else
+            let acc' = take_while_ f (wrap c.next s) acc in
+            cons c.value acc'
+
+let rec take_while ~f l = take_while_ f l Nil
+
+let rec drop n l = match l with
+    | Nil ->
+        if n > 1 || n < 0 then
+            invalid_arg "Invalid Argument"
+        else 
+            Nil
+    | Wrap {head = c; sigma = s; _} ->    
+        if n > (c.length + 1) || n < 0 then
+            invalid_arg "Invalid Argument"
+        else
+            if n = 0 then 
+                l
+            else if c.length = 1 then
+                Nil
+            else
+                drop (n-1) (wrap c.next s)
+
+let rec drop_while ~f l = match l with
+    | Nil -> Nil
+    | Wrap {head = c; sigma = s; _} ->    
+        if not (f c.value) then 
+            l
+        else if c.length = 1 then
+            Nil
+        else
+            drop_while ~f (wrap c.next s)
+
+let rec take_drop_ n l acc = match l with
+    | Nil -> (Nil, l)
+    | Wrap {head = c; sigma = s; _} -> 
+        if n = 0 then
+            (acc, l)
+        else if c.length = 1 then
+            (cons c.value acc, Nil)
+        else
+            let (acc', xs)  = take_drop_ (n - 1) (wrap c.next s) acc in
+            (cons c.value acc', xs)
+
+let rec take_drop n l = 
+    if n < 0 then
+        (Nil, l)
+    else
+        take_drop_ n l Nil
+
+let rec iter ~f l = match l with
+    | Nil -> ()
+    | Wrap {head = c; sigma = s; _} -> match c with
+        | {length = 1} -> f c.value
+        | _ -> f c.value; iter ~f (wrap c.next s)
+
+let rec iteri_ i f l = match l with
+    | Nil -> ()
+    | Wrap {head = c; sigma = s; _} -> match c with
+        | {length = 1} -> f i c.value
+        | _ -> f i c.value; iteri_ (i+1) f (wrap c.next s)
+
+let iteri ~f l = iteri_ 0 f l
+
+let rev_map ~f l =
+    let func acc x = cons (f x) acc in
+    fold ~f:func ~x:Nil l
+
+let rev l = fold ~f:cons' ~x:Nil l
+
+let equal ~eq l1 l2 = match (l1, l2) with
+    | (Nil, Nil) -> true
+    | (Nil, Wrap _)
+    | (Wrap _, Nil) -> false
+    | (Wrap {head = c1; _}, Wrap {head = c2; _}) ->
+        if c1.length <> c2.length then
+            false
+        else
+            let rec equal' eq c1 c2 =
+                if not (eq c1.value c2.value) then
+                    false
+                else if c1.length = 1 then
+                    true
+                else
+                    equal' eq c1.next c2.next in
+            equal' eq c1 c2
+
+let compare ~cmp l1 l2 = match (l1, l2) with
+    | (Nil, Nil) -> 0
+    | (Nil, Wrap _) -> 1
+    | (Wrap _, Nil) -> -1
+    | (Wrap {head = c1; _}, Wrap {head = c2; _}) ->
+        if c1.length < c2.length then
+            -1    
+        else if c1.length > c2.length then
+            1
+        else
+            let rec compare' comp c1 c2 =
+                let res = cmp c1.value c2.value in
+                if res <> 0 || c1.length = 1 then
+                    res
+                else
+                    compare' cmp c1.next c2.next in
+            compare' cmp c1 c2
+
+let make n x =
+    let rec aux n acc x =
+        if n <= 0 then
+            acc
+        else
+            aux (n - 1) (cons x acc) x in
+    aux n Nil x
+
+let repeat n l =
+    if n < 0 then
+        invalid_arg "Invalid Argument"
+    else
+        let rec aux n l acc =
+            if n <= 0 then
+                acc
+            else
+                aux (n - 1) l (append l acc) in
+        aux n l Nil
+
+let range i j =
+    let rec aux i j acc =
+        if i = j then
+            cons i acc
+        else if i < j then
+            aux i (j - 1) (cons j acc)
+        else
+            aux i (j + 1) (cons j acc) in
+    aux i j Nil
+
+let range_excl_ i j =
+    if i = j then
+        Nil
+    else if i < j then
+        range i (j - 1)
+    else
+        range i (j + 1)
+
+
+let add_list l1 l2 = List.fold_left cons' l1 (List.rev l2)
+
+let of_list l = List.fold_left cons' Nil (List.rev l)
+
+let to_list l = fold_rev ~f:(fun acc x -> x :: acc) ~x:[] l
+
+let of_list_map ~f l = List.fold_left (fun acc x -> cons (f x) acc) Nil (List.rev l)
+
+let of_array a = Array.fold_right (fun x acc -> cons x acc) a Nil
+
+let add_array l a = Array.fold_right (fun x acc -> cons x acc) a l
+
+let to_array l = match l with
+    | Nil ->  [||]
+    | Wrap {head = c; sigma = s; _} -> 
+        let a = Array.make (c.length) c.value in
+        if c.length <> 1 then
+            iteri ~f:(fun i x -> Array.set a (i+1) x) (wrap c.next s);
+        a
+
+type 'a iter = ('a -> unit) -> unit
+type 'a gen = unit -> 'a option
+
+let add_iter l it = 
+    let res = ref Nil in
+    it (fun x -> res := cons x !res);
+    fold ~f:cons' ~x:l !res
+
+let of_iter it = 
+    let l = ref Nil in
+    it (fun x -> l := cons x !l);
+    rev !l
+
+(* TODO: rever função *)
+let to_iter l yield = iter ~f:yield l 
+
+(* TODO: rever função *)
+let add_gen l g =
+    let rec gen_iter f g =
+        match g () with
+        | None -> ()
+        | Some x ->
+            f x;
+            gen_iter f g in
+    let res = ref Nil in
+    gen_iter (fun x -> res := cons x !res) g;
+    fold ~f:(fun acc x -> cons x acc) ~x:l !res
+
+let of_gen g = add_gen Nil g
+
+(* TODO: rever função *)
+let to_gen l = match l with
+    | Nil -> (fun () -> None)
+    | Wrap {head = c; _} -> 
+        let curr = ref c in 
+        let flag = ref false in 
+        let go () = 
+            if !flag then 
+                None 
+            else 
+                begin 
+                let va = !curr.value in 
+                if !curr.length = 1 then 
+                    flag := true
+                else 
+                    curr := !curr.next;
+                Some va 
+                end in 
+        go
+
+module Infix = struct
+    let ( @+ ) = cons
+    let ( >>= ) l f = flat_map f l
+    let ( >|= ) l f = map ~f l
+    let ( <*> ) = app
+    let ( -- ) = range
+    let ( --^ ) = range_excl_
+end
+
+include Infix
+
+type 'a printer = Format.formatter -> 'a -> unit
+
+(* TODO: rever função *)
+let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
+    let first = ref true in
+    iter ~f:(fun x ->
+        if !first then
+            first := false
+        else
+            pp_sep fmt ();
+        pp_item fmt x) l;
+    ()
 
 (* Debug Functions *) (* substituir por uma suite de testes *)
 
