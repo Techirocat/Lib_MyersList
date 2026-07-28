@@ -3,9 +3,6 @@
 type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
 
 
-type 'a wrap = { head : 'a cell; last : 'a cell }
-
-
 type 'a t = 
 	| Empty
 	| Wrap of {head : 'a cell; last : 'a cell}
@@ -471,9 +468,6 @@ type 'a gen = unit -> 'a option
 
 
 let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap (List.rev l)
-
-
-let to_list_map wrap f = fold_rev ~f:(fun acc v -> (f v) :: acc) ~x:[] wrap
 
 
 let of_list_map ~f l = add_list_map empty l f

@@ -2,266 +2,247 @@
 
 (*Improved Applicative Random-Access Stack with Sigma region*)
 
-type 'a t
-(** List containing elements of type 'a*)
+
+type +'a t
+(** List containing elements of type ['a] *)
 
 val empty : 'a t
-(** Empty list*)
+(** Empty list. *)
 
-val is_empty : 'a t -> bool
-(** Check whether the list is empty*)
+val is_empty : _ t -> bool
+(** [is_empty l] is true if and only if [l] has no elements. It is equivalent to [length l = 0]*)
 
 val cons : 'a -> 'a t -> 'a t
-(** Add an element at the front of the list*)
+(** Add an element at the front of the list.
+    [cons x xs] is [x @+ xs]*)
 
 val return : 'a -> 'a t
-(** Singleton *)
+(** [return x] returns the one-element list [[x]]*)
 
 val map : f:('a -> 'b) -> 'a t -> 'b t
-(** Map on elements*)
-
-
-val mapi : f:(int -> 'a -> 'b) -> 'a t -> 'b t
-(** Map with index*)
-
-val hd : 'a t -> 'a
-(**
-    First element of the list, or 
-    Raise Invalid_argument
-    if the list is empty
+(** Map on elements. 
+    [map f [a1; ...; an]] applies function [f] to [a1, ..., an], 
+    and builds the list [f a1; ...; f an] with the results returned by [f]
 *)
 
-val last : 'a t -> 'a
-(** last l returns the last element of l. O(log(n))
-    Raise Invalid_argument 
-    if the list is empty
+val mapi : f:(int -> 'a -> 'b) -> 'a t -> 'b t
+(** Map with index. 
+    Same as {!map}, but the function is applied to the index of the element as first argument 
+    (counting from 0), and the element itself as second argument.
+*)
+
+val hd : 'a t -> 'a
+(** Returns first element of the given list
+    @raise Invalid_argument if the list is empty. 
 *)
 
 val tl : 'a t -> 'a t
-(** Remove the first element from the list, or
-    Raises Invalid_argument
-    if the list is empty
+(** Return the given list without its first element.
+    @raise Invalid_argument if the list is empty. 
+*)
+
+val last : 'a t -> 'a
+(** Last element of the list.
+    @raise Invalid_argument if the list is empty. 
 *)
 
 val front : 'a t -> ('a * 'a t) option
-(** Remove and return the firs element of the list*)
+(**Returns [Some (head, tail)] where [head] is the first element and [tail] is the rest of the list, or [None] if the list is empty.*)
 
 val front_exn : 'a t -> 'a * 'a t
-(** Unsafe version of front 
-    Raises Invalid_argument
-    if the list is empty
+(** Unsafe version of {!front}. Returns [(head, tail)].
+    @raise Invalid_argument if the list is empty. 
 *)
 
-val length : 'a t -> int 
-(** Number of elements*)
+val length : 'a t -> int
+(** Return the length (number of elements) of the given list *)
 
 val get : 'a t -> int -> 'a option
-(** get l i accesses the i-th element of the list. O(log(n))*)
+(** [get l i] accesses the [i]-th element of the list. [O(log(n))]. The first element (head of the list) is at position 0*)
 
-val get_exn : 'a t -> int -> 'a 
-(** Unsafe version of get
-    Raises Invalid_argument
-    if the list has less than i+1 elements
-*)
+val get_exn : 'a t -> int -> 'a
+(** Unsafe version of {!get}.
+    @raise Invalid_argument if the list has less than [i+1] elements. *)
 
-val set : 'a t -> int -> 'a -> 'a t 
-(** set l i v sets the i-th element of the list to v. O(i)
-    Raise Invalid_argument
-    if the list has les than i+1 elements or is empty
-*)
+val set : 'a t -> int -> 'a -> 'a t
+(** [set l i v] sets the [i]-th element of the list to [v]. [O(log(n))].
+    @raise Invalid_argument if the list has less than [i+1] elements. *)
 
 val remove : 'a t -> int -> 'a t
-(** remove l i returns a copy of l without its i-th element. O(i)
-    Raise Invalid_argument 
-    if the list has less than i+1 elements or is empty
-*)
+(** [remove l i] removes the [i]-th element of [l].
+    @raise Invalid_argument if the list has less than [i+1] elements. *)
 
 val get_and_remove_exn : 'a t -> int -> 'a * 'a t
-(** get_and_remove_exn l i accesses and removes the i-th element of l
-    Raise Invalid_argument
-    if the list has less than i+1 elements
+(** [get_and_remove_exn l i] accesses and removes the [i]-th element of [l].
+    @raise Invalid_argument if the list has less than [i+1] elements. 
 *)
 
 val append : 'a t -> 'a t -> 'a t
-(** append l1 l2 returns a new list containing the elements of l1
-    followed by the elements of l2.
+(**[append l0 l1] appends [l1] to [l0].
 *)
 
 val filter : f:('a -> bool) -> 'a t -> 'a t
-(** filter f l returns all the elements of the list l that satisfy the predicate f*)
+(**[filter f l] returns all the elements of the list [l] that satisfy the predicate [f].
+    The order of the elements in the input list is preserved 
+*)
 
 val filter_map : f:('a -> 'b option) -> 'a t -> 'b t
-(** filter_map f l applies f to every element of l and keeps only
-    the elements for which f returns Some _, unwrapping the option. *)
-
+(**[filter_map f l] applies [f] to every element of [l], filters out the None elements and 
+    returns the list of the arguments of the Some elements
+*)
 
 val flat_map : ('a -> 'b t) -> 'a t -> 'b t
-(** flat_map f l applies f to every element of l, producing a list
-    for each one, and concatenates all the resulting lists in order. *)
-
+(**[flat_map f l] maps [f] over [l] and flattens the resulting lists into a single list.
+*)
 
 val flatten : 'a t t -> 'a t
-(** flatten l concatenates a list of lists into a single list,
-    preserving the order of both the outer and the inner lists. *)
+(**[flatten l] concatenates a list of lists into a single list.
+*)
 
 val app : ('a -> 'b) t -> 'a t -> 'b t
-(* app funs l applies every function to every value (Cartesian product). Ex: [f; g] applied to [1; 2] results in [f 1; f 2; g 1; g 2]. *)
+(** [app fs xs] applies a list of functions [fs] to a list of elements [xs], returning a list of all resulting combinations.
+*)
 
 val take : int -> 'a t -> 'a t
-(** take n l returns the prefix of l of length n, or l if n > length*)
+(**[take n l] returns the prefix of [l] of length n, or a copy of [l] if [n > length l]. This is the empty list if [n] is negative
+*)
 
 val take_while : f:('a -> bool) -> 'a t -> 'a t
-(** take_while p l is the longest (possibly empty) prefix of l containing only elements that satisfy p.*)
+(**[take_while p l] is the longest (possibily empty) prefix of [l] containing only elements that satisfy p.
+*)
 
 val drop : int -> 'a t -> 'a t
-(**drop n l returns the suffix of l after skipping n elements*)
+(**[drop n l] returns the suffix of [l] after [n] elements. 
+    @raise Invalid_argument if [n] is negative or greater than [length l + 1].
+*)
 
 val drop_while : f:('a -> bool) -> 'a t -> 'a t
-(** drop_while p l drops elements from the front of l as long as p evaluates to true, returning the remaining list. *)
+(**[drop_while p l] is the longest (possibly empty) suffix of [l] starting at the first element that does not satisfy [p]*)
 
 val take_drop : int -> 'a t -> 'a t * 'a t
-(* take_drop n l splits l into a, b such that length a = n if length l >= n, and such that append a b = l. *)
+(** [take_drop n l] splits [l] into [a, b] such that [length a = n]
+    if [length l >= n], and such that [append a b = l]. 
+*)
 
 val iter : f:('a -> unit) -> 'a t -> unit
-(** iterate on the list's elements*)
+(** Iterate on the list's elements.
+    [iter f [a1; ...; an]] applies function [f] in turn to [[a1; ...; an]]. it is equivalent to [f a1; f a2; ...; f an]*)
 
 val iteri : f:(int -> 'a -> unit) -> 'a t -> unit
-(** Same as iter, but the function is applied to the index of the element as first argument, 
-and the element itself as second argument*)
+(**Same as {!val-iter}, but the function is applied to the index of the element as first argument (counting from 0), and the element itself as second argument*)
 
 val fold : f:('b -> 'a -> 'b) -> x:'b -> 'a t -> 'b
-(** fold on the list's elements*)
+(** Fold on the list's elements. *)
 
 val fold_rev : f:('b -> 'a -> 'b) -> x:'b -> 'a t -> 'b
-(* A implementação que eu fiz não é tail recursive, pode ser  preciso alterar*)
+(** Fold on the list's elements, in reverse order (starting from the tail). *)
 
 val rev_map : f:('a -> 'b) -> 'a t -> 'b t
-(** rev_map f l is the same as map f (rev l)*)
+(** [rev_map f l] is the same as [map f (rev l)], but is more efficient.*)
 
 val rev : 'a t -> 'a t
-(** Reverse the list*)
+(** Reverse the list. *)
 
 val equal : eq:('a -> 'a -> bool) -> 'a t -> 'a t -> bool
-(** equal eq l1 l2 returns true if l1 and l2 have the same length
-    and eq returns true on every pair of elements at the same
-    position, false otherwise. *)
-
+(**[equal eq [a1; ...; an] [b1; ...; bm]] holds when the two input lists have the same length, and for each pair of elements [ai] [bi] at the same position we have [eq ai bi]*)
 
 val compare : cmp:('a -> 'a -> int) -> 'a t -> 'a t -> int
-(** compare cmp l1 l2 performs a lexicographic comparison of l1 and
-    l2 using cmp on their elements. If one list is a strict prefix
-    of the other, the shorter list is considered smaller. *)
+(** Lexicographic comparison. 
+    [compare cmp [a1; ...; an] [b1; ...; bn]] performs a lexicographic comparison of the two input lists, using the same ['a -> 'a -> int] interface as [compare].*)
 
 
-(** UTILS*)
+(** {2 Utils} *)
 
 val make : int -> 'a -> 'a t
-(** make n v returns a list of length n where every element is v. *)
+(** [make n v] creates a list of length [n] with all elements initialized to [v].*)
 
 val repeat : int -> 'a t -> 'a t
-(** repeat n l is append l (append l ... l) n times.*) 
+(** [repeat n l] is [append l (append l ... l)] [n] times. 
+
+    @raise Invalid_argument if [n] is negative 
+*)
 
 val range : int -> int -> int t
-(** range i j is i; i+1; ... ; j or j; j-1; ...; i.*)
+(** [range i j] is [i; i+1; ... ; j] or [j; j-1; ...; i]. *)
 
-
-(** CONVERSIONS*)
+(** {2 Conversions} *)
 
 type 'a iter = ('a -> unit) -> unit
+(** An iterator type, representing a collection by its fold behavior.*)
 
 type 'a gen = unit -> 'a option
-
-
-(** LIST*)
+(** A generator function that returns [Some value] or [None] when exhausted.*)
 
 val add_list : 'a t -> 'a list -> 'a t
-(** add_list l elts returns a new list containing the elements of
-    elts (in the same order) followed by the elements of l. *)
+(** Append a standard list to the given RAL.*)
 
 val of_list : 'a list -> 'a t
-(** Converts a list to a Improved Myers List*)
+(** Convert a list to a RAL.*)
 
-val to_list : 'a t -> 'a list 
-(** to_list l return the list of all the elements of l*)
+val to_list : 'a t -> 'a list
+(** Convert a RAL to a standard list.
+*)
 
 val of_list_map : f:('a -> 'b) -> 'a list -> 'b t
-(** Combination of of_list and map*)
-
-
-(** ARRAY*)
-
-val add_array : 'a t -> 'a array -> 'a t
-(** add_array l arr returns a new list containing the elements of
-    arr (in the same order) followed by the elements of l. *)
+(** Combination of {!of_list} and {!map}. *)
 
 val of_array : 'a array -> 'a t
-(** Converts an array into a Improved Myers List*)
+(** Convert an array to a list.*)
+
+val add_array : 'a t -> 'a array -> 'a t
+(** Append an array to the given list.*)
 
 val to_array : 'a t -> 'a array
-(** to_array l returns an array containing all the elements of l*)
-
-
-(** ITERATOR*)
+(** Convert a RAL to an array. More efficient than on usual lists. *)
 
 val add_iter : 'a t -> 'a iter -> 'a t
-(** add_iter l it returns a new list containing the elements produced
-    by it (in the same order) followed by the elements of l. *)
+(**Consume an iterator and append its elements to the given list.*)
 
 val of_iter : 'a iter -> 'a t
-(** Converts a iterator into a Improved Myers List*)
+(**Build a list from an iterator.*)
 
 val to_iter : 'a t -> 'a iter
-(** to_iter l returns a iterator of the list l*)
-
-
-(** GENERATOR*)
+(** Create an iterator from a list.*)
 
 val add_gen : 'a t -> 'a gen -> 'a t
-(** add_gen l g returns a new list containing the elements produced
-    by g (in the same order) followed by the elements of l. *)
-
+(** Consume a generator and append its elements to the given list.*)
 
 val of_gen : 'a gen -> 'a t
-(** of_gen g consumes the generator g entirely and returns a list
-    containing the elements it produced, in the order they were
-    produced. *)
+(** Build a list from a generator. *)
 
 val to_gen : 'a t -> 'a gen
-(** to_gen l returns a generator that yields the elements of l, in
-    order, one at a time, and None once every element has been
-    produced. *)
+(** Create a generator from a list. *)
 
 
-(** INFIX*)
+(** {2 Infix} *)
 
 module Infix : sig
+  val ( @+ ) : 'a -> 'a t -> 'a t
+  (** Cons (alias to {!cons}). *)
 
-    val (@+) : 'a -> 'a t -> 'a t
-    (** Cons (alias to cons).*)
+  val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
+  (** Alias to {!flat_map}. *)
 
-    val (>>=) : 'a t -> ('a -> 'b t) -> 'b t
-    (**Alias to flat_map.*)
+  val ( >|= ) : 'a t -> ('a -> 'b) -> 'b t
+  (** Alias to {!map}. *)
 
-    val (>|=) : 'a t -> ('a -> 'b) -> 'b t
-    (**Alias to map*)
+  val ( <*> ) : ('a -> 'b) t -> 'a t -> 'b t
+  (** Alias to {!app}. *)
 
-    val (<*>) : ('a -> 'b) t -> 'a t -> 'b t
-    (** Alias to app*)
+  val ( -- ) : int -> int -> int t
+  (** Alias to {!range}. *)
 
-    val (--) : int -> int -> int t
-    (**Alias to range*)
-
-    val (--^) : int -> int -> int t
-    (**a --^ b is the integer range from a to b, where b is excluded.*)
-
-end 
+  val ( --^ ) : int -> int -> int t
+  (** [a --^ b] is the integer range from [a] to [b], where [b] is excluded.
+      @since 0.17 *)
+end
 
 include module type of Infix
 
 
-(** IO *)
+(** {2 IO} *)
 
 type 'a printer = Format.formatter -> 'a -> unit
 
 val pp : ?pp_sep:unit printer -> 'a printer -> 'a t printer
-
+(** Print a list.*)
