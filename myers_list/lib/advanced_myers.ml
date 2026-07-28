@@ -9,9 +9,6 @@ type 'a wrap = { head : 'a cell; last : 'a cell; sigma : int }
 
 type 'a t = Nil | Wrap of 'a wrap
 
-(* NOTA: LEMBRAR QUE O LENGTH COMEÇA NO 1 *)
-(* NOTA: RHD's indefinidos são marcados com números negativos *)
-
 let init (v: 'a) : 'a cell =
     let rec c : 'a cell = { next = c; jump = c; more = Leaf (c, c) ; length = 1; value = v; rhd = -1; red = 0 } in
     c
@@ -32,11 +29,6 @@ let floor_log2 i = if i <= 0 then failwith "floor_log2: invalid input" else Sys.
 let k len = floor_log2 len
 [@@inline]
 
-(*
-let k len = int_of_float @@ floor @@ Float.log2 @@ float len
-*)
-
-(* TODO: rever caso length = 2 *)
 let is_not_leaf h l =
     let xj = h.length - h.jump.length in
     let rj = l.next.length - l.next.jump.length in
@@ -67,7 +59,6 @@ let calc_rhd (c : 'a cell) (leaf : bool) : int =
       c.red - c.next.red
 [@@inline]
    
-(** Forma ineficiente de procurar ponteiro inc, através do RHD desejado *)
 let rec find_inc c rhd = match c.more with 
     | Leaf _ ->
         if c.rhd = rhd then
@@ -77,7 +68,6 @@ let rec find_inc c rhd = match c.more with
         else
             find_inc c.next rhd
     | _ ->
-        (* TODO: rever este processo *)
         let delta = rhd - c.rhd in
         let height = (k c.length) - c.red in
         if delta <> height then
@@ -85,7 +75,6 @@ let rec find_inc c rhd = match c.more with
         else
             find_inc c.jump rhd
 
-(** Forma ineficiente de procurar ponteiro uncle, através do RED desejado e K do nó novo *)
 let rec find_unc c red kn =
     if c.red = red then
         Some c
@@ -130,7 +119,7 @@ let cons (v: 'a) (list: 'a t) =
     match list with 
     | Nil -> 
         let c = init v in
-        Wrap { head = c; last = c; sigma = 2 } (*maybe remove hardcoded default sigma*)
+        Wrap { head = c; last = c; sigma = 2 } (* maybe remove hardcoded default sigma *)
     | Wrap {head = h; last = l; sigma = s} -> 
         (* 1. define next and jump *)
         let length: int = h.length + 1 in
@@ -181,11 +170,6 @@ let cons (v: 'a) (list: 'a t) =
         Wrap { head = c; last = last; sigma = s }
 
 let rec lookup_descent cell len =
-    (*
-    print_string "lookup_descent ";
-    print_int cell.length;
-    print_newline ();
-    *)
     if cell.length = len then
         cell
     (*
@@ -199,21 +183,10 @@ let rec lookup_descent cell len =
 [@@inline]
 
 let rec lookup_leaf cell len d sigma =
-    (*
-    print_string "lookup_leaf ";
-    print_int cell.length;
-    print_newline ();
-    *)
     match cell.more with
     | Leaf (u,i) ->
         if cell.rhd = d then
             lookup_descent u len
-        (*
-        else if is_parent cell.next len then 
-            lookup_descent cell.next len
-        else if is_parent cell.jump.next len then
-            lookup_descent cell.jump.next len
-        *)
         else if cell.next.red = d then 
             lookup_descent cell.next len
         else if cell.jump.next.red = d then
@@ -223,20 +196,6 @@ let rec lookup_leaf cell len d sigma =
     | _ -> failwith "Impossible state: lookup_leaf"
 
 let rec lookup_uncle cell len d sigma =
-    (*
-    print_string "lookup_uncle ";
-    print_int cell.length;
-    print_string "    red-uncle: ";
-    print_int d;
-    print_string "    rhd: ";
-    print_int cell.rhd;
-    print_string "    red: ";
-    print_int cell.red;
-    print_string "    height: ";
-    print_int ((k cell.length) - cell.red);
-    print_newline ();
-    *)
-    (* TODO: rever find_branch *)
     let find_branch c =
         let delta = d - c.rhd in
         let height = (k c.length) - c.red in
@@ -256,27 +215,22 @@ let rec lookup_uncle cell len d sigma =
     | Leaf _ -> lookup_leaf cell len d sigma
     
 let rec lookup_cell list len sigma = 
-    (*
-    print_string "lookup ";
-    print_int list.length;
-    print_newline ();
-    *)
-    (* Verificar os 4 casos possiveis e escolher a estratégia mais apropriada *)
+    (* Verify 4 cases *)
     if is_parent list len then
-        (* Caso 1: Descent *)
+        (* Case 1: Descent *)
         lookup_descent list len
     else
         let d = target_uncle_red list.length len in
         match list.more with 
         | Leaf _ -> 
             if list.rhd > d then
-                (* Caso 4: Next *)
+                (* Case 4: Next *)
                 lookup_cell list.next len sigma
             else
                 lookup_uncle list len d sigma
         | _ ->
-            (* Caso 2: Procurar Skip *)
-            (* Caso 3: Procurar Folhas *)
+            (* Case 2: Search Skip *)
+            (* Case 3: Search Leafs *)
             lookup_uncle list len d sigma
 
 let rec lookup_wrap list len sigma last = 
@@ -298,77 +252,6 @@ let index l i = lookup_wrap l.head (l.head.length - i) l.sigma l.last
 let lookup_t list len = match list with
     | Nil -> failwith "TODO"    (* TODO *)  
     | Wrap w -> (lookup_wrap w.head len w.sigma w.last).length
-
-(* Benchmark Functions *)
-
-let rec lookup_descent_bench cell len count =
-    if cell.length = len then
-        cell, count
-    else if cell.jump.length >= len then
-        lookup_descent_bench cell.jump len (count+1)
-    else
-        lookup_descent_bench cell.next len (count+1)
-[@@inline]
-
-let rec lookup_leaf_bench cell len d sigma count =
-    match cell.more with
-    | Leaf (u,i) ->
-        if cell.rhd = d then
-            lookup_descent_bench u len (count+1)
-(*
-        else if is_parent cell.next len then 
-            lookup_descent_bench cell.next len (count+1)
-        else if is_parent cell.jump.next len then
-            lookup_descent_bench cell.jump.next len (count+1)
-*)
-        else if cell.next.red = d then 
-            lookup_descent_bench cell.next len (count+1)
-        else if cell.jump.next.red = d then
-            lookup_descent_bench cell.jump.next len (count+1)
-        else
-            lookup_leaf_bench i len d sigma (count+1)
-    | _ -> failwith "Impossible state: lookup_leaf"
-
-let rec lookup_uncle_bench cell len d sigma count =
-    let find_branch c =
-        let delta = d - c.rhd in
-        let height = (k c.length) - c.red in
-        if (delta >= 0) && (delta > height || (height - delta) mod sigma == 0) then
-            lookup_uncle_bench cell.jump len d sigma (count+1)
-        else
-            lookup_uncle_bench cell.next len d sigma (count+1)
-        in
-    
-    match cell.more with
-    | Normal -> find_branch cell
-    | Skip u -> 
-        if cell.rhd = d then
-            lookup_descent_bench u len (count+1)
-        else
-            find_branch cell
-    | Leaf _ -> lookup_leaf_bench cell len d sigma count
-    
-let rec lookup_cell_bench list len sigma count = 
-    if is_parent list len then
-        (* Caso 1: Descent *)
-        lookup_descent_bench list len count
-    else
-        let d = target_uncle_red list.length len in
-        match list.more with 
-        | Leaf _ -> 
-            if list.rhd > d then
-                (* Caso 4: Next *)
-                lookup_cell_bench list.next len sigma (count+1)
-            else
-                lookup_uncle_bench list len d sigma count
-        | _ ->
-            (* Caso 2: Procurar Skip *)
-            (* Caso 3: Procurar Folhas *)
-            lookup_uncle_bench list len d sigma count
-
-let lookup_t_bench list len = match list with
-    | Nil -> failwith "TODO"    (* TODO *)  
-    | Wrap w -> snd @@ (lookup_cell_bench w.head len w.sigma 0)
 
 (* Helper Library Functions *)
 
@@ -766,10 +649,8 @@ let of_iter it =
     it (fun x -> l := cons x !l);
     rev !l
 
-(* TODO: rever função *)
 let to_iter l yield = iter ~f:yield l 
 
-(* TODO: rever função *)
 let add_gen l g =
     let rec gen_iter f g =
         match g () with
@@ -783,7 +664,6 @@ let add_gen l g =
 
 let of_gen g = add_gen Nil g
 
-(* TODO: rever função *)
 let to_gen l = match l with
     | Nil -> (fun () -> None)
     | Wrap {head = c; _} -> 
@@ -816,7 +696,6 @@ include Infix
 
 type 'a printer = Format.formatter -> 'a -> unit
 
-(* TODO: rever função *)
 let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
     let first = ref true in
     iter ~f:(fun x ->
@@ -826,103 +705,3 @@ let pp ?(pp_sep = fun fmt () -> Format.fprintf fmt ",@ ") pp_item fmt l =
             pp_sep fmt ();
         pp_item fmt x) l;
     ()
-
-(* Debug Functions *) (* substituir por uma suite de testes *)
-
-let _print_info_cell c =
-    print_string "k = ";
-    print_int (k c.length);
-    print_string "  ";
-
-    print_string "len = ";
-    print_int c.length;
-    print_string "  ";
-
-    print_string "rhd = ";
-    print_int c.rhd;
-    print_string "  ";
-
-    print_string "red = ";
-    print_int c.red;
-    print_string "  ";
-
-    print_string "next = ";
-    print_int c.next.length;
-    print_string "  ";
-
-    print_string "jump = ";
-    print_int c.jump.length;
-    print_string "  ";
-    
-    match c.more with
-        | Normal -> 
-            print_endline "NORMAL  "
-        | Skip (u) ->
-            print_string "SKIP  ";
-            print_string "uncle = ";
-            print_int u.length;
-            print_string "  ";
-            print_newline ();
-        | Leaf (u, i) ->
-            print_string "LEAF  ";
-            print_string "uncle = ";
-            print_int u.length;
-            print_string "  ";
-            print_string "inc = ";
-            print_int i.length;
-            print_string "  ";
-            print_newline ();
-    ()
-
-let rec _print_info_list c =
-    _print_info_cell c;
-    if c.length = 1 then
-        ()
-    else
-        _print_info_list c.next
-
-let _print_info_wrap w = 
-    print_endline "head:";
-    _print_info_list w.head;
-    print_newline ();
-    print_endline "last:";
-    _print_info_cell w.last;
-    ()
-
-let rec print_test n acc =
-    if n = 0 then
-        match acc with
-            | Wrap w -> _print_info_wrap w
-            | Nil -> prerr_endline "nil"
-    else
-        let c = cons n acc in
-        print_test (n - 1) c
-
-let rec create_test n acc =
-    if n = 0 then
-        acc 
-    else
-        let c = cons n acc in
-        create_test (n - 1) c
-
-let rec lookup_seq_test len list acc worst wlen = match list with
-    | Nil -> failwith "a"    
-    | Wrap w -> 
-        let res = lookup_cell_bench w.head len w.sigma 0 in
-        let nworst = max (snd res) worst in
-        let nacc = acc + (snd res) in
-        let nwlen = if nworst > worst then len else wlen in
-        if len = 1 then
-            nacc, nworst, nwlen
-        else
-            lookup_seq_test (len-1) list nacc nworst nwlen
-            
-let rec lookup_all_test list n max = 
-    (* let list = create_test n Nil in *)
-    let total, worst, wlen = lookup_seq_test n list 0 0 0 in
-    Printf.printf "len: %d    worst: %d (%d)    avg:%f \n%!" n worst wlen ((float @@ total) /. (float n));
-    if n = max then 
-        ()
-    else
-        lookup_all_test (cons n list) (n+1) max
-
