@@ -1,4 +1,3 @@
 (executable
- (public_name myers_list)
- (name main)
- (libraries myers_list))
+ (public_name main)
+ (name main))

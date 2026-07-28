@@ -20,7 +20,8 @@
  (synopsis "A short synopsis")
  (description "A longer description")
  (depends ocaml
-    (alcotest :with-test))
+    (alcotest :with-test)
+    core_bench)
  (tags
   ("add topics" "to describe" your project)))
 

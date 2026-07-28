@@ -9,3 +9,7 @@
 (test
  (name test_iarass)
  (libraries myers_list alcotest))
+
+(test
+ (name test_advanced_myers)
+ (libraries myers_list alcotest))
