@@ -1,7 +1,12 @@
 (* .mli Iarass *)
 
-(*Improved Applicative Random-Access Stack with Sigma region*)
+(*
+    Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
+    Copyright (c) 2013, Simon Cruanes
+    All rights reserved.
+*)
 
+(*Improved Applicative Random-Access Stack with Sigma region*)
 
 type +'a t
 (** List containing elements of type ['a] *)

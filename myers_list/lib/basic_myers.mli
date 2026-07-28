@@ -1,6 +1,12 @@
 (** .mli Basic Myers List*)
 
-(** Colocar para aqui algum texto a dizer que isto é uma Myers List de Eugene Myers de 1983, alguma coisa...*)
+(*
+    Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
+    Copyright (c) 2013, Simon Cruanes
+    All rights reserved.
+*)
+
+(** TODO: Colocar para aqui algum texto a dizer que isto é uma Myers List de Eugene Myers de 1983, alguma coisa...*)
 
 type +'a t
 (** List containing elements of type ['a] *)
