@@ -8,11 +8,46 @@
 
 (*Improved Applicative Random-Access Stack with Sigma region*)
 
+(** 
+    [sigma] controls how often a "Skip" cell (a cell holding an extra 
+    [shortcut] pointer, used to speed up random access) is inserted 
+    while building the list, instead of a plain "Normal" cell: a Skip 
+    cell is created whenever a new cell's height is a multiple of 
+    [sigma] ([height mod sigma = 0]).
+
+    A smaller [sigma] creates more shortcuts, which speeds up random 
+    access ({!get}) at the cost of extra memory per cell. A larger [sigma]
+    does the opposite, trading access speed for a smaller memory.
+
+    Every list remembers the [sigma] it was built with (retrievable 
+    via {!get_sigma}), so it stays consistent across further insertions 
+    ({!cons}). Functions that build a new list from an existing one 
+    (e.g. {!map}, {!filter}, {!rev}, {!take}, {!drop}, ...) preserve 
+    the input's [sigma] automatically. Functions that build a list 
+    from scratch (e.g. {!make}, {!range}, {!of_list}, {!init}) accept 
+    an optional [?sigma] argument, which defaults to [2] if omitted.
+*)
+
 type +'a t
 (** List containing elements of type ['a] *)
 
 val empty : 'a t
 (** Empty list. *)
+
+val empty_with_sigma : int -> 'a t
+(** [empty_with_sigma sigma] is the empty list configured to use [sigma] 
+    when future elements are added with {!cons}. 
+    @raise Invalid_argument if [sigma <= 0]. *)
+
+val get_sigma : 'a t -> int 
+(** [get_sigma l] returns the sigma value [l] was built with. *)
+
+
+val init: ?sigma:int -> 'a -> 'a t
+(** [init ?sigma v] returns the one-element list [[v]], using [sigma] 
+    (default [2]) for any subsequent {!cons}. 
+    @raise Invalid_argument if [sigma <= 0]. *)
+
 
 val is_empty : _ t -> bool
 (** [is_empty l] is true if and only if [l] has no elements. It is equivalent to [length l = 0]*)
@@ -21,8 +56,10 @@ val cons : 'a -> 'a t -> 'a t
 (** Add an element at the front of the list.
     [cons x xs] is [x @+ xs]*)
 
-val return : 'a -> 'a t
-(** [return x] returns the one-element list [[x]]*)
+val return : ?sigma:int -> 'a -> 'a t
+(** [return ?sigma v] returns the one-element list [[v]], using [sigma] 
+    (default [2]) for any subsequent {!cons}. 
+    @raise Invalid_argument if [sigma <= 0]. *)
 
 val map : f:('a -> 'b) -> 'a t -> 'b t
 (** Map on elements. 
@@ -158,16 +195,16 @@ val compare : cmp:('a -> 'a -> int) -> 'a t -> 'a t -> int
 
 (** {2 Utils} *)
 
-val make : int -> 'a -> 'a t
+val make : ?sigma:int -> int -> 'a -> 'a t
 (** [make n v] creates a list of length [n] with all elements initialized to [v].*)
 
-val repeat : int -> 'a t -> 'a t
+val repeat : ?sigma:int -> int -> 'a t -> 'a t
 (** [repeat n l] is [append l (append l ... l)] [n] times. 
 
     @raise Invalid_argument if [n] is negative 
 *)
 
-val range : int -> int -> int t
+val range : ?sigma:int -> int -> int -> int t
 (** [range i j] is [i; i+1; ... ; j] or [j; j-1; ...; i]. *)
 
 (** {2 Conversions} *)
@@ -181,17 +218,17 @@ type 'a gen = unit -> 'a option
 val add_list : 'a t -> 'a list -> 'a t
 (** Append a standard list to the given RAL.*)
 
-val of_list : 'a list -> 'a t
+val of_list : ?sigma:int -> 'a list -> 'a t
 (** Convert a list to a RAL.*)
 
 val to_list : 'a t -> 'a list
 (** Convert a RAL to a standard list.
 *)
 
-val of_list_map : f:('a -> 'b) -> 'a list -> 'b t
+val of_list_map : ?sigma:int -> f:('a -> 'b) -> 'a list -> 'b t
 (** Combination of {!of_list} and {!map}. *)
 
-val of_array : 'a array -> 'a t
+val of_array : ?sigma:int -> 'a array -> 'a t
 (** Convert an array to a list.*)
 
 val add_array : 'a t -> 'a array -> 'a t
@@ -203,7 +240,7 @@ val to_array : 'a t -> 'a array
 val add_iter : 'a t -> 'a iter -> 'a t
 (**Consume an iterator and append its elements to the given list.*)
 
-val of_iter : 'a iter -> 'a t
+val of_iter : ?sigma:int -> 'a iter -> 'a t
 (**Build a list from an iterator.*)
 
 val to_iter : 'a t -> 'a iter
@@ -212,7 +249,7 @@ val to_iter : 'a t -> 'a iter
 val add_gen : 'a t -> 'a gen -> 'a t
 (** Consume a generator and append its elements to the given list.*)
 
-val of_gen : 'a gen -> 'a t
+val of_gen : ?sigma:int -> 'a gen -> 'a t
 (** Build a list from a generator. *)
 
 val to_gen : 'a t -> 'a gen
@@ -234,10 +271,10 @@ module Infix : sig
   val ( <*> ) : ('a -> 'b) t -> 'a t -> 'b t
   (** Alias to {!app}. *)
 
-  val ( -- ) : int -> int -> int t
+  val ( -- ) : ?sigma:int -> int -> int -> int t
   (** Alias to {!range}. *)
 
-  val ( --^ ) : int -> int -> int t
+  val ( --^ ) : ?sigma:int -> int -> int -> int t
   (** [a --^ b] is the integer range from [a] to [b], where [b] is excluded.
       @since 0.17 *)
 end

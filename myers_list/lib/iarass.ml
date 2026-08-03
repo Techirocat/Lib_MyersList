@@ -17,13 +17,20 @@ type 'a cell =
     }
 
 type 'a t = 
-  | Empty 
+  | Empty of int 
   | Wrap of {
        head : 'a cell; 
-       last : 'a cell
+       last : 'a cell;
+       sigma : int;
     }
 
-let empty = Empty 
+let empty = Empty 2
+
+let empty_with_sigma sigma = 
+  if sigma <= 0 then 
+    invalid_arg "Invalid Sigma" 
+  else 
+    Empty sigma
 
 let init' v : 'a cell = 
   let rec c : 'a cell = Skip {next = c; jump = c; length = 0; value = v; height = 0; shortcut = c} in c 
@@ -62,8 +69,14 @@ let get_shortcut (c : 'a cell) =
 
 let get_last wrap = 
   match wrap with
-  | Empty -> failwith "Error"
+  | Empty _ -> failwith "Error"
   | Wrap {head = _; last = l} -> l
+[@@inline]
+
+let get_sigma wrap = 
+  match wrap with 
+  | Empty s -> s 
+  | Wrap {sigma; _} -> sigma
 [@@inline]
 
 let get_value (c : 'a cell) = 
@@ -72,17 +85,20 @@ let get_value (c : 'a cell) =
   | Skip c -> c.value
 [@@inline]
 
-let init v : 'a t = 
-  let c : 'a cell = init' v in 
-  Wrap {head = c; last = c} 
+let init ?(sigma= 2) v : 'a t = 
+  if sigma <= 0 then 
+    invalid_arg "Invalid Sigma"
+  else
+    let c : 'a cell = init' v in 
+    Wrap {head = c; last = c; sigma = sigma} 
 [@@inline]
 
 
-let return v : 'a t = init v 
+let return ?sigma v : 'a t = init ?sigma v 
 
 let is_empty wrap = 
   match wrap with 
-  | Empty -> true 
+  | Empty _ -> true 
   | Wrap _ -> false
 
 
@@ -95,9 +111,8 @@ let is_leaf hn l = not (is_not_leaf hn l)
 
 let cons v wrap = 
   match wrap with 
-  | Empty -> init v
-  | Wrap {head = h; last = l} ->
-      let sigma = 2 in
+  | Empty s -> init ~sigma:s v
+  | Wrap {head = h; last = l; sigma = s} ->
       let h_len = get_length h in 
       let h_hj = h_len - (get_length (get_jump h)) in 
       
@@ -110,7 +125,7 @@ let cons v wrap =
       let c_height = if is_leaf h l then 0 else (get_height h) + 1 in 
       
       let c = 
-        if c_height mod sigma = 0 then 
+        if c_height mod s = 0 then 
           let new_uncle = 
             if c_height <> 0 then get_jump l else get_jump (get_jump c_jump)
           in
@@ -120,7 +135,7 @@ let cons v wrap =
       in 
       
       let new_last = if condition then get_jump l else c 
-    in Wrap {head = c; last = new_last}
+    in Wrap {head = c; last = new_last; sigma = s}
 
 
 let rec lookup c l =   
@@ -151,7 +166,7 @@ let rec lookup c l =
 
 let get_exn wrap i = 
   match wrap with 
-  | Empty -> invalid_arg "Empty List"
+  | Empty _ -> invalid_arg "Empty List"
   | Wrap {head = h; last = _} -> 
     let h_len = get_length h in 
     if i < 0 || i > h_len then 
@@ -164,7 +179,7 @@ let get wrap i = try Some (get_exn wrap i) with Invalid_argument _ -> None
 
 let index (wrap : 'a t) (i : int) : 'a cell = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
+	| Empty _ -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} -> 
     let lenh = get_length h in 
     if i < 0 || i > lenh then 
@@ -207,8 +222,8 @@ let get_last_index (n : int) (i : int) : int = i + last_idx (n - i)
 
 let set wrap i v =
 	match wrap with
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> invalid_arg "Empty List"
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
@@ -217,11 +232,11 @@ let set wrap i v =
       let lenc = get_length c in 
 			if lenc = (lenh - i) then begin
 		  		if lenc = 0 then
-					List.fold_left (fun w_acc x -> cons x w_acc) empty (v :: acc)
+					List.fold_left (fun w_acc x -> cons x w_acc) (empty_with_sigma s) (v :: acc)
 		  		else
 					let last_index = get_last_index (lenh + 1) (i + 1) in
 					let l = index wrap last_index in
-					let w = Wrap { head = (get_next c); last = l } in
+					let w = Wrap { head = (get_next c); last = l; sigma = s} in
 					List.fold_left (fun w_acc x -> cons x w_acc) w (v :: acc)
 			end
 			else 
@@ -232,66 +247,66 @@ let set wrap i v =
 
 let hd wrap = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
+	| Empty _ -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} -> get_value h
 
 
   let last wrap = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
+	| Empty _ -> invalid_arg "Empty List"
 	| Wrap {head = h; last = _} -> get_exn wrap (get_length h)
 
 
 let tl wrap = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> invalid_arg "Empty List"
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if lenh = 0 then 
-			empty
+			empty_with_sigma s
 		else
 	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		Wrap {head = (get_next h); last = l}
+	  		Wrap {head = (get_next h); last = l; sigma = s}
 
 
 let length wrap = 
 	match wrap with 
-	| Empty -> 0 
+	| Empty _ -> 0 
 	| Wrap {head = h; last = _} -> (get_length h) + 1
 
 
 let front wrap = 
 	match wrap with 
-	| Empty -> None
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> None
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if lenh = 0 then 
-			Some ((get_value h), empty)
+			Some ((get_value h), empty_with_sigma s)
 		else
 	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		Some ((get_value h), Wrap {head = (get_next h); last = l})
+	  		Some ((get_value h), Wrap {head = (get_next h); last = l; sigma = s})
 
 
 let front_exn wrap = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> invalid_arg "Empty List"
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if lenh = 0 then 
-			(get_value h, empty)
+			(get_value h, empty_with_sigma s)
 		else
 	  		let last_index = get_last_index (lenh + 1) (lenh - 1) in 
 	  		let l = index wrap last_index in
-	  		(get_value h, Wrap {head = get_next h; last = l})
+	  		(get_value h, Wrap {head = get_next h; last = l; sigma = s})
 
 
 
 let get_and_remove_exn wrap i = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> invalid_arg "Empty List"
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
@@ -300,11 +315,11 @@ let get_and_remove_exn wrap i =
         let lenc = get_length c in 
 			  if lenc = lenh - i then begin
 		  		if lenc = 0 then
-					(get_value c, List.fold_left (fun w_acc x -> cons x w_acc) empty acc)
+					(get_value c, List.fold_left (fun w_acc x -> cons x w_acc) (empty_with_sigma s) acc)
 		  		else 
 					let last_index = get_last_index (lenh + 1) (i + 1) in 
 					let l = index wrap last_index in 
-					let w = Wrap {head = get_next c; last = l} in 
+					let w = Wrap {head = get_next c; last = l; sigma = s} in 
 					(get_value c, List.fold_left (fun w_acc x -> cons x w_acc) w acc)
 			end 
 			else 
@@ -316,8 +331,8 @@ let get_and_remove_exn wrap i =
 
 let remove wrap i = 
 	match wrap with 
-	| Empty -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} ->
+	| Empty _ -> invalid_arg "Empty List"
+	| Wrap {head = h; last = _; sigma = s} ->
     let lenh = get_length h in 
 		if i < 0 || i > lenh then 
 			invalid_arg "Invalid Index"
@@ -326,11 +341,11 @@ let remove wrap i =
         let lenc = get_length c in 
 			  if lenc = lenh - i then begin
 		 		if lenc = 0 then
-					List.fold_left (fun w_acc x -> cons x w_acc) empty acc
+					List.fold_left (fun w_acc x -> cons x w_acc) (empty_with_sigma s) acc
 		  		else 
 					let last_index = get_last_index (lenh + 1) (i + 1) in 
 					let l = index wrap last_index in 
-					let w = Wrap {head = get_next c; last = l} in 
+					let w = Wrap {head = get_next c; last = l; sigma = s} in 
 					List.fold_left (fun w_acc x -> cons x w_acc) w acc
 			end 
 			else 
@@ -340,7 +355,7 @@ let remove wrap i =
 
 let fold ~f ~x wrap = 
 	match wrap with 
-	| Empty -> x 
+	| Empty _ -> x 
 	| Wrap {head = h; last = _} -> 
 		let rec aux acc c = 
 			if get_length c = 0 then 
@@ -360,16 +375,16 @@ let to_list wrap = fold_rev ~f:(fun acc x -> x :: acc) ~x:[] wrap
 
 
 
-let rev wrap = fold ~f:(fun acc x -> cons x acc) ~x:empty wrap
+let rev wrap = fold ~f:(fun acc x -> cons x acc) ~x:(empty_with_sigma (get_sigma wrap)) wrap
 
 
-let map ~f wrap = fold_rev ~x:empty wrap ~f:(fun acc x -> cons (f x) acc)
+let map ~f wrap = fold_rev ~x:(empty_with_sigma (get_sigma wrap)) wrap ~f:(fun acc x -> cons (f x) acc)
 
 
 
 let to_list_mapi_rev wrap f = 
 	match wrap with 
-	| Empty -> [] 
+	| Empty _-> [] 
 	| Wrap {head = h; last = _} -> 
     let lenh = get_length h in 
 		let rec aux acc c = 
@@ -381,15 +396,15 @@ let to_list_mapi_rev wrap f =
 		in aux [] h 
 
 
-let of_list l = add_list empty l
+let of_list ?(sigma = 2) l = add_list (empty_with_sigma sigma) l
 
 
 let mapi ~f wrap = 
 	match wrap with 
-	| Empty -> Empty 
+	| Empty s -> empty_with_sigma s 
 	| Wrap _ -> 
 		let l = to_list_mapi_rev wrap f in 
-		of_list (List.rev l)
+		of_list ~sigma:(get_sigma wrap) (List.rev l)
 
 
 let iter ~f wrap = fold ~f:(fun () x -> f x) ~x:() wrap
@@ -397,7 +412,7 @@ let iter ~f wrap = fold ~f:(fun () x -> f x) ~x:() wrap
 
 let iteri ~f wrap = 
 	match wrap with 
-  	| Empty -> () 
+  	| Empty _-> () 
   	| Wrap {head = h; last = _} -> 
     let lenh = get_length h in 
 		let rec aux c = 
@@ -411,52 +426,52 @@ let iteri ~f wrap =
 		in aux h 
 
 
-let rev_map ~f wrap = fold ~f:(fun acc x -> cons (f x) acc) ~x:empty wrap
+let rev_map ~f wrap = fold ~f:(fun acc x -> cons (f x) acc) ~x:(empty_with_sigma (get_sigma wrap)) wrap
 
 
 let append l0 l1 = fold_rev ~f:(fun acc x -> cons x acc) ~x:l1 l0
 
 
-let filter ~f wrap = fold_rev ~f:(fun acc x -> if f x then cons x acc else acc) ~x:empty wrap
+let filter ~f wrap = fold_rev ~f:(fun acc x -> if f x then cons x acc else acc) ~x:(empty_with_sigma (get_sigma wrap)) wrap
 
 
 let filter_map ~f wrap = 
 	match wrap with
-   	| Empty -> Empty
+  | Empty s-> empty_with_sigma s
 	| Wrap _ ->
 		let func acc v = 
 	  		match f v with 
 	  		| Some x -> x :: acc
 	  		| None -> acc
 		in  
-		let list = fold ~f:func ~x:[] wrap in of_list (List.rev list)
+		let list = fold ~f:func ~x:[] wrap in of_list ~sigma:(get_sigma wrap) (List.rev list)
 
 
 let flat_map f wrap = 
-    fold_rev ~f:(fun acc v -> append (f v) acc) ~x:empty wrap
+    fold_rev ~f:(fun acc v -> append (f v) acc) ~x:(empty_with_sigma (get_sigma wrap)) wrap
 
 
-let flatten wrap = fold_rev ~f:(fun acc l -> append l acc) ~x:empty wrap
+let flatten wrap = fold_rev ~f:(fun acc l -> append l acc) ~x:(empty_with_sigma (get_sigma wrap)) wrap
 
 
 let app funs wrap =
-	fold_rev ~f:(fun acc f -> fold_rev ~f:(fun acc x -> cons (f x) acc) ~x:acc wrap) ~x:empty funs
+	fold_rev ~f:(fun acc f -> fold_rev ~f:(fun acc x -> cons (f x) acc) ~x:acc wrap) ~x:(empty_with_sigma (get_sigma wrap)) funs
 
 
 let take n wrap = 
 	match wrap with 
-	| Empty -> Empty
-	| Wrap {head = h; last = _} -> 
+	| Empty s -> empty_with_sigma s
+	| Wrap {head = h; last = _; sigma = s} -> 
 		if n > (get_length h) then 
 			wrap
 		else if n < 0 then 
-			Empty
+			empty_with_sigma s
 		else 
 	  		let rec aux acc c i =
 				if i >= n then
-		 			of_list (List.rev acc)
+		 			of_list ~sigma:s (List.rev acc)
 				else if get_length c = 0 then 
-		  			of_list (List.rev ((get_value c) :: acc)) 
+		  		of_list ~sigma:s (List.rev ((get_value c) :: acc)) 
 				else 
 					aux ((get_value c) :: acc) (get_next c) (i + 1)  
 			in aux [] h 0
@@ -464,40 +479,40 @@ let take n wrap =
 
 let take_while ~f wrap = 
 	match wrap with 
-	| Empty -> Empty
-	| Wrap {head = h; last = _} -> 
+	| Empty s -> empty_with_sigma s
+	| Wrap {head = h; last = _; sigma = s} -> 
 		let rec aux acc c = 
 			if (f (get_value c)) then 
 		  		if get_length c = 0 then 
-					of_list (List.rev ((get_value c) :: acc))
+					  of_list ~sigma:s (List.rev ((get_value c) :: acc))
 		  		else 
-					aux ((get_value c) :: acc) (get_next c)
+					  aux ((get_value c) :: acc) (get_next c)
 			else 
-				of_list (List.rev acc) 
+				of_list ~sigma:s (List.rev acc) 
 		in aux [] h
 
 
 let drop n wrap = 
 	match wrap with 
-  	| Empty -> Empty
-  	| Wrap {head = h; last = _} -> 
+  	| Empty s -> empty_with_sigma s
+  	| Wrap {head = h; last = _; sigma = s} -> 
     let lenh = get_length h in 
 		if n < 0 || n > lenh + 1 then 
 			invalid_arg "Invalid Argument"
 		else if n = lenh + 1 then 
-			empty
+			empty_with_sigma s
 		else if n = 0 then 
 			wrap
 		else 
 	  		let new_head = index wrap n in 
 			let last_index = get_last_index (lenh + 1) n in 
 			let new_last = index wrap last_index in 
-			Wrap {head = new_head; last = new_last}
+			Wrap {head = new_head; last = new_last; sigma = s}
 
 
 let drop_while ~f wrap =
 	match wrap with
-	| Empty -> Empty
+	| Empty s-> empty_with_sigma s
 	| Wrap {head = h; last = _} ->
 		let rec count n c =
 			if f (get_value c) then
@@ -515,9 +530,10 @@ let take_drop n wrap = (take n wrap, drop n wrap)
 
 let equal ~eq w1 w2 = 
 	match w1, w2 with 
-	| Empty, Empty -> true
-	| Empty, Wrap _ -> false
-	| Wrap _, Empty -> false
+	| Empty s1, Empty s2 -> s1 = s2
+	| Empty _, Wrap _ -> false
+	| Wrap _, Empty _ -> false
+  | Wrap {sigma=s1;_}, Wrap {sigma=s2;_} when s1 <> s2 -> false
 	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} ->
 		if get_length h1 <> get_length h2 then 
 			false 
@@ -532,17 +548,17 @@ let equal ~eq w1 w2 =
 	  		in aux (get_length h1) h1 h2 
 
 
-let make n v = 
+let make ?(sigma = 2) n v = 
 	let rec aux n acc v = 
 		if n <= 0 then 
 			acc 
 		else 
 			aux (n-1) (cons v acc) v
-  	in aux n empty v
+  	in aux n (empty_with_sigma sigma) v
 
 
 
-let repeat n wrap =
+let repeat ?(sigma = 2) n wrap =
 	if n < 0 then 
 		invalid_arg "Invalid Argument"
 	else 
@@ -551,10 +567,10 @@ let repeat n wrap =
 				acc 
 			else
 				aux (n - 1) (append wrap acc)
-		in aux n empty 
+		in aux n (empty_with_sigma sigma)
 
 
-let range i j = 
+let range ?(sigma = 2) i j = 
 	let rec aux i j acc = 
 		if i = j then 
 			cons i acc 
@@ -562,16 +578,16 @@ let range i j =
 			aux i (j-1) (cons j acc) 
 		else 
 			aux i (j+1) (cons j acc)
-  	in aux i j empty 
+  	in aux i j (empty_with_sigma sigma) 
 
 
-let range_r_open_ i j =
+let range_r_open_ ?(sigma = 2) i j =
 	if i=j then 
-		empty
-  	else if i<j then 
-		range i (j-1)
-  	else 
-		range i (j+1)
+		empty_with_sigma sigma
+	else if i<j then 
+		range ~sigma i (j-1)
+	else 
+		range ~sigma i (j+1)
 
 
 type 'a iter = ('a -> unit) -> unit
@@ -586,18 +602,18 @@ let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap (L
 let to_list_map wrap f = fold_rev ~f:(fun acc v -> (f v) :: acc) ~x:[] wrap
 
 
-let of_list_map ~f l = add_list_map empty l f
+let of_list_map ?(sigma = 2) ~f l = add_list_map (empty_with_sigma sigma) l f
 
 
 let add_array wrap arr = Array.fold_right (fun v acc -> cons v acc) arr wrap
  
 
-let of_array arr = add_array empty arr
+let of_array ?(sigma= 2) arr = add_array (empty_with_sigma sigma) arr
 
 
 let to_array wrap = 
 	match wrap with 
-	| Empty -> [||]
+	| Empty _ -> [||]
 	| Wrap {head = h; last = _} -> 
 		let a = Array.make ((get_length h) + 1) (get_value h) in 
 		let rec fill i c = 
@@ -611,11 +627,11 @@ let to_array wrap =
  
 
 let add_iter wrap s = 
-	let l1 = ref empty in s (fun x -> l1 := cons x !l1); 
+	let l1 = ref (empty_with_sigma (get_sigma wrap)) in s (fun x -> l1 := cons x !l1); 
 	fold ~f:(fun acc x -> cons x acc) ~x:wrap !l1
 
 
-let of_iter s =  add_iter empty s 
+let of_iter ?(sigma = 2) s =  add_iter (empty_with_sigma sigma) s 
 
 
 let to_iter wrap =  fun f -> iter ~f wrap
@@ -628,17 +644,17 @@ let rec gen_iter_ f g =
 
 
 let add_gen wrap g = 
-  	let w1 = ref empty in 
+  	let w1 = ref (empty_with_sigma (get_sigma wrap)) in 
   	gen_iter_  (fun x -> w1 := cons x !w1) g; 
   	fold ~f:(fun acc x -> cons x acc) ~x:wrap !w1
 
 
-let of_gen g = add_gen empty g 
+let of_gen ?(sigma=2) g = add_gen (empty_with_sigma sigma) g 
 
 
 let to_gen wrap = 
   	match wrap with 
-  	| Empty -> (fun () -> None)
+  	| Empty _ -> (fun () -> None)
   	| Wrap {head = h; last = _} -> 
 		let curr = ref h in 
 		let flag = ref false in 
@@ -658,9 +674,9 @@ let to_gen wrap =
 
 let compare ~cmp w1 w2 =
   	match w1, w2 with 
-  	| Empty, Empty -> 0
-  	| Empty, Wrap _ -> -1 
-  	| Wrap _, Empty -> 1 
+  	| Empty _ , Empty _ -> 0
+  	| Empty _, Wrap _ -> -1 
+  	| Wrap _, Empty _-> 1 
   	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} -> 
 		let rec aux c1 c2 =
 	  	let res = cmp (get_value c1) (get_value c2) in 

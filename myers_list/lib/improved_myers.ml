@@ -1,4 +1,7 @@
-(** Titulo*)
+(* 
+MIT License
+Copyright (c) 2025 Programming Language Innovation Lab @ NUS 
+*)
 
 type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
 
@@ -7,8 +10,6 @@ type 'a t =
 	| Empty
 	| Wrap of {head : 'a cell; last : 'a cell}
 
-
-(** Algum titulo*)
 
 
 let empty = Empty
