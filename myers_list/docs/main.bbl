@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{myers1983}
+Eugene~W. Myers.
+\newblock An applicative random-access stack.
+\newblock {\em Information Processing Letters}, 17(5):241--248, 1983.
+
+\bibitem{peters2025}
+Edward Peters, Yong~Qi Foo, and Michael~D. Adams.
+\newblock Pushing the information-theoretic limits of random access lists.
+\newblock 2025.
+
+\end{thebibliography}

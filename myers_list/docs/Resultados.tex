@@ -1,0 +1,138 @@
+\section{Resultados} \label{sec:resultados}
+
+Nesta secção, apresentaremos os resultados obtidos na avaliação das cinco estruturas abordadas neste relatório, Basic, Improved e Advanced Myers List, Dense Advanced Myers List e IARASS. 
+
+\newpage
+\subsection{Número de Travessias}
+
+
+Os gráficos da Tabela \ref{tab:travessias_1} e \ref{tab:travessias_2} comparam o número de travessias do pior caso com o limite 
+teórico da estrutura, para listas de comprimento entre 1 e 1\_000\_000 elementos. 
+
+% TODO: Fazer melhores gráficos e substituir 
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+         \includesvg[width=0.5\linewidth]{Imagens/3lgn.svg} & \includesvg[width=0.5\linewidth]{Imagens/2lgn.svg}\\ 
+         (a) Basic Myers List & (b) Improved Myers List\\ 
+         \includesvg[width=0.5\linewidth]{Imagens/1lgn-skip-2.svg} & \includesvg[width=0.5\linewidth]{Imagens/1lgn-skip-4.svg}\\
+         (c) Advanced Myers List ($\sigma$ = 2) & (d) Advanced Myers List ($\sigma$ = 4)\\
+         \includesvg[width=0.5\linewidth]{Imagens/1lgn-skip-8.svg} & \includesvg[width=0.5\linewidth]{Imagens/1lgn-skip-16.svg}\\
+         (e) Advanced Myers List ($\sigma$ = 8) & (f) Advanced Myers List ($\sigma$ = 16)\\
+    \end{tabular}
+    \caption{Número de travessias - Basic, Improved e Advanced Myers List}
+    \label{tab:travessias_1}
+\end{table}
+
+
+Os resultados confirmam a hierarquia Basic > Improved >= Advanced, mas mostram também que a escolha
+de um sigma tem um impacto direto no ponto a partir do qual a Advanced Myers List compensa mais face 
+à Improved Myers List. 
+
+% TODO : Colocar o gráfico da Dense Advanced Myers List
+% TODO : Centralizar o gráfico do Okasaki
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+         \includesvg[width=0.5\linewidth]{Imagens/3lgn.svg} & \includesvg[width=0.5\linewidth]{Imagens/iarass_1_000_000}\\
+         (a) Dense Advanced Myers List & (b) Iarass\\
+         \includesvg[width=0.5\linewidth]{Imagens/simon_cruanes_1_000_000.svg}\\
+         (c) Okasaki List
+    \end{tabular}
+    \caption{Número de travessias - Dense Advanced Myers List, IARASS e Okasaki List}
+    \label{tab:travessias_2}
+\end{table}
+
+
+A Tabela \ref{tab:pior_caso} apresenta o número máximo de travessias observado 
+para n = 1 000 000, valores retirados da leitura visual dos gráficos 
+anteriores com valores exatos para comparação direta entre estruturas.
+
+% TODO: Expandir a parte da Advanced, ou seja, colocar uma linha por cada sigma
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \textbf{Variante} & \textbf{Pior caso registado} \\
+        \hline
+         Basic Myers List & 53\\
+         \hline
+         Improved Myers List & 35 \\
+         \hline
+         Advanced Myers List & [32, 41] (depende do sigma)\\
+         \hline
+         Dense Advanced Myers List (sigma = 2) & 24\\
+         \hline
+         Iarass & 27\\
+         \hline
+         Okasaki List & 37\\
+         \hline
+    \end{tabular}
+    \caption{Pior caso de travessias registado (n = 1 000 000)}
+    \label{tab:pior_caso}
+\end{table}
+
+
+\newpage
+\subsection{Tempo de Execução}
+
+A Tabela \ref{tab:tempo_execucao} apresenta o tempo total de execução de lookups sobre todos os elementos de uma lista 
+com 1 000 000 de elementos para todas as variantes.
+
+% TODO: Adicionamos mais alguma coluna?
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \textbf{Variante} & \textbf{Lookup All (1\_000\_000)} \\
+        \hline
+         Basic Myers List & 57.42 ms\\
+         \hline
+         Improved Myers List & 77.46 ms\\
+         \hline
+         Advanced Myers List & 401.43 ms\\
+         \hline
+         Dense Advanced Myers List (sigma = 2) & 60.35 ms\\
+         \hline
+         Iarass & 65.00 ms\\
+         \hline
+         Okasaki List & 51.04 ms\\
+         \hline
+    \end{tabular}
+    \caption{Tempo de execução}
+    \label{tab:tempo_execucao}
+\end{table}
+
+
+% TODO: Texto a explicar/falar dos dados obtidos
+
+\newpage
+\subsection{Uso de Memória}
+
+A Tablea \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1 000 000 de elementos.
+Como era esperado, a Basic e a Improved Myers List apresentam exatamente o mesmo uso de memória 
+(38.15 MB), uma vez que ambas mantêm o mesmo número de apontadores por célula, sendo apenas diferentes na maneira como o apontador jump é atribuído durante o cons.
+\\
+A Okasaki List  apresenta o menor uso de memória de todas as variantes (22.89 MB), por não incluir nenhum apontador adicional.
+
+% TODO: continuar o texto e falar das restantes estruturas
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \textbf{Variante} & \textbf{Memória (1000000 elementos)} \\
+        \hline
+         Basic Myers List & 38.15 MB\\
+         \hline
+         Improved Myers List & 38.15 MB\\
+         \hline
+         Advanced Myers List & 53.41 MB\\
+         \hline
+         Dense Advanced Myers List (sigma = 2) & 75.02 MB\\
+         \hline
+         Iarass & 50.86 MB\\
+         \hline
+         Okasaki List & 22.89 MB\\
+         \hline
+    \end{tabular}
+    \caption{Uso de memória para cada variante}
+    \label{tab:memoria}
+\end{table}

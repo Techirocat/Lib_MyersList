@@ -1,0 +1,67 @@
+\section{Estruturas Propostas}
+
+%(Qual é o tamanho q tens em mente para cada subsecção)
+% R: Nenhum tamanho em especifico, apenas vou escrevendo, a introdução está grande, mas os 3 primeiros paragráfos são basicamente um copy paste da introdução do paper kkkk
+
+
+\subsection{Dense Advanced Myers List} \label{subsec:dense_list}
+
+A Dense Advanced trata-se de uma variação da Advanced Myers List criada por Peters et al. (2025), mas em vez de dividir um nó com dois a quatro
+ponteiros, em um a três células, cada uma com dois ponteiros. Decidimos representar cada nó com uma única célula, com o seu respetivo número de 
+ponteiros:
+
+\begin{lstlisting} [language=Caml, caption={Tipos de células}, captionpos=b]
+type 'a add_points = 
+    | Normal 
+    | Skip of 'a cell 
+    | Leaf of 'a cell * 'a cell
+and 
+'a cell = { next : 'a cell; jump : 'a cell; length : int; 
+    value : 'a; rhd : int; red : int; more : 'a add_points }
+\end{lstlisting}
+
+Isto tornou a implementação da estrutura mais fácil, e por consequência, determinar o algoritmo para a expressão cons foi mais simples.
+Outros benefícios desta alteração foram: Um número de travessias de ponteiros menor; Encontraram-se novas otimizações que não foram ponderadas
+na implementação original; Obteve-se um lookup mais rápido.
+
+No entanto, um defeito desta estrutura em relação à original, é que esta gasta mais memória, já que cada célula contém mais ponteiros.
+
+O caso uso mais apropriado para esta estrutura seria um ambiente onde a travessia de ponteiros seria muito custosa, tal como referido para a 
+lista original: «Thus, advanced Myers lists may not be appropriate for in-memory lists, but they may be useful for applications where the cost 
+of pointer traversals is high relative to other computations, such as when pointer traversals involve network access.» (Peters et al.,2025)
+
+\subsection{Improved Applicative Random-Acces Stack with Sigma Region} \label{subsec:iarass}
+
+A Improved Applicative Random-Access Stack with Sigma region (IARASS) é uma variante da Improved Myers List que se beneficia da introdução do 
+conceito de sigma layers, introduzido por Peters et al. (2025) na Advanced Myers List. Assim, o objetivo da IARASS é utilizar este novo apontador
+para aliviar o problema da dupla descida (double descent) identificado no paper, sem perder a simplicidade estrutural existente na variante Improved.
+Na secção dos Resultados, mostraremos ainda que esta estrutura, como é de esperado, apresenta um maior uso de memória que a Improved Myers List, 
+no entanto apresenta um menor uso de memória quando comparada com a Advanced Myers List e apresentando um maior desempenho no número de travesias 
+quando comparada com ambas as variantes.
+\\
+
+Ao contrário da Improved Myers List em que todas as células apresentam a mesma estrutura, contendo os campos next, jump, length e value, a IARASS 
+distingue dois tipos de células:
+
+% TODO : Colocar cores no código
+\begin{lstlisting} [language=Caml, caption={Tipos de células}, captionpos=b]
+type 'a cell = 
+  | Normal of {next:'a cell; jump:'a cell; length:int; 
+        value:'a; height:int }
+  | Skip of {next:'a cell; jump:'a cell; length:int; 
+        value:'a; height:int; shortcut:'a cell }
+\end{lstlisting}
+
+% TODO: Como já alteterei a Iarass para aceitar diferente sigmas, este texto já não está atualizado
+Nesta variante, as células normais mantêm apenas os dois apontadores já existente na variante Improved Myers List mantendo toda a lógica já existente, 
+enquanto as células skip (células de salto) apresentam um terceiro apontador, denominado shortcut. A decisão de qual célula é criada é baseada na altura 
+(height), sempre que a altura é um número par (sigma = 2) a célula criada é do tipo SKIP e nas restantes camadas será do tipo NORMAL.
+\\
+
+O novo apontador shortcut destas células skip é a contribuição principal para resolver o problema da dupla descida e assume um comportamento diferente 
+dependendo da posição da célula na árvore lógica: \textbf{(i)} quando a altura é diferente de 0, o shortcut aponta para a última célula da região que 
+contém a célula acabada de ser criada. \textbf{(ii)} quando a altura é igual a zero, o shortcut aponta para c.jump.jump, permitindo uma travessia horizontal 
+mais rápida do que antes.  
+
+% TODO: texto para explicar pq o shortcut evita a dupla descida
+

@@ -1,0 +1,40 @@
+\section{Introdução}
+
+%(Impressiona-me que eu escrevi muito e apenas deu o total de uma página, rir para não chorar)
+%(Tmb isto é so a introdução, ent não é preciso ter 3 páginas. De qualquer forma se isso te preocupar 
+%podes sempre aumentar a letra para 12 ou 13 pt kkkk)
+
+A lista ligada, também conhecida por cons list, é um pilar da programação funcional e uma das estruturas de 
+dados mais simples e elegantes. Como as listas ligadas são apenas células ligadas sequencialmente por ponteiros, 
+operações como cons (adicionar um elemento ao início), car (aceder ao primeiro elemento)
+e cdr (aceder à lista excluindo o primeiro elemento) apenas requerem tempo e espaço O(1). No entanto, aceder 
+a uma célula arbitrária da lista exige percorrer até n - 1 ponteiros para uma lista de comprimento n.
+\\
+
+Para resolver este problema, Eugene W. Myers \cite{myers1983} propôs uma nova estrutura de dados,
+ a Applicative Random-Access Stack, que denominamos Myers List. (Parece que é mais conhecida por Myers Stack). 
+ Essa estrutura mantém as operações de cons, car e cdr em tempo constante, permitindo ainda reduzir a complexidade 
+ de lookup para uma constante de O(log n), para ser mais preciso 3 log(n) - 5 pointers. Esta melhoria é possível
+  observar pela adição de um ponteiro extra, denominado jump, em cada célula.
+\\
+
+Trabalhos mais recentes,  como o de Edward Peters, Yong Qi Foo e Michael D. Adams \cite{peters2025}, 
+aprimoraram a construção e o uso desse ponteiro jump, resultando nas variantes 
+apresentadas no paper, Improved Myers List e Advanced Myers List. Essas estruturas reduziram ainda mais o numero de travessias
+ necessárias no pior caso, obtendo uma complexidade de 2 log(n + 1) - 3 e (1 + 1/s) log (n) + s + 9 respetivamente, 
+ aproximando-se do limite teórico de log(n + 1) - 1 (teoria da informação).
+\\
+
+Apesar dessas melhorias, a Advanced Myers List apresenta uma limitação, a perda da funcionalidade de cons em tempo constante, 
+funcionalidade que acreditamos ser de extrema importância. Além disso, durante todo o estudo do paper referenciado, os autores 
+propõem algumas restrições, sendo uma delas a não adição de novos apontadores em cada célula. Isso motiva as duas perguntas 
+centrais deste trabalho: \textbf{(i)} é possível recuperar a operação cons em tempo constante na Advanced Myers List, removendo 
+a restrição do projeto, ou seja, permitindo a adição de ponteiros extras por célula enquanto se preserva a lógica e a estrutura 
+apresentada no paper? \textbf{(ii)} removendo novamente a mesma restrição, é possível aplicar a ideias centrais propostas para a 
+Advanced Myers List à Improved Myers List, de modo a melhorar o seu desempenho de lookup e mantendo o cons constante?
+\\
+
+Neste relatório, propomos duas novas estruturas de dados e as suas respetivas implementações e bibliotecas, que respondem a estas
+ duas perguntas: a Dense Advanced Myers List (Secção \ref{subsec:dense_list}) e a Improved Applicative Random-Access Stack with Sigma region (IARASS) (Secção \ref{subsec:iarass}). 
+ Na secção \ref{sec:resultados} apresentamos os resultados experimentais de desempenho e de uso de memória. Na secção 5 discutimos as implementações destes
+  resultados face às perguntas colocadas.

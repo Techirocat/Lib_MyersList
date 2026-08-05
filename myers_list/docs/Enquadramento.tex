@@ -1,0 +1,86 @@
+\section{Enquadramento Teórico}
+
+% Explicar a Basic, Improved, Advanced Myers list e os seus problemas, rapidamente. (Deve dar para reaproveitar muita coisa do Docs e do PWP)
+% R: Até agora so copiei o q está no docs
+
+% (AINDA É NECESSÁRIO SUBSTITUIR ALGUM TEXTO POR EXPRESSÕES MATEMÁTICAS LATEX)
+
+\subsection{Basic Myers List}
+
+A Myers List original, proposta por Eugene W. Myers (1983), introduz um apontador jump adicional em cada célula de uma cons list, 
+permitindo lookup em [ 3 log( n )-5 ] apontadores no pior caso. A sua construção iterativa preserva o suporte a cons em tempo O(1), mas o seu desempenho assintótico fica aquém do limite teórico de informação.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \includegraphics[width=0.5\linewidth]{Imagens/Basic-Lista} & \includegraphics[width=0.5\linewidth]{Imagens/Basic-Arvore} \\
+        (Formato Lista) & (Formato Árvore)\\ 
+    \end{tabular}
+    \caption{Representação da Basic Myers List}
+    \label{tab:placeholder}
+\end{table}
+
+
+A associação do ponteiro jump funciona da seguinte forma:
+
+% Expressão matemática do jump
+\includegraphics[width=0.5\linewidth]{Imagens/Basic-Jump} 
+
+Lookup na Basic Myers List é bastante simples, assume-se que len é um valor válido:
+
+% Expressão matemática do lookup
+\includegraphics[width=0.5\linewidth]{Imagens/Basic-Lookup} 
+
+\subsection{Improved Myers List}
+
+A Improved Myers List, proposta por Peters, Foo e Adams (2025), introduz uma modificação simples, mas eficaz à maneira como a Basic Myers List é construída. O apontador jump da primeira célula de cada região passa a apontar para a primeira célula da segunda sub-região, em vez da última célula. Assim, o resultado é uma melhoria do pior caso de lookup de 3(log n) - 5 para 2(log (n + 1)) - 3 apontadores, igualando ao desempenho das Okasaki List, mas ainda com a vantagem de que permite o lookup a partir de qualquer posição.
+
+\subsubsection{Construção e conceito de região}
+
+Uma região é definida pelo seu grau k:
+\begin{itemize}
+    \item Uma região de grau k=0  consiste numa única célula.
+    \item Uma região de grau k>0 é composta por duas sub-regiões de grau k-1 (no paper, estas regiões são denominadas Qk-1 e Rk-1) e uma célula adicional no início.
+\end{itemize}
+Na Basic Myers List, o apontador jump da célula inicial de uma região aponta para a última célula dessa mesma região. Adicionalmente, as duas sub-regiões partilham células, o que torna a estrutura menos eficiente.
+A Improved Myers List resolve este problema alterando a regra de construção: as sub-regiões Qk-1 e Rk-1 deixam de partilhar células, e o apontador jump da célula inicial passa a apontar diretamente para a primeira célula de Rk-1. Se visualizarmos a lista como uma árvore, as sub-regiões  Qk-1 e Rk-1 formam, respetivamente, as sub-árvores esquerda e direita. Assim, o acesso à raiz da sub-árvore direita passa a custar apenas a travessia de um único apontador (jump), eliminando a ineficiência da variante clássica.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \includegraphics[width=0.5\linewidth]{Imagens/Improved-Lista}  & \includegraphics[width=0.5\linewidth]{Imagens/Improved-Arvore} \\
+        (Formato Lista) & (Formato Árvore)\\ 
+    \end{tabular}
+    \caption{Representação da Improved Myers List}
+    \label{tab:placeholder}
+\end{table}
+
+\subsubsection{Lookup}
+
+O algoritmo de lookup na Improved Myers List é idêntico ao da Basic Myers List, percorre jump se xs.jump.length >= len, caso contrário, percorre next. 
+
+\subsection{Advanced Myers List}
+
+A Advanced Myers List, introduzida por Peters et al. (2025), parte da Improved Myers List e introduz apontadores adicionais (uncle, inc, greater), permitindo assim um lookup que pode ser realizado em tempo aproximadamente logarítmico ((1+1) [log n]++9) à custa de maior complexidade estrutural e de construção.
+
+\includegraphics[width=0.5\linewidth]{Imagens/Advanced-Arvore} 
+
+\subsubsection{Tipos de Nós}
+
+A Advanced Myers List organiza as células em o que é chamado de nós lógicos, estes consistem em uma célula sozinha ou a junção de duas ou três células.
+Existem três tipos de nós:
+\begin{itemize}
+    \item Nós normais - são constituídos por apenas uma única célula (top), contendo apontadores next e jump a apontar diretamente para os filhos esquerdo e direito.
+    \item Nós skip - são constituídos por duas células, denominadas top e bottom. O apontador next da célula top liga diretamente à célula bottom e o apontador jump aponta para o uncle. Estes nós aparecem repetidamente em camadas específicas, mais concretamente a cada intervalo  acima da camada folha.
+    \item Nós folha - São constituídos pela junção de três células: top, middle e bottom. Os apontadores jump de cada célula são reaproveitados para atalhos distintos: inc, greater e uncle. Estes nós constituem inteiramente a camada inferior da árvore lógica.
+\end{itemize}
+
+\subsubsection{Construção}
+
+Antes de discutir a construção é importante primeiro compreender os seguintes conceitos:
+\begin{itemize}
+    \item Right-Handed Depth (RHD) - Corresponde à distância do ancestral mais próximo que é um filho esquerdo.
+    \item Right-Edge Depth (RED) - Corresponde à distância ao ancestral mais próximo que se encontra no caminho mais à direita a partir da raiz da árvore.
+\end{itemize}
+
+% (A partir daqui talvez era melhor escrever algo do zero, pois não é necessário ser tão especifico quanto o docs)
