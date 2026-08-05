@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  4 AUG 2026 21:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  5 AUG 2026 20:39
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -322,35 +322,38 @@ Overfull \hbox (24.00003pt too wide) in paragraph at lines 15--19
 <Imagens/Basic-Jump.png, id=20, 1068.99374pt x 123.46124pt>
 File: Imagens/Basic-Jump.png Graphic file (type png)
 <use Imagens/Basic-Jump.png>
-Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 27.
+Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 28.
 (pdftex.def)             Requested size: 172.5pt x 19.92186pt.
 <Imagens/Basic-Lookup.png, id=21, 957.5775pt x 166.6225pt>
 File: Imagens/Basic-Lookup.png Graphic file (type png)
 <use Imagens/Basic-Lookup.png>
-Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 32.
+Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 37.
 (pdftex.def)             Requested size: 172.5pt x 30.01363pt.
-[3{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png> <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png>]
-<Imagens/Improved-Lista.png, id=31, 1071.00125pt x 216.81pt>
+[3 <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png> <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png>]
+<Imagens/Improved-Lista.png, id=30, 1071.00125pt x 216.81pt>
 File: Imagens/Improved-Lista.png Graphic file (type png)
 <use Imagens/Improved-Lista.png>
-Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 51.
+Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 59.
 (pdftex.def)             Requested size: 172.5pt x 34.91856pt.
-<Imagens/Improved-Arvore.png, id=32, 883.3pt x 422.57875pt>
+<Imagens/Improved-Arvore.png, id=31, 883.3pt x 422.57875pt>
 File: Imagens/Improved-Arvore.png Graphic file (type png)
 <use Imagens/Improved-Arvore.png>
-Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 51.
+Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 59.
 (pdftex.def)             Requested size: 172.5pt x 82.5218pt.
 
-Overfull \hbox (24.00003pt too wide) in paragraph at lines 50--54
+Overfull \hbox (24.00003pt too wide) in paragraph at lines 58--62
  [][] 
  []
 
-<Imagens/Advanced-Arvore.png, id=33, 1293.83376pt x 419.5675pt>
+<Imagens/Advanced-Arvore.png, id=32, 1293.83376pt x 419.5675pt>
 File: Imagens/Advanced-Arvore.png Graphic file (type png)
 <use Imagens/Advanced-Arvore.png>
-Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 66.
+Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 79.
 (pdftex.def)             Requested size: 172.5pt x 55.93494pt.
-[4 <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png> <./Imagens/Advanced-Arvore.png>]) (./Desenvolvimento.tex (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[4{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png>]) (./Desenvolvimento.tex [5 <./Imagens/Advanced-Arvore.png>] (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 ) (/usr/share/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2025/11/14 1.11b listings language file
@@ -361,7 +364,7 @@ Overfull \hbox (14.91486pt too wide) in paragraph at lines 20--21
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[5]
+
 Overfull \hbox (5.46852pt too wide) in paragraph at lines 33--33
 []\T1/cmr/bx/n/12 Improved Ap-pli-ca-tive Random-Acces Stack with Sigma
  []
@@ -371,12 +374,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 35--42
 
  []
 
-
+[6]
 Underfull \hbox (badness 10000) in paragraph at lines 56--60
 
  []
 
-[6]) (./Resultados.tex [7]
+) (./Resultados.tex [7]
 Package svg Info: Last page of `./svg-inkscape/3lgn_svg-tex.pdf' is 1 on input line 16.
  (./svg-inkscape/3lgn_svg-tex.pdf_tex
 <./svg-inkscape/3lgn_svg-tex.pdf, id=51, page=1, 401.14445pt x 303.84914pt>
@@ -480,7 +483,7 @@ Overfull \hbox (7.71281pt too wide) in paragraph at lines 120--136
  [][] 
  []
 
-) (./Discussao.tex) (./Referencias.tex (./main.bbl)) [11] (./main.aux)
+) (./Discussao.tex [11]) (./Referencias.tex (./main.bbl)) [12] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -491,18 +494,18 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 7725 strings out of 469495
- 139637 string characters out of 5470098
- 759560 words of memory out of 5000000
- 36193 multiletter control sequences out of 15000+600000
+ 7730 strings out of 469495
+ 139741 string characters out of 5470098
+ 762226 words of memory out of 5000000
+ 36198 multiletter control sequences out of 15000+600000
  636868 words of font info for 58 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 94i,16n,93p,634b,1123s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 94i,16n,93p,634b,1615s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on main.pdf (11 pages, 930738 bytes).
+Output written on main.pdf (12 pages, 934278 bytes).
 PDF statistics:
- 594 PDF objects out of 1000 (max. 8388607)
- 376 compressed objects within 4 object streams
+ 597 PDF objects out of 1000 (max. 8388607)
+ 378 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

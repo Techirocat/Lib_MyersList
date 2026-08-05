@@ -12,7 +12,7 @@ a uma célula arbitrária da lista exige percorrer até n - 1 ponteiros para uma
 \\
 
 Para resolver este problema, Eugene W. Myers \cite{myers1983} propôs uma nova estrutura de dados,
- a Applicative Random-Access Stack, que denominamos Myers List. (Parece que é mais conhecida por Myers Stack). 
+ a Applicative Random-Access Stack, que denominamos Myers List. 
  Essa estrutura mantém as operações de cons, car e cdr em tempo constante, permitindo ainda reduzir a complexidade 
  de lookup para uma constante de O(log n), para ser mais preciso 3 log(n) - 5 pointers. Esta melhoria é possível
   observar pela adição de um ponteiro extra, denominado jump, em cada célula.
