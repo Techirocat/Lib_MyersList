@@ -52,10 +52,11 @@ type 'a cell =
         value:'a; height:int; shortcut:'a cell }
 \end{lstlisting}
 
-% TODO: Como já alteterei a Iarass para aceitar diferente sigmas, este texto já não está atualizado
 Nesta variante, as células normais mantêm apenas os dois apontadores já existente na variante Improved Myers List mantendo toda a lógica já existente, 
 enquanto as células skip (células de salto) apresentam um terceiro apontador, denominado shortcut. A decisão de qual célula é criada é baseada na altura 
-(height), sempre que a altura é um número par (sigma = 2) a célula criada é do tipo SKIP e nas restantes camadas será do tipo NORMAL.
+(height), sempre que a altura é um divisor de sigma, ou seja height mod sigma = 0, a célula criada é do tipo skip e nas restantes camadas serão do tipo normal. 
+Ao contrario da Advanced Myers List, um sigma maior não indica uma melhor performance no lookup, nesta estrutura a lógica é infersa, ou seja, quanto maior o sigma maior 
+será o número de travessias, mas consequentemente usará menos memória.
 \\
 
 O novo apontador shortcut destas células skip é a contribuição principal para resolver o problema da dupla descida e assume um comportamento diferente 

@@ -100,8 +100,12 @@ Antes de discutir a construção é importante primeiro compreender os seguintes
     \item Right-Edge Depth (RED) - Corresponde à distância ao ancestral mais próximo que se encontra no caminho mais à direita a partir da raiz da árvore.
 \end{itemize}
 
-% (A partir daqui talvez era melhor escrever algo do zero, pois não é necessário ser tão especifico quanto o docs)
+A construção da Advanced Myers List perde a função de cons em tempo constante, pois exige saber previamente o número exato de elementos para calcular a altura da árvore lógica e formar uma árvore binária perfeita, utilizando elementos que servem como fillers caso necessário.
+A estrutura é construida recursivamente do head até a camada de folhas e a atribuição dos apontadores depende do tipo de nó:
 
 
-
-\textbf{TODOOOOOO...}
+\begin{itemize}
+    \item Nós normais e skip: O apontador next aponta para a sub-árvore esquerda e o jump para a sub-árvore direita
+    \item Nós skip e folhas: O apontador uncle liga a um tio onde a regra RED(s.uncle) = RHD(s) é verificada
+    \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greatere lia à folha mais próxima à direita onde RHD(f') > RHD(f) 
+\end{itemize}

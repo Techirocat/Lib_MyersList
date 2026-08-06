@@ -1,17 +1,17 @@
 \section{Discussão}
 
 
-Resposatas as perguntas:
+Respostas às perguntas:
 
 Relativamente à primeira pergunta, a implementação da Dense Advanced Myers List concluiu que não foi possível obter uma operação cons em
-tempo constante. Esta limitação deve-se a impossibilidade de aceder a uma determinada célula, que será utilizada como ponteiro uncle,
-greater ou inc. No entanto, foi possivel implementar uma operação cons funcional para esta estrutura, com uma complexidade temporal de 
+tempo constante. Esta limitação deve-se à impossibilidade de aceder a uma determinada célula, que será utilizada como ponteiro uncle,
+greater ou inc. No entanto, foi possível implementar uma operação cons funcional para esta estrutura, com uma complexidade temporal de 
 (... TODO), (Referiri que a tentativa de implementar em cons O(1) pode ficar para futuras investigações? ou isso mostra que falhamos? XD, tipo dizer
 que para existir um cons O(1) será necessário repensar a estrutra usada ...).
 
 Apesar de o cons em O(1) não ter sido obtido, a Dense Advanced Myers List apresentou resultados eficazes na leitura, tendo um tempo de execução
 de lookup total de 60.35 ms, valor muito inferior à variante Advanced Myers List com 401.43 ms. Além disso, ainda apresentou um melhoramento no 
-número de travessias, obtendo o melhor desempenho no pior caso qunado comparada a todas as outras estruturas. Este ganho de performance tem um 
+número de travessias, obtendo o melhor desempenho no pior caso quando comparada a todas as outras estruturas. Este ganho de performance tem um 
 custo direto associado à memória exigindo 75.02 MB para um milhão de elementos, sendo a estrutura mais pesada do nosso estudo. Assim, conclui-se 
 que esta estrutura é ideal para cenários onde a travessia de ponteiros é o principal obstáculo.
 
@@ -19,10 +19,10 @@ Relativamente à segunda pergunta, a implementação da IARASS revelou ser um su
 skip com um apontador adicional, conseguimos reduzir o número de travessias no pior caso de 35 (variante Improved) para 27. Além disso, apresentou um 
 tempo de execução de 65.00 ms, ultrapassando a Improved Myers List (77.46 ms) e a Advanced Myers List (401.43 ms). No que toca a uso de memória, a 
 IARASS utiliza 50.86 MB, valor superior aos 38.15 MB da variante Improved e consumindo menos memória do que a Advanced Myers List (53.41 MB). Assim, 
-conclui-se que está estrutura apresenta um melhor desempenho, tanto a nível de velocidade de execução como também em número de travessias 
+conclui-se que esta estrutura apresenta um melhor desempenho, tanto a nível de velocidade de execução como também em número de travessias 
 (afirmação apenas deve ser verdade para os dados que nós obtivemos), que a Advanced Myers List, conseguindo utilizar menos memória.
 
-Em suma, a remoção da restrição permitimos nos implementar duas novas estruturas de dados ... (TODO)
-A Dense Advanced Myers List é a melhor escolha quando a velocidade de lookup é o mais importante e a memória não é um problema a ser considerado, 
-continuando com a operação de cons. Por sua vez, a IARASS mostra ser uma estrutura de dados equilibrada que oferece melhorias consideraveis no 
+Em suma, a remoção da restrição permitiu-nos implementar duas novas estruturas de dados ... (TODO)
+A Dense Advanced Myers List é a melhor escolha quando a velocidade lookup é o mais importante e a memória não é um problema a ser considerado, 
+continuando com a operação de cons. Por sua vez, a IARASS mostra ser uma estrutura de dados equilibrada que oferece melhorias consideráveis no 
 desempenho de lookup com um aumento moderado na memória.

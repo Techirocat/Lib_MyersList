@@ -6,7 +6,7 @@ Nesta secção, apresentaremos os resultados obtidos na avaliação das cinco es
 \subsection{Número de Travessias}
 
 
-Os gráficos da Tabela \ref{tab:travessias_1} e \ref{tab:travessias_2} comparam o número de travessias do pior caso com o limite 
+Os gráficos das Tabelas \ref{tab:travessias_1} e \ref{tab:travessias_2} comparam o número de travessias do pior caso com o limite 
 teórico da estrutura, para listas de comprimento entre 1 e 1\_000\_000 elementos. 
 
 % TODO: Fazer melhores gráficos e substituir 
@@ -45,7 +45,7 @@ de um sigma tem um impacto direto no ponto a partir do qual a Advanced Myers Lis
 
 
 A Tabela \ref{tab:pior_caso} apresenta o número máximo de travessias observado 
-para n = 1 000 000, valores retirados da leitura visual dos gráficos 
+para n = 1 000 000, valores retirados da leitura dos gráficos 
 anteriores com valores exatos para comparação direta entre estruturas.
 
 % TODO: Expandir a parte da Advanced, ou seja, colocar uma linha por cada sigma
@@ -107,13 +107,19 @@ com 1 000 000 de elementos para todas as variantes.
 \newpage
 \subsection{Uso de Memória}
 
-A Tablea \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1 000 000 de elementos.
+    A Tabela \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1 000 000 de elementos.
 Como era esperado, a Basic e a Improved Myers List apresentam exatamente o mesmo uso de memória 
 (38.15 MB), uma vez que ambas mantêm o mesmo número de apontadores por célula, sendo apenas diferentes na maneira como o apontador jump é atribuído durante o cons.
-\\
 A Okasaki List  apresenta o menor uso de memória de todas as variantes (22.89 MB), por não incluir nenhum apontador adicional.
 
-% TODO: continuar o texto e falar das restantes estruturas
+A Advanced Myers List (53.41 MB) apresenta um uso de memória superior ao das variantes Basic e Improved não por introduzir novos apontadores, 
+a estrutura de célula mantém-se igual, reaproveitando o próprio apontador jump para servir de uncle/inc/greater consoante o tipo de nó lógico, mas por 
+cada célula ter de guardar explicitamente a informação de RHD e RED necessária para a sua construção e para a otimização do lookup face as varaiantes anteriores. 
+
+A Dense Advanced Myers List (75.02 MB) leva esta ideia mais longe, ao consolidar cada nó lógico numa única célula, os campos rhd, red e o  identificador do 
+tipo de nó (o campo more, com os construtores Normal, Skip e Leaf) passam a estar presentes em todas as células, que consequentemente exige um consumo de memória ainda
+superior ao da Advanced original.
+
 
 \begin{table}[h!]
     \centering

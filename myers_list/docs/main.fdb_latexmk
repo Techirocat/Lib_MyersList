@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1785958699.61972 "main.aux" "main.bbl" "main" 1785958756.22976 0
+["bibtex main"] 1786004406.71943 "main.aux" "main.bbl" "main" 1786010633.46177 0
   "./referencias.bib" 1785909855.45718 421 8f4671e59b50402a394061e77e9602a8 ""
   "/usr/share/texmf-dist/bibtex/bst/base/plain.bst" 1775415801 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1785958755.93478 4527 437b83175cd67ba5bb00e30f09166a2d "pdflatex"
+  "main.aux" 1786010633.28981 4527 d8d5e12b038e44c05c97efd55daba254 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1785958754.83456 "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" "main.pdf" "main" 1785958756.23013 0
+["pdflatex"] 1786010632.65323 "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" "main.pdf" "main" 1786010633.46205 0
   "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" 1785909855.45704 445 40ce4c6dd12630b71a8b9b3c87214707 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1775415801 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
@@ -102,9 +102,9 @@
   "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1781550163 5385779 47c0c393a77fd4a098bacfd57d66b88a ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1781550130 2329406 a847bc93203ca2f1350c77bf73562204 ""
-  "Desenvolvimento.tex" 1785909855.40508 4425 1f92c40c74f7c522c70c67417b4afb7f ""
-  "Discussao.tex" 1785957776.82665 2743 03383d250c64bae20f716ba60f32cc00 ""
-  "Enquadramento.tex" 1785958754.57506 5873 3fcadb0072c92c8021313158bd8d0203 ""
+  "Desenvolvimento.tex" 1786003853.95401 4595 218a4097f34319a3192cb9a254e78ac0 ""
+  "Discussao.tex" 1786009401.0436 2741 584847dae9d6a5087d436b20f8073b63 ""
+  "Enquadramento.tex" 1786009066.89052 6600 61a0f3a817a8d61f79c7149562a81af3 ""
   "Imagens/1lgn-skip-16.svg" 1785909855.40708 178533 322aa4212ad1559508010dde41f1577b ""
   "Imagens/1lgn-skip-2.svg" 1785909855.40969 172462 69abcccbe8cd548fb28ae156b1b22188 ""
   "Imagens/1lgn-skip-4.svg" 1785909855.41078 173937 2787494db8cbe02cd25f50169492769a ""
@@ -122,9 +122,9 @@
   "Imagens/simon_cruanes_1_000_000.svg" 1785909855.44008 233974 3f89197930955f475e0eecc1f476b518 ""
   "Introdução.tex" 1785958011.55026 3261 568cb61f61ac9e331b56985d414f825a ""
   "Referencias.tex" 1785909855.44214 52 6fa9ae2e9e07fe4bdb043eed53e21fb4 ""
-  "Resultados.tex" 1785909855.44308 5156 f8344fb005e249345a2dc223bb12f3c4 ""
-  "main.aux" 1785958755.93478 4527 437b83175cd67ba5bb00e30f09166a2d "pdflatex"
-  "main.bbl" 1785958699.71547 367 f5f9e44ee562bc804a54670b7a64259e "bibtex main"
+  "Resultados.tex" 1786010632.46485 5934 0d4a40680dfde1f21b1887618993f108 ""
+  "main.aux" 1786010633.28981 4527 d8d5e12b038e44c05c97efd55daba254 "pdflatex"
+  "main.bbl" 1786004406.78751 367 f5f9e44ee562bc804a54670b7a64259e "bibtex main"
   "main.tex" 1785909855.45704 445 40ce4c6dd12630b71a8b9b3c87214707 ""
   "svg-inkscape/1lgn-skip-16_svg-tex.pdf" 1785909855.45821 59553 9d4a6613c8e3c6aa743b80e255d9b447 ""
   "svg-inkscape/1lgn-skip-16_svg-tex.pdf_tex" 1785909855.45893 2096 3d35a8a10bee506076f3f9c42a04ccb2 ""
