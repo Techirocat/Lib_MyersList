@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  6 AUG 2026 11:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  13 AUG 2026 12:18
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -224,9 +224,26 @@ Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
 \every@verbatim=\toks28
 \verbatim@line=\toks29
 \verbatim@in@stream=\read4
+) (/usr/share/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (/usr/share/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count302
+\Gm@cntv=\count303
+\c@Gm@tempcnt=\count304
+\Gm@bindingoffset=\dimen168
+\Gm@wd@mp=\dimen169
+\Gm@odd@mp=\dimen170
+\Gm@even@mp=\dimen171
+\Gm@layoutwidth=\dimen172
+\Gm@layoutheight=\dimen173
+\Gm@layouthoffset=\dimen174
+\Gm@layoutvoffset=\dimen175
+\Gm@dimlist=\toks30
 ) (/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count302
+\l__color_backend_stack_int=\count305
 ) (./main.aux
 Package babel Info: 'portuguese' activates 'portuges' shorthands.
 (babel)             Reported on input line 6.
@@ -234,50 +251,88 @@ Package babel Info: 'portuguese' activates 'portuges' shorthands.
 
 LaTeX Warning: Label `tab:placeholder' multiply defined.
 
+
+LaTeX Warning: Label `tab:memoria' multiply defined.
+
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count303
-\scratchdimen=\dimen168
+\scratchcounter=\count306
+\scratchdimen=\dimen176
 \scratchbox=\box57
-\nofMPsegments=\count304
-\nofMParguments=\count305
-\everyMPshowfont=\toks30
-\MPscratchCnt=\count306
-\MPscratchDim=\dimen169
-\MPnumerator=\count307
-\makeMPintoPDFobject=\count308
-\everyMPtoPDFconversion=\toks31
+\nofMPsegments=\count307
+\nofMParguments=\count308
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count309
+\MPscratchDim=\dimen177
+\MPnumerator=\count310
+\makeMPintoPDFobject=\count311
+\everyMPtoPDFconversion=\toks32
 ) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
  (/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-\c@lstlisting=\count309
+\c@lstlisting=\count312
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(56.9055pt, 500.484pt, 56.9055pt)
+* v-part:(T,H,B)=(56.9055pt, 681.15898pt, 56.9055pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=500.484pt
+* \textheight=681.15898pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
+* \topmargin=-52.36449pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <12> on input line 17.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 17.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 17.
- [1
+[1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}] (./Introdução.tex
 Underfull \hbox (badness 10000) in paragraph at lines 7--13
@@ -299,145 +354,173 @@ Underfull \hbox (badness 10000) in paragraph at lines 28--36
 
  []
 
-) (./Enquadramento.tex [2]
+) (./Enquadramento.tex
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 15.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 15.
-<Imagens/Basic-Lista.png, id=17, 1056.94875pt x 187.70125pt>
+<Imagens/Basic-Lista.png, id=14, 1056.94875pt x 187.70125pt>
 File: Imagens/Basic-Lista.png Graphic file (type png)
 <use Imagens/Basic-Lista.png>
 Package pdftex.def Info: Imagens/Basic-Lista.png  used on input line 16.
-(pdftex.def)             Requested size: 172.5pt x 30.6314pt.
-<Imagens/Basic-Arvore.png, id=19, 824.07875pt x 414.54875pt>
+(pdftex.def)             Requested size: 250.24199pt x 44.43916pt.
+<Imagens/Basic-Arvore.png, id=16, 824.07875pt x 414.54875pt>
 File: Imagens/Basic-Arvore.png Graphic file (type png)
 <use Imagens/Basic-Arvore.png>
 Package pdftex.def Info: Imagens/Basic-Arvore.png  used on input line 16.
-(pdftex.def)             Requested size: 172.5pt x 86.77315pt.
+(pdftex.def)             Requested size: 250.24199pt x 125.8837pt.
 
-Overfull \hbox (24.00003pt too wide) in paragraph at lines 15--19
+Overfull \hbox (24.00002pt too wide) in paragraph at lines 15--19
  [][] 
  []
 
-<Imagens/Basic-Jump.png, id=20, 1068.99374pt x 123.46124pt>
+<Imagens/Basic-Jump.png, id=17, 1068.99374pt x 123.46124pt>
 File: Imagens/Basic-Jump.png Graphic file (type png)
 <use Imagens/Basic-Jump.png>
-Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 28.
-(pdftex.def)             Requested size: 172.5pt x 19.92186pt.
-<Imagens/Basic-Lookup.png, id=21, 957.5775pt x 166.6225pt>
+Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 29.
+(pdftex.def)             Requested size: 250.24199pt x 28.90036pt.
+[2 <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png>]
+<Imagens/Basic-Lookup.png, id=26, 957.5775pt x 166.6225pt>
 File: Imagens/Basic-Lookup.png Graphic file (type png)
 <use Imagens/Basic-Lookup.png>
-Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 37.
-(pdftex.def)             Requested size: 172.5pt x 30.01363pt.
-[3 <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png> <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png>]
-<Imagens/Improved-Lista.png, id=30, 1071.00125pt x 216.81pt>
+Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 39.
+(pdftex.def)             Requested size: 250.24199pt x 43.542pt.
+<Imagens/Improved-Lista.png, id=27, 1071.00125pt x 216.81pt>
 File: Imagens/Improved-Lista.png Graphic file (type png)
 <use Imagens/Improved-Lista.png>
-Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 59.
-(pdftex.def)             Requested size: 172.5pt x 34.91856pt.
-<Imagens/Improved-Arvore.png, id=31, 883.3pt x 422.57875pt>
+Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 61.
+(pdftex.def)             Requested size: 250.24199pt x 50.65591pt.
+<Imagens/Improved-Arvore.png, id=28, 883.3pt x 422.57875pt>
 File: Imagens/Improved-Arvore.png Graphic file (type png)
 <use Imagens/Improved-Arvore.png>
-Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 59.
-(pdftex.def)             Requested size: 172.5pt x 82.5218pt.
+Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 61.
+(pdftex.def)             Requested size: 250.24199pt x 119.714pt.
 
-Overfull \hbox (24.00003pt too wide) in paragraph at lines 58--62
+Overfull \hbox (24.00002pt too wide) in paragraph at lines 60--64
  [][] 
  []
 
-<Imagens/Advanced-Arvore.png, id=32, 1293.83376pt x 419.5675pt>
+[3{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png> <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png>]
+<Imagens/Advanced-Arvore.png, id=37, 1293.83376pt x 419.5675pt>
 File: Imagens/Advanced-Arvore.png Graphic file (type png)
 <use Imagens/Advanced-Arvore.png>
-Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 79.
-(pdftex.def)             Requested size: 172.5pt x 55.93494pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[4{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png>]
-Overfull \hbox (7.30789pt too wide) in paragraph at lines 109--110
-[]\T1/cmr/m/n/10 N�s skip e fo-lhas: O apon-ta-dor un-cle liga a um tio onde a re-gra RED(s.uncle)
- []
-
-[5 <./Imagens/Advanced-Arvore.png>]) (./Desenvolvimento.tex (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
+Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 82.
+(pdftex.def)             Requested size: 250.24199pt x 81.1463pt.
+) (./Desenvolvimento.tex [4 <./Imagens/Advanced-Arvore.png>] (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 ) (/usr/share/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2025/11/14 1.11b listings language file
 ) (/usr/share/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
 )
-Overfull \hbox (14.91486pt too wide) in paragraph at lines 20--21
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-
-Overfull \hbox (5.46852pt too wide) in paragraph at lines 33--33
-[]\T1/cmr/bx/n/12 Improved Ap-pli-ca-tive Random-Acces Stack with Sigma
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 35--42
 
  []
 
-[6]
+
 Underfull \hbox (badness 10000) in paragraph at lines 55--61
 
  []
 
-) (./Resultados.tex [7]
+[5]) (./Resultados.tex [6]
 Package svg Info: Last page of `./svg-inkscape/3lgn_svg-tex.pdf' is 1 on input line 16.
  (./svg-inkscape/3lgn_svg-tex.pdf_tex
-<./svg-inkscape/3lgn_svg-tex.pdf, id=51, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/3lgn_svg-tex.pdf, id=49, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/3lgn_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/3lgn_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/3lgn_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
 Package svg Info: Last page of `./svg-inkscape/2lgn_svg-tex.pdf' is 1 on input line 16.
  (./svg-inkscape/2lgn_svg-tex.pdf_tex
-<./svg-inkscape/2lgn_svg-tex.pdf, id=53, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/2lgn_svg-tex.pdf, id=51, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/2lgn_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/2lgn_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/2lgn_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-2_svg-tex.pdf' is 1 on input line 18.
  (./svg-inkscape/1lgn-skip-2_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-2_svg-tex.pdf, id=55, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-2_svg-tex.pdf, id=53, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-2_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-2_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-2_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-4_svg-tex.pdf' is 1 on input line 18.
  (./svg-inkscape/1lgn-skip-4_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-4_svg-tex.pdf, id=57, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-4_svg-tex.pdf, id=55, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-4_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-4_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-4_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-8_svg-tex.pdf' is 1 on input line 20.
  (./svg-inkscape/1lgn-skip-8_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-8_svg-tex.pdf, id=59, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-8_svg-tex.pdf, id=57, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-8_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-8_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-8_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-16_svg-tex.pdf' is 1 on input line 20.
  (./svg-inkscape/1lgn-skip-16_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-16_svg-tex.pdf, id=61, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-16_svg-tex.pdf, id=59, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-16_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-16_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-16_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
 )
-Overfull \hbox (24.00003pt too wide) in paragraph at lines 15--23
+Overfull \hbox (24.00002pt too wide) in paragraph at lines 15--23
  [][] 
  []
 
-[8 <./svg-inkscape/3lgn_svg-tex.pdf> <./svg-inkscape/2lgn_svg-tex.pdf
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+Package svg Info: Last page of `./svg-inkscape/3lgn_svg-tex.pdf' is 1 on input line 37.
+(./svg-inkscape/3lgn_svg-tex.pdf_tex
+File: ./svg-inkscape/3lgn_svg-tex.pdf Graphic file (type pdf)
+<use ./svg-inkscape/3lgn_svg-tex.pdf, page 1>
+Package pdftex.def Info: ./svg-inkscape/3lgn_svg-tex.pdf , page1 used on input line 56.
+(pdftex.def)             Requested size: 250.24199pt x 189.54823pt.
+)
+Package svg Info: Last page of `./svg-inkscape/iarass_1_000_000_svg-tex.pdf' is 1 on input line 37.
+ (./svg-inkscape/iarass_1_000_000_svg-tex.pdf_tex
+<./svg-inkscape/iarass_1_000_000_svg-tex.pdf, id=62, page=1, 617.23175pt x 385.08063pt>
+File: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf Graphic file (type pdf)
+<use ./svg-inkscape/iarass_1_000_000_svg-tex.pdf, page 1>
+Package pdftex.def Info: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf , page1 used on input line 56.
+(pdftex.def)             Requested size: 250.24199pt x 156.12132pt.
+)
+Package svg Info: Last page of `./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf' is 1 on input line 39.
+ (./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf_tex
+<./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, id=64, page=1, 617.23175pt x 385.08063pt>
+File: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf Graphic file (type pdf)
+<use ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, page 1>
+Package pdftex.def Info: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf , page1 used on input line 56.
+(pdftex.def)             Requested size: 250.24199pt x 156.12132pt.
+)
+Overfull \hbox (24.00002pt too wide) in paragraph at lines 36--42
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+) (./Discussao.tex) (./Referencias.tex (./main.bbl [7] [8 <./svg-inkscape/3lgn_svg-tex.pdf> <./svg-inkscape/2lgn_svg-tex.pdf
 
 pdfTeX warning: pdflatex (file ./svg-inkscape/2lgn_svg-tex.pdf): PDF inclusion: multiple pdfs with page group included in a single page
 > <./svg-inkscape/1lgn-skip-2_svg-tex.pdf
@@ -452,43 +535,10 @@ pdfTeX warning: pdflatex (file ./svg-inkscape/1lgn-skip-8_svg-tex.pdf): PDF incl
 > <./svg-inkscape/1lgn-skip-16_svg-tex.pdf
 
 pdfTeX warning: pdflatex (file ./svg-inkscape/1lgn-skip-16_svg-tex.pdf): PDF inclusion: multiple pdfs with page group included in a single page
->]
-Package svg Info: Last page of `./svg-inkscape/3lgn_svg-tex.pdf' is 1 on input line 37.
- (./svg-inkscape/3lgn_svg-tex.pdf_tex
-File: ./svg-inkscape/3lgn_svg-tex.pdf Graphic file (type pdf)
-<use ./svg-inkscape/3lgn_svg-tex.pdf, page 1>
-Package pdftex.def Info: ./svg-inkscape/3lgn_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 130.66183pt.
-)
-Package svg Info: Last page of `./svg-inkscape/iarass_1_000_000_svg-tex.pdf' is 1 on input line 37.
- (./svg-inkscape/iarass_1_000_000_svg-tex.pdf_tex
-<./svg-inkscape/iarass_1_000_000_svg-tex.pdf, id=428, page=1, 617.23175pt x 385.08063pt>
-File: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf Graphic file (type pdf)
-<use ./svg-inkscape/iarass_1_000_000_svg-tex.pdf, page 1>
-Package pdftex.def Info: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 107.61618pt.
-)
-Package svg Info: Last page of `./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf' is 1 on input line 39.
- (./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf_tex
-<./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, id=430, page=1, 617.23175pt x 385.08063pt>
-File: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf Graphic file (type pdf)
-<use ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, page 1>
-Package pdftex.def Info: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf , page1 used on input line 56.
-(pdftex.def)             Requested size: 172.5pt x 107.61618pt.
-)
-Overfull \hbox (24.00003pt too wide) in paragraph at lines 36--42
- [][] 
- []
-
-[9 <./svg-inkscape/iarass_1_000_000_svg-tex.pdf> <./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf
+>] [9 <./svg-inkscape/iarass_1_000_000_svg-tex.pdf> <./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf
 
 pdfTeX warning: pdflatex (file ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf): PDF inclusion: multiple pdfs with page group included in a single page
->] [10]
-Overfull \hbox (7.71281pt too wide) in paragraph at lines 126--142
- [][] 
- []
-
-) (./Discussao.tex [11]) (./Referencias.tex (./main.bbl)) [12] (./main.aux)
+>])) [10] (./main.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -499,18 +549,18 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 7730 strings out of 469495
- 139741 string characters out of 5470098
- 759936 words of memory out of 5000000
- 36198 multiletter control sequences out of 15000+600000
- 636868 words of font info for 58 fonts, out of 8000000 for 9000
+ 8221 strings out of 469495
+ 147223 string characters out of 5470098
+ 782984 words of memory out of 5000000
+ 36681 multiletter control sequences out of 15000+600000
+ 638409 words of font info for 60 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
  94i,16n,93p,634b,1123s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on main.pdf (12 pages, 934941 bytes).
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
+Output written on main.pdf (10 pages, 975698 bytes).
 PDF statistics:
- 597 PDF objects out of 1000 (max. 8388607)
- 378 compressed objects within 4 object streams
+ 601 PDF objects out of 1000 (max. 8388607)
+ 380 compressed objects within 4 object streams
  0 named destinations out of 1000 (max. 500000)
  133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

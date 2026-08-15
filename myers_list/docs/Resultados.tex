@@ -72,7 +72,6 @@ anteriores com valores exatos para comparação direta entre estruturas.
 \end{table}
 
 
-\newpage
 \subsection{Tempo de Execução}
 
 A Tabela \ref{tab:tempo_execucao} apresenta o tempo total de execução de lookups sobre todos os elementos de uma lista 
@@ -82,19 +81,19 @@ com 1 000 000 de elementos para todas as variantes.
 \begin{table}[h!]
     \centering
     \begin{tabular}{cc}
-        \textbf{Variante} & \textbf{Lookup All (1\_000\_000)} \\
+        \textbf{Variante} & \textbf{Lookup All 1\_000\_000 (ms)} \\
         \hline
-         Basic Myers List & 57.42 ms\\
+         Basic Myers List & 57,42\\
          \hline
-         Improved Myers List & 77.46 ms\\
+         Improved Myers List & 77,46\\
          \hline
-         Advanced Myers List & 401.43 ms\\
+         Advanced Myers List & 401,43\\
          \hline
-         Dense Advanced Myers List (sigma = 2) & 60.35 ms\\
+         Dense Advanced Myers List (sigma = 2) & 60,35\\
          \hline
-         Iarass & 65.00 ms\\
+         Iarass & 65,00 \\
          \hline
-         Okasaki List & 51.04 ms\\
+         Okasaki List & 51,04\\
          \hline
     \end{tabular}
     \caption{Tempo de execução}
@@ -104,7 +103,6 @@ com 1 000 000 de elementos para todas as variantes.
 
 % TODO: Texto a explicar/falar dos dados obtidos
 
-\newpage
 \subsection{Uso de Memória}
 
     A Tabela \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1 000 000 de elementos.
@@ -124,19 +122,42 @@ superior ao da Advanced original.
 \begin{table}[h!]
     \centering
     \begin{tabular}{cc}
-        \textbf{Variante} & \textbf{Memória (1000000 elementos)} \\
+        \textbf{Variante} & \textbf{Memória 1\_000\_000 elementos (MB)} \\
         \hline
-         Basic Myers List & 38.15 MB\\
+         Basic Myers List & 38,15\\
          \hline
-         Improved Myers List & 38.15 MB\\
+         Improved Myers List & 38,15\\
          \hline
-         Advanced Myers List & 53.41 MB\\
+         Advanced Myers List & 53,41\\
          \hline
-         Dense Advanced Myers List (sigma = 2) & 75.02 MB\\
+         Dense Advanced Myers List (sigma = 2) & 75,02\\
          \hline
-         Iarass & 50.86 MB\\
+         Iarass & 50,86\\
          \hline
-         Okasaki List & 22.89 MB\\
+         Okasaki List & 22,89\\
+         \hline
+    \end{tabular}
+    \caption{Uso de memória para cada variante}
+    \label{tab:memoria}
+\end{table}
+
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{cc}
+        \textbf{Variante} & \textbf{Memória 1\_000\_000 elementos (MB)} \\
+        \hline
+         Basic Myers List & 38,15\\
+         \hline
+         Improved Myers List & 38,15\\
+         \hline
+         Advanced Myers List & 53,41\\
+         \hline
+         Dense Advanced Myers List (sigma = 2) & 75,02\\
+         \hline
+         Iarass & 50,86\\
+         \hline
+         Okasaki List & 22,89\\
          \hline
     \end{tabular}
     \caption{Uso de memória para cada variante}
