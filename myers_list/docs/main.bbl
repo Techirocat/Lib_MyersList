@@ -5,6 +5,11 @@ Eugene~W. Myers.
 \newblock An applicative random-access stack.
 \newblock {\em Information Processing Letters}, 17(5):241--248, 1983.
 
+\bibitem{okasaki1995}
+Chris Okasaki.
+\newblock Purely functional random-access lists.
+\newblock In {\em Proceedings of the seventh international conference on Functional programming languages and computer architecture}, pages 86--95. ACM, 1995.
+
 \bibitem{peters2025}
 Edward Peters, Yong~Qi Foo, and Michael~D. Adams.
 \newblock Pushing the information-theoretic limits of random access lists.

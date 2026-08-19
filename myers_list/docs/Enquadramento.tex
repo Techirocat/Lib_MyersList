@@ -1,30 +1,25 @@
 \section{Enquadramento Teórico}
 
-% Explicar a Basic, Improved, Advanced Myers list e os seus problemas, rapidamente. (Deve dar para reaproveitar muita coisa do Docs e do PWP)
-% R: Até agora so copiei o q está no docs
-
-% (AINDA É NECESSÁRIO SUBSTITUIR ALGUM TEXTO POR EXPRESSÕES MATEMÁTICAS LATEX)
-
 \subsection{Basic Myers List}
 
 A Myers List original, proposta por Eugene W. Myers (1983), introduz um apontador jump adicional em cada célula de uma cons list, 
 permitindo lookup em [ 3 log( n )-5 ] apontadores no pior caso. A sua construção iterativa preserva o suporte a cons em tempo O(1), mas o seu desempenho assintótico fica aquém do limite teórico de informação.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \begin{tabular}{cc}
         \includegraphics[width=0.5\linewidth]{Imagens/Basic-Lista} & \includegraphics[width=0.5\linewidth]{Imagens/Basic-Arvore} \\
         (Formato Lista) & (Formato Árvore)\\ 
     \end{tabular}
     \caption{Representação da Basic Myers List}
-    \label{tab:placeholder}
+    \label{tab:basic}
 \end{figure}
 
 
 A associação do ponteiro jump funciona da seguinte forma:
 
 % Expressão matemática do jump
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Imagens/Basic-Jump} 
     \caption{Jump}
@@ -34,7 +29,7 @@ A associação do ponteiro jump funciona da seguinte forma:
 Lookup na Basic Myers List é bastante simples, assume-se que len é um valor válido:
 
 % Expressão matemática do lookup
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{Imagens/Basic-Lookup} 
     \caption{Lookup}
@@ -43,7 +38,21 @@ Lookup na Basic Myers List é bastante simples, assume-se que len é um valor v�
 
 \subsection{Improved Myers List}
 
-A Improved Myers List, proposta por Peters, Foo e Adams (2025), introduz uma modificação simples, mas eficaz à maneira como a Basic Myers List é construída. O apontador jump da primeira célula de cada região passa a apontar para a primeira célula da segunda sub-região, em vez da última célula. Assim, o resultado é uma melhoria do pior caso de lookup de 3(log n) - 5 para 2(log (n + 1)) - 3 apontadores, igualando ao desempenho das Okasaki List, mas ainda com a vantagem de que permite o lookup a partir de qualquer posição.
+A Improved Myers List, proposta por Peters, Foo e Adams (2025), introduz uma modificação simples, mas eficaz à maneira como a Basic Myers List 
+é construída. O apontador jump da primeira célula de cada região passa a apontar para a primeira célula da segunda sub-região, em vez da última 
+célula. Assim, o resultado é uma melhoria do pior caso de lookup de 3(log n) - 5 para 2(log (n + 1)) - 3 apontadores, igualando ao desempenho das 
+Okasaki List, mas ainda com a vantagem de que permite o lookup a partir de qualquer posição.
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{cc}
+        \includegraphics[width=0.5\linewidth]{Imagens/Improved-Lista}  & \includegraphics[width=0.5\linewidth]{Imagens/Improved-Arvore} \\
+        (Formato Lista) & (Formato Árvore)\\ 
+    \end{tabular}
+    \caption{Representação da Improved Myers List}
+    \label{fig:Improved}
+\end{figure}
+
 
 \subsubsection{Construção e conceito de região}
 
@@ -52,17 +61,23 @@ Uma região é definida pelo seu grau k:
     \item Uma região de grau k=0  consiste numa única célula.
     \item Uma região de grau k>0 é composta por duas sub-regiões de grau k-1 (no paper, estas regiões são denominadas Qk-1 e Rk-1) e uma célula adicional no início.
 \end{itemize}
-Na Basic Myers List, o apontador jump da célula inicial de uma região aponta para a última célula dessa mesma região. Adicionalmente, as duas sub-regiões partilham células, o que torna a estrutura menos eficiente.
-A Improved Myers List resolve este problema alterando a regra de construção: as sub-regiões Qk-1 e Rk-1 deixam de partilhar células, e o apontador jump da célula inicial passa a apontar diretamente para a primeira célula de Rk-1. Se visualizarmos a lista como uma árvore, as sub-regiões  Qk-1 e Rk-1 formam, respetivamente, as sub-árvores esquerda e direita. Assim, o acesso à raiz da sub-árvore direita passa a custar apenas a travessia de um único apontador (jump), eliminando a ineficiência da variante clássica.
 
-\begin{figure}[h!]
+Na Basic Myers List, o apontador jump da célula inicial de uma região aponta para a última célula dessa mesma região. Adicionalmente, as duas 
+sub-regiões partilham células, o que torna a estrutura menos eficiente.
+A Improved Myers List resolve este problema alterando a regra de construção: as sub-regiões Qk-1 e Rk-1 deixam de partilhar células, e o apontador 
+jump da célula inicial passa a apontar diretamente para a primeira célula de Rk-1. Se visualizarmos a lista como uma árvore, as sub-regiões  Qk-1 e 
+Rk-1 formam, respetivamente, as sub-árvores esquerda e direita. Assim, o acesso à raiz da sub-árvore direita passa a custar apenas a travessia de 
+um único apontador (jump), eliminando a ineficiência da variante clássica.
+
+\begin{figure}[H]
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.5\linewidth]{Imagens/Improved-Lista}  & \includegraphics[width=0.5\linewidth]{Imagens/Improved-Arvore} \\
-        (Formato Lista) & (Formato Árvore)\\ 
+    \begin{tabular}{ccc}
+        \includegraphics[width=0.3\linewidth]{Imagens/Regiao1} & 
+        \includegraphics[width=0.3\linewidth]{Imagens/Regiao2} & 
+        \includegraphics[width=0.3\linewidth]{Imagens/Regiao3}
     \end{tabular}
-    \caption{Representação da Improved Myers List}
-    \label{tab:placeholder}
+    \caption{wrap durante o cons na Improved Myers List}
+    \label{tab:regioes}
 \end{figure}
 
 \subsubsection{Lookup}
@@ -77,9 +92,9 @@ adicionais (uncle, inc, greater), permitindo assim um lookup que pode ser realiz
 ((1+1/sigma) [log n] + 9 + sigma) à custa de maior complexidade estrutural e de construção.
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{Imagens/Advanced-Arvore} 
+    \includegraphics[width=0.8\linewidth]{Imagens/Advanced-Arvore} 
     \caption{Advanced Myers List}
     \label{fig:advanced}
 \end{figure}
@@ -94,6 +109,21 @@ Existem três tipos de nós:
     \item Nós skip - são constituídos por duas células, denominadas top e bottom. O apontador next da célula top liga diretamente à célula bottom e o apontador jump aponta para o uncle. Estes nós aparecem repetidamente em camadas específicas, mais concretamente a cada intervalo  acima da camada folha.
     \item Nós folha - São constituídos pela junção de três células: top, middle e bottom. Os apontadores jump de cada célula são reaproveitados para atalhos distintos: inc, greater e uncle. Estes nós constituem inteiramente a camada inferior da árvore lógica.
 \end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{ccc}
+        \includegraphics[width=0.2\linewidth]{Imagens/No-Normal} & 
+        \includegraphics[width=0.2\linewidth]{Imagens/No-Skip} & 
+        \includegraphics[width=0.2\linewidth]{Imagens/No-Leaf}\\
+        Nós Normais & Nós Skip & Nós Folha\\ 
+    \end{tabular}
+    \caption{Tipos de Nós}
+    \label{tab:nos}
+\end{figure}
+
+
 
 \subsubsection{Construção}
 
@@ -110,5 +140,7 @@ A estrutura é construida recursivamente do head até a camada de folhas e a atr
 \begin{itemize}
     \item Nós normais e skip: O apontador next aponta para a sub-árvore esquerda e o jump para a sub-árvore direita
     \item Nós skip e folhas: O apontador uncle liga a um tio onde a regra RED(s.uncle) = RHD(s) é verificada
-    \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greatere lia à folha mais próxima à direita onde RHD(f') > RHD(f) 
+    \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greatere liga à folha mais próxima à direita onde RHD(f') > RHD(f) 
 \end{itemize}
+
+\textbf{NOTA:} Aqui explicamos o funcionamento da Improved Myers List e da Advanced Myers List de uma forma muito superficial mas rápida de compreender, para uma compreensão e para um estudo mais informativo recomenda-se ler o paper original.
