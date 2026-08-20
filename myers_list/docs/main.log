@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  19 AUG 2026 14:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Arch Linux) (preloaded format=pdflatex 2026.6.15)  20 AUG 2026 11:17
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -303,27 +303,23 @@ File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux
 Package babel Info: 'portuguese' activates 'portuges' shorthands.
 (babel)             Reported on input line 6.
-
-
-LaTeX Warning: Label `fig:dense' multiply defined.
-
 )
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 73.
-LaTeX Font Info:    ... okay on input line 73.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count318
@@ -385,15 +381,15 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 75.
+(Font)              <12> on input line 59.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 75.
+(Font)              <8> on input line 59.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 75.
+(Font)              <6> on input line 59.
 <Imagens/TRUST-LAB.png, id=4, 2055.68pt x 2055.68pt>
 File: Imagens/TRUST-LAB.png Graphic file (type png)
 <use Imagens/TRUST-LAB.png>
-Package pdftex.def Info: Imagens/TRUST-LAB.png  used on input line 91.
+Package pdftex.def Info: Imagens/TRUST-LAB.png  used on input line 75.
 (pdftex.def)             Requested size: 42.67912pt x 42.65927pt.
 [1
 
@@ -430,79 +426,69 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--32
 <Imagens/Basic-Lista.png, id=22, 1056.94875pt x 187.70125pt>
 File: Imagens/Basic-Lista.png Graphic file (type png)
 <use Imagens/Basic-Lista.png>
-Package pdftex.def Info: Imagens/Basic-Lista.png  used on input line 11.
-(pdftex.def)             Requested size: 250.24199pt x 44.43916pt.
+Package pdftex.def Info: Imagens/Basic-Lista.png  used on input line 14.
+(pdftex.def)             Requested size: 240.23016pt x 42.66057pt.
 <Imagens/Basic-Arvore.png, id=23, 824.07875pt x 414.54875pt>
 File: Imagens/Basic-Arvore.png Graphic file (type png)
 <use Imagens/Basic-Arvore.png>
-Package pdftex.def Info: Imagens/Basic-Arvore.png  used on input line 11.
-(pdftex.def)             Requested size: 250.24199pt x 125.8837pt.
-
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 10--14
- [][] 
- []
-
+Package pdftex.def Info: Imagens/Basic-Arvore.png  used on input line 18.
+(pdftex.def)             Requested size: 200.19054pt x 100.70189pt.
 <Imagens/Basic-Jump.png, id=24, 1068.99374pt x 123.46124pt>
 File: Imagens/Basic-Jump.png Graphic file (type png)
 <use Imagens/Basic-Jump.png>
-Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 24.
+Package pdftex.def Info: Imagens/Basic-Jump.png  used on input line 29.
 (pdftex.def)             Requested size: 250.24199pt x 28.90036pt.
-[3 <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png>]
-<Imagens/Basic-Lookup.png, id=31, 957.5775pt x 166.6225pt>
+ [3 <./Imagens/Basic-Lista.png> <./Imagens/Basic-Arvore.png>]
+<Imagens/Basic-Lookup.png, id=37, 957.5775pt x 166.6225pt>
 File: Imagens/Basic-Lookup.png Graphic file (type png)
 <use Imagens/Basic-Lookup.png>
-Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 34.
+Package pdftex.def Info: Imagens/Basic-Lookup.png  used on input line 39.
 (pdftex.def)             Requested size: 250.24199pt x 43.542pt.
-<Imagens/Improved-Lista.png, id=32, 1071.00125pt x 216.81pt>
+<Imagens/Improved-Lista.png, id=38, 1071.00125pt x 216.81pt>
 File: Imagens/Improved-Lista.png Graphic file (type png)
 <use Imagens/Improved-Lista.png>
-Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 49.
-(pdftex.def)             Requested size: 250.24199pt x 50.65591pt.
-<Imagens/Improved-Arvore.png, id=33, 883.3pt x 422.57875pt>
+Package pdftex.def Info: Imagens/Improved-Lista.png  used on input line 56.
+(pdftex.def)             Requested size: 240.23016pt x 48.63127pt.
+<Imagens/Improved-Arvore.png, id=39, 883.3pt x 422.57875pt>
 File: Imagens/Improved-Arvore.png Graphic file (type png)
 <use Imagens/Improved-Arvore.png>
-Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 49.
-(pdftex.def)             Requested size: 250.24199pt x 119.714pt.
-
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 48--52
- [][] 
- []
-
-<Imagens/Regiao1.png, id=34, 354.32375pt x 240.9pt>
+Package pdftex.def Info: Imagens/Improved-Arvore.png  used on input line 60.
+(pdftex.def)             Requested size: 200.19054pt x 95.77249pt.
+<Imagens/Regiao1.png, id=40, 354.32375pt x 240.9pt>
 File: Imagens/Regiao1.png Graphic file (type png)
 <use Imagens/Regiao1.png>
-Package pdftex.def Info: Imagens/Regiao1.png  used on input line 75.
+Package pdftex.def Info: Imagens/Regiao1.png  used on input line 84.
 (pdftex.def)             Requested size: 150.14671pt x 102.08524pt.
-<Imagens/Regiao2.png, id=35, 401.5pt x 240.9pt>
+<Imagens/Regiao2.png, id=41, 401.5pt x 240.9pt>
 File: Imagens/Regiao2.png Graphic file (type png)
 <use Imagens/Regiao2.png>
-Package pdftex.def Info: Imagens/Regiao2.png  used on input line 76.
+Package pdftex.def Info: Imagens/Regiao2.png  used on input line 85.
 (pdftex.def)             Requested size: 150.14671pt x 90.09099pt.
-<Imagens/Regiao3.png, id=36, 360.34625pt x 277.035pt>
+<Imagens/Regiao3.png, id=42, 360.34625pt x 277.035pt>
 File: Imagens/Regiao3.png Graphic file (type png)
 <use Imagens/Regiao3.png>
-Package pdftex.def Info: Imagens/Regiao3.png  used on input line 77.
+Package pdftex.def Info: Imagens/Regiao3.png  used on input line 86.
 (pdftex.def)             Requested size: 150.14671pt x 115.43237pt.
-[4{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png> <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png>]
-<Imagens/Advanced-Arvore.png, id=45, 1127.21124pt x 433.62pt>
+ [4{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc} <./Imagens/Basic-Jump.png> <./Imagens/Basic-Lookup.png> <./Imagens/Improved-Lista.png> <./Imagens/Improved-Arvore.png>]
+<Imagens/Advanced-Arvore.png, id=52, 1127.21124pt x 433.62pt>
 File: Imagens/Advanced-Arvore.png Graphic file (type png)
 <use Imagens/Advanced-Arvore.png>
-Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 97.
+Package pdftex.def Info: Imagens/Advanced-Arvore.png  used on input line 106.
 (pdftex.def)             Requested size: 400.38872pt x 154.0255pt.
-<Imagens/No-Normal.png, id=46, 286.06876pt x 237.88875pt>
+<Imagens/No-Normal.png, id=53, 286.06876pt x 237.88875pt>
 File: Imagens/No-Normal.png Graphic file (type png)
 <use Imagens/No-Normal.png>
-Package pdftex.def Info: Imagens/No-Normal.png  used on input line 117.
+Package pdftex.def Info: Imagens/No-Normal.png  used on input line 126.
 (pdftex.def)             Requested size: 100.09526pt x 83.2369pt.
-<Imagens/No-Skip.png, id=47, 376.40625pt x 405.515pt>
+<Imagens/No-Skip.png, id=54, 376.40625pt x 405.515pt>
 File: Imagens/No-Skip.png Graphic file (type png)
 <use Imagens/No-Skip.png>
-Package pdftex.def Info: Imagens/No-Skip.png  used on input line 118.
+Package pdftex.def Info: Imagens/No-Skip.png  used on input line 127.
 (pdftex.def)             Requested size: 100.09526pt x 107.83221pt.
-<Imagens/No-Leaf.png, id=48, 390.45876pt x 341.275pt>
+<Imagens/No-Leaf.png, id=55, 390.45876pt x 341.275pt>
 File: Imagens/No-Leaf.png Graphic file (type png)
 <use Imagens/No-Leaf.png>
-Package pdftex.def Info: Imagens/No-Leaf.png  used on input line 119.
+Package pdftex.def Info: Imagens/No-Leaf.png  used on input line 128.
 (pdftex.def)             Requested size: 100.09526pt x 87.48482pt.
  [5 <./Imagens/Regiao1.png> <./Imagens/Regiao2.png> <./Imagens/Regiao3.png> <./Imagens/Advanced-Arvore.png>]) (./Desenvolvimento.tex (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
@@ -532,55 +518,45 @@ File: ts1zi4.fd 2018/01/14 TS1/zi4 (Inconsolata)
 LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
 (Font)              scaled to size 8.0pt on input line 10.
  [6{/usr/share/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}{/usr/share/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc} <./Imagens/No-Normal.png> <./Imagens/No-Skip.png> <./Imagens/No-Leaf.png>]
-<Imagens/Dense-Lista.png, id=65, 1252.68pt x 331.2375pt>
+<Imagens/Dense-Lista.png, id=72, 1252.68pt x 331.2375pt>
 File: Imagens/Dense-Lista.png Graphic file (type png)
 <use Imagens/Dense-Lista.png>
-Package pdftex.def Info: Imagens/Dense-Lista.png  used on input line 33.
-(pdftex.def)             Requested size: 250.24199pt x 66.16545pt.
-<Imagens/Dense-Arvore.png, id=66, 723.70375pt x 410.53375pt>
+Package pdftex.def Info: Imagens/Dense-Lista.png  used on input line 34.
+(pdftex.def)             Requested size: 240.23016pt x 63.52206pt.
+<Imagens/Dense-Arvore.png, id=73, 723.70375pt x 410.53375pt>
 File: Imagens/Dense-Arvore.png Graphic file (type png)
 <use Imagens/Dense-Arvore.png>
-Package pdftex.def Info: Imagens/Dense-Arvore.png  used on input line 33.
-(pdftex.def)             Requested size: 250.24199pt x 141.95377pt.
+Package pdftex.def Info: Imagens/Dense-Arvore.png  used on input line 38.
+(pdftex.def)             Requested size: 240.23016pt x 136.27211pt.
 
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 32--36
- [][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--45
+Underfull \hbox (badness 10000) in paragraph at lines 46--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--70
+Underfull \hbox (badness 10000) in paragraph at lines 67--74
 
  []
 
 [7 <./Imagens/Dense-Lista.png> <./Imagens/Dense-Arvore.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 82--88
+Underfull \hbox (badness 10000) in paragraph at lines 84--90
 
  []
 
-<Imagens/Iarass-Lista.png, id=73, 1245.65375pt x 456.70625pt>
+<Imagens/Iarass-Lista.png, id=80, 1245.65375pt x 456.70625pt>
 File: Imagens/Iarass-Lista.png Graphic file (type png)
 <use Imagens/Iarass-Lista.png>
-Package pdftex.def Info: Imagens/Iarass-Lista.png  used on input line 99.
-(pdftex.def)             Requested size: 250.24199pt x 91.7438pt.
-<Imagens/Iarass-Arvore.png, id=74, 723.70375pt x 436.63126pt>
+Package pdftex.def Info: Imagens/Iarass-Lista.png  used on input line 102.
+(pdftex.def)             Requested size: 240.23016pt x 88.07825pt.
+<Imagens/Iarass-Arvore.png, id=81, 723.70375pt x 436.63126pt>
 File: Imagens/Iarass-Arvore.png Graphic file (type png)
 <use Imagens/Iarass-Arvore.png>
-Package pdftex.def Info: Imagens/Iarass-Arvore.png  used on input line 99.
-(pdftex.def)             Requested size: 250.24199pt x 150.97772pt.
-
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 98--102
- [][] 
- []
-
+Package pdftex.def Info: Imagens/Iarass-Arvore.png  used on input line 106.
+(pdftex.def)             Requested size: 200.19054pt x 120.77686pt.
 ) (./Resultados.tex [8 <./Imagens/Iarass-Lista.png> <./Imagens/Iarass-Arvore.png>]
 Package svg Info: Last page of `./svg-inkscape/3lgn_svg-tex.pdf' is 1 on input line 19.
  (./svg-inkscape/3lgn_svg-tex.pdf_tex
-<./svg-inkscape/3lgn_svg-tex.pdf, id=81, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/3lgn_svg-tex.pdf, id=88, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/3lgn_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/3lgn_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/3lgn_svg-tex.pdf , page1 used on input line 56.
@@ -588,7 +564,7 @@ Package pdftex.def Info: ./svg-inkscape/3lgn_svg-tex.pdf , page1 used on input l
 )
 Package svg Info: Last page of `./svg-inkscape/2lgn_svg-tex.pdf' is 1 on input line 23.
  (./svg-inkscape/2lgn_svg-tex.pdf_tex
-<./svg-inkscape/2lgn_svg-tex.pdf, id=83, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/2lgn_svg-tex.pdf, id=90, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/2lgn_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/2lgn_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/2lgn_svg-tex.pdf , page1 used on input line 56.
@@ -596,7 +572,7 @@ Package pdftex.def Info: ./svg-inkscape/2lgn_svg-tex.pdf , page1 used on input l
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-2_svg-tex.pdf' is 1 on input line 29.
  (./svg-inkscape/1lgn-skip-2_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-2_svg-tex.pdf, id=85, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-2_svg-tex.pdf, id=92, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-2_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-2_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-2_svg-tex.pdf , page1 used on input line 56.
@@ -604,7 +580,7 @@ Package pdftex.def Info: ./svg-inkscape/1lgn-skip-2_svg-tex.pdf , page1 used on 
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-4_svg-tex.pdf' is 1 on input line 33.
  (./svg-inkscape/1lgn-skip-4_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-4_svg-tex.pdf, id=87, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-4_svg-tex.pdf, id=94, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-4_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-4_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-4_svg-tex.pdf , page1 used on input line 56.
@@ -612,7 +588,7 @@ Package pdftex.def Info: ./svg-inkscape/1lgn-skip-4_svg-tex.pdf , page1 used on 
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-8_svg-tex.pdf' is 1 on input line 39.
  (./svg-inkscape/1lgn-skip-8_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-8_svg-tex.pdf, id=89, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-8_svg-tex.pdf, id=96, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-8_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-8_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-8_svg-tex.pdf , page1 used on input line 56.
@@ -620,7 +596,7 @@ Package pdftex.def Info: ./svg-inkscape/1lgn-skip-8_svg-tex.pdf , page1 used on 
 )
 Package svg Info: Last page of `./svg-inkscape/1lgn-skip-16_svg-tex.pdf' is 1 on input line 43.
  (./svg-inkscape/1lgn-skip-16_svg-tex.pdf_tex
-<./svg-inkscape/1lgn-skip-16_svg-tex.pdf, id=91, page=1, 401.14445pt x 303.84914pt>
+<./svg-inkscape/1lgn-skip-16_svg-tex.pdf, id=98, page=1, 401.14445pt x 303.84914pt>
 File: ./svg-inkscape/1lgn-skip-16_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/1lgn-skip-16_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/1lgn-skip-16_svg-tex.pdf , page1 used on input line 56.
@@ -628,7 +604,7 @@ Package pdftex.def Info: ./svg-inkscape/1lgn-skip-16_svg-tex.pdf , page1 used on
 ) [9]
 Package svg Info: Last page of `./svg-inkscape/dense_results_svg-tex.pdf' is 1 on input line 60.
  (./svg-inkscape/dense_results_svg-tex.pdf_tex
-<./svg-inkscape/dense_results_svg-tex.pdf, id=96, page=1, 617.23175pt x 385.08063pt>
+<./svg-inkscape/dense_results_svg-tex.pdf, id=103, page=1, 617.23175pt x 385.08063pt>
 File: ./svg-inkscape/dense_results_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/dense_results_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/dense_results_svg-tex.pdf , page1 used on input line 56.
@@ -636,7 +612,7 @@ Package pdftex.def Info: ./svg-inkscape/dense_results_svg-tex.pdf , page1 used o
 )
 Package svg Info: Last page of `./svg-inkscape/iarass_1_000_000_svg-tex.pdf' is 1 on input line 64.
  (./svg-inkscape/iarass_1_000_000_svg-tex.pdf_tex
-<./svg-inkscape/iarass_1_000_000_svg-tex.pdf, id=98, page=1, 617.23175pt x 385.08063pt>
+<./svg-inkscape/iarass_1_000_000_svg-tex.pdf, id=105, page=1, 617.23175pt x 385.08063pt>
 File: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/iarass_1_000_000_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf , page1 used on input line 56.
@@ -644,7 +620,7 @@ Package pdftex.def Info: ./svg-inkscape/iarass_1_000_000_svg-tex.pdf , page1 use
 )
 Package svg Info: Last page of `./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf' is 1 on input line 70.
  (./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf_tex
-<./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, id=100, page=1, 617.23175pt x 385.08063pt>
+<./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, id=107, page=1, 617.23175pt x 385.08063pt>
 File: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pdf , page1 used on input line 56.
@@ -675,24 +651,20 @@ pdfTeX warning: pdflatex (file ./svg-inkscape/simon_cruanes_1_000_000_svg-tex.pd
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 10471 strings out of 469495
- 189524 string characters out of 5470098
- 854517 words of memory out of 5000000
- 38873 multiletter control sequences out of 15000+600000
+ 10455 strings out of 469495
+ 189276 string characters out of 5470098
+ 853571 words of memory out of 5000000
+ 38857 multiletter control sequences out of 15000+600000
  640391 words of font info for 65 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 94i,12n,133p,406b,1614s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb></usr/share/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
-Output written on main.pdf (13 pages, 1329458 bytes).
+ 94i,12n,133p,406b,1679s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb></usr/share/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfti1000.pfb>
+Output written on main.pdf (13 pages, 1379554 bytes).
 PDF statistics:
- 692 PDF objects out of 1000 (max. 8388607)
- 424 compressed objects within 5 object streams
+ 717 PDF objects out of 1000 (max. 8388607)
+ 439 compressed objects within 5 object streams
  0 named destinations out of 1000 (max. 500000)
  193 words of extra memory for PDF output out of 10000 (max. 10000000)
 

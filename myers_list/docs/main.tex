@@ -14,53 +14,37 @@
 \usepackage{textcomp}
 
 % *********************************************************************
-
-\definecolor{fnpurple}{rgb}{0.42, 0.16, 0.49}
-\definecolor{fnteal}{rgb}{0.00, 0.42, 0.51}
-\definecolor{fngreen}{rgb}{0.00, 0.45, 0.36}
-\definecolor{fngold}{rgb}{0.65, 0.50, 0.00}
-\definecolor{fnrust}{rgb}{0.71, 0.36, 0.21}
-\definecolor{fnblue}{rgb}{0.34, 0.36, 0.70}
-\definecolor{fncomment}{rgb}{0.5, 0.5, 0.5}
-
+\definecolor{ocamlbasic}{rgb}{0.15, 0.15, 0.15}
+\definecolor{ocamlkeyword}{rgb}{0.00, 0.33, 0.71}
+\definecolor{ocamlcomment}{rgb}{0.25, 0.50, 0.35}
+\definecolor{ocamlstring}{rgb}{0.65, 0.15, 0.15}
+\definecolor{ocamltype}{rgb}{0.18, 0.54, 0.34}
+\definecolor{ocamlconstructor}{rgb}{0.44, 0.16, 0.60}
 
 \lstdefinestyle{ocaml_light}{
     language=[Objective]Caml,
     backgroundcolor=\color{white},
-    basicstyle=\ttfamily\footnotesize\color{fngold},
-    keywordstyle=\color{fnpurple}\bfseries,
-    commentstyle=\color{fncomment}\itshape,
-    stringstyle=\color{fnrust},
-    emph={None, Some, true, false, Ok, Error},
-    emphstyle=\color{fnteal}\bfseries,
-    emph={[2]List, Array, String, Map, Set, Option, fst, snd, failwith, raise, print_endline, Printf},
-    emphstyle={[2]\color{fngreen}\bfseries},
+    basicstyle=\ttfamily\footnotesize\color{ocamlbasic},
+    keywordstyle=\color{ocamlkeyword}\bfseries,
+    commentstyle=\color{ocamlcomment}\itshape,
+    stringstyle=\color{ocamlstring},
+    emph={None, Some, true, false, Ok, Error, Normal, Skip, Leaf}, 
+    emphstyle=\color{ocamlconstructor}\bfseries,
+    emph={[2]List, Array, String, Map, Set, Option, fst, snd, failwith, raise, print_endline, Printf, int, float, bool, char, unit},
+    emphstyle={[2]\color{ocamltype}\bfseries},
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
     keepspaces=true,
-    numbers=none,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
     tabsize=2,
     upquote=true,
     literate=
-        {:}{{\textcolor{fnblue}{:}}}1
-        {=}{{\textcolor{fnblue}{=}}}1
-        {[}{{\textcolor{fnblue}{[}}}1
-        {]}{{\textcolor{fnblue}{]}}}1
-        {(}{{\textcolor{fnblue}{(}}}1
-        {)}{{\textcolor{fnblue}{)}}}1
-        {\{}{{\textcolor{fnblue}{\{}}}1
-        {\}}{{\textcolor{fnblue}{\}}}}1
-        {|}{{\textcolor{fnblue}{|}}}1
-        {;}{{\textcolor{fnblue}{;}}}1
-        {->}{{\textcolor{fnblue}{->}}}2
-        {::}{{\textcolor{fnblue}{::}}}2
-        {-}{{\textcolor{fnblue}{-}}}1
-        {+}{{\textcolor{fnblue}{+}}}1
-        {*}{{\textcolor{fnblue}{*}}}1
+        {->}{{$\rightarrow$}}2
+        {<-}{{$\leftarrow$}}2
+        {=>}{{$\Rightarrow$}}2
 }
 
 % *********************************************************************
@@ -78,9 +62,9 @@
 Trabalhos recentes propuseram novas variantes de Random Access List, a Improved e Advanced Myers List, que reduziram o número de 
 travessias no pior caso, no entanto, a variante Advanced fá-lo à custa da perda da operação cons em tempo constante. Este relatório 
 levanta duas questões (i) é possível recuperar o cons em tempo constante na Advanced Myers List removendo as restrições impostas? (ii) é possível 
-aplicar as ideias centrais da Advanced Myers List à Improved Myers List para melhorar o seu desempenho de lookup sem perder o cons O(1)?. 
+aplicar as ideias centrais da Advanced Myers List à Improved Myers List para melhorar o seu desempenho de lookup sem perder o cons O(1)? 
 Para responder, propomos duas novas estruturas a Dense Advanced Myers List e a Improved Applicative Random-Access Stack with Sigma Region 
-(IARASS). Avaliamos as diferentes variante em número de travesias, tempo de execução e uso de memória para listas de até 1 000 000 de 
+(IARASS). Avaliamos as diferentes variante em número de travessias, tempo de execução e uso de memória para listas de até 1.000.000 de 
 elementos. Os resultados mostram que a variante Dense Advanced Myers List obtém o melhor desempenho de lookup ao custo do maior uso de memória, 
 enquanto a IARASS apresenta um equilíbrio entre desempenho e memória quando comparada com a Advanced Myers List.
 \end{abstract}

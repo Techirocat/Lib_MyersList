@@ -47,7 +47,7 @@ de 1 elemento até 1.000.000 de elementos, e efetuando um lookup sobre todos os 
 \end{figure}
 
 Os resultados confirmam a hierarquia Basic > Improved >= Advanced, mas mostram também que a escolha
-de um sigma tem um impacto direto no ponto a partir do qual a Advanced Myers List compensa mais face 
+de um $\sigma$ tem um impacto direto no ponto a partir do qual a Advanced Myers List compensa mais face 
 à Improved. 
 
 
@@ -75,7 +75,7 @@ de um sigma tem um impacto direto no ponto a partir do qual a Advanced Myers Lis
 
 
 A Tabela \ref{tab:pior_caso} apresenta o número máximo de travessias observado 
-para n = 1 000 000, valores retirados da leitura dos gráficos 
+para n = 1.000.000, valores retirados da leitura dos gráficos 
 anteriores com valores exatos para comparação direta entre estruturas.
 
 
@@ -152,7 +152,7 @@ O tempo de construção da lista não está incluído
     A Tabela \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1.000.000 de elementos.
 Como era esperado, a Basic e a Improved Myers List apresentam exatamente o mesmo uso de memória 
 (38.15 MB), uma vez que ambas mantêm o mesmo número de apontadores por célula, sendo apenas diferentes na maneira como o apontador jump é atribuído durante o cons.
-A Okasaki List  apresenta o menor uso de memória de todas as variantes (22.89 MB), por não incluir nenhum apontador adicional.
+A Okasaki List  apresenta o menor uso de memória de todas as variantes (22.89 MB).
 
 A Advanced Myers List (53.41 MB) apresenta um uso de memória superior ao das variantes Basic e Improved não por introduzir novos apontadores, 
 a estrutura de célula mantém-se igual, reaproveitando o próprio apontador jump para servir de uncle/inc/greater consoante o tipo de nó lógico, mas por 

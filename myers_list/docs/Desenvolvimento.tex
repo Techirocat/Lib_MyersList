@@ -2,21 +2,20 @@
 
 \subsection{Dense Advanced Myers List} \label{subsec:dense_list}
 
-A Dense Advanced trata-se de uma variação da Advanced Myers List criada por Peters et al. (2025), mas em vez de dividir um nó com dois a quatro
+A Dense Advanced trata-se de uma variação da Advanced Myers List criada por Peters \cite{peters2025}, mas em vez de dividir um nó com dois a quatro
 ponteiros, em um a três células, cada uma com dois ponteiros. Decidimos representar cada nó com uma única célula, com o seu respetivo número de 
 ponteiros:
 
-\begin{lstlisting} [style=ocaml_light, caption={Tipos de células}, captionpos=b]
+\begin{lstlisting} [style=ocaml_light, caption={Tipos de células}, captionpos=b, float=h]
 type 'a add_points = 
     | Normal 
     | Skip of 'a cell 
     | Leaf of 'a cell * 'a cell
-and 
-'a cell = { next : 'a cell; jump : 'a cell; length : int; 
+and 'a cell = { next : 'a cell; jump : 'a cell; length : int; 
     value : 'a; rhd : int; red : int; more : 'a add_points }
 \end{lstlisting}
 
-Isto tornou a implementação da estrutura mais fácil, e por consequência, determinar o algoritmo para a expressão cons foi mais simples.
+Isto tornou a implementação da estrutura mais fácil e por consequência, determinar o algoritmo para a expressão cons foi mais simples.
 Outros benefícios desta alteração foram: Um número de travessias de ponteiros menor; Encontraram-se novas otimizações que não foram ponderadas
 na implementação original; Obteve-se um lookup mais rápido.
 
@@ -27,15 +26,20 @@ lista original: «Thus, advanced Myers lists may not be appropriate for in-memor
 of pointer traversals is high relative to other computations, such as when pointer traversals involve network access.» (Peters et al.,2025, page 13)
 
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.5\linewidth]{Imagens/Dense-Lista} & \includegraphics[width=0.5\linewidth]{Imagens/Dense-Arvore} \\
-        (Formato Lista) & (Formato Árvore)\\ 
-    \end{tabular}
+    
+    \subfloat[Formato de lista]{
+        \includegraphics[width=0.48\linewidth]{Imagens/Dense-Lista}
+    }
+    \hfill
+    \subfloat[Formato de árvore]{
+        \includegraphics[width=0.48\linewidth]{Imagens/Dense-Arvore}
+    }
     \caption{Representação da Dense Advanced Myers List}
-    \label{fig:dense}
+    \label{fig:Dense}
 \end{figure}
+
 
 \subsubsection{Cons}
 
@@ -43,7 +47,7 @@ Na Dense Advanced Myers List, o cons difere das restantes varaiantes, uma vez qu
 A inserção de um novo elemento exige sempre o calculo de RED e do RHD, além da atribução do apontadores next e jump. 
 \\
 
-O algoritmo determina o tipo de nó a ser criado com base na altura lógica e avaliando em relação ao sigma. O motivo desta estrutura não 
+O algoritmo determina o tipo de nó a ser criado com base na altura lógica e avaliando em relação ao $\sigma$. O motivo desta estrutura não 
 apresentar um cons em tempo constante deve-se a criação de novas células Skip e Leaf, estás células apresentam apontadores extras, inc e 
 uncle, que para receberem o valor apropriado é necessário atravessar a própria estrutura da lista à procura das células apropriadas com base 
 nos valores de RED e RHD.
@@ -51,7 +55,7 @@ nos valores de RED e RHD.
 
 \subsubsection{Lookup}
 
-O algoritmo de lookup na Dense Myers List é como uma busca hierárquica. Quando solicitamos a busca por um elemento em uma posição específica, 
+O algoritmo de lookup na Dense Myers List é como uma busca hierárquica. Quando solicitamos o lookup por um elemento em uma posição específica, 
 o algoritmo primeiro calcula a distância que precisa para chegar ao alvo e avalia o tipo de nó atual, que pode ser uma célula do tipo normal, 
 skip ou leaf. Se o destino estiver longe, o algoritmo usa os ponteiros adicionais, uncle e inc. À medida que o algoritmo se aproxima do local 
 desejado e a distância diminui, ele deixa de usar esses atalhos grandes e entra em uma etapa de descida. Nessa etapa final, ele faz saltos menores, 
@@ -61,8 +65,8 @@ next ou jump, até chegar com exatidão ao elemento procurado.
 \subsection{Improved Applicative Random-Acces Stack with Sigma Region} \label{subsec:iarass}
 
 A Improved Applicative Random-Access Stack with Sigma region (IARASS) é uma variante da Improved Myers List que se beneficia da introdução do 
-conceito de sigma layers, introduzido por Peters et al. (2025) na Advanced Myers List. Assim, o objetivo da IARASS é utilizar este novo apontador
-para aliviar o problema da dupla descida (double descent) identificado no paper, sem perder a simplicidade estrutural existente na variante Improved.
+conceito de sigma layers, introduzido por Peters \cite{peters2025} na Advanced Myers List. Assim, o objetivo da IARASS é utilizar este novo apontador
+para aliviar o problema da dupla descida (double descent) identificado no paper original, sem perder a simplicidade estrutural existente na variante Improved.
 Na secção dos Resultados, mostraremos ainda que esta estrutura, como é de esperado, apresenta um maior uso de memória que a Improved Myers List, 
 no entanto apresenta um menor uso de memória quando comparada com a Advanced Myers List e apresentando um maior desempenho no número de travesias 
 quando comparada com ambas as variantes.
@@ -73,34 +77,35 @@ distingue dois tipos de células:
 
 \begin{lstlisting} [style=ocaml_light, caption={Tipos de células}, captionpos=b]
 type 'a cell = 
-  | Normal of {next:'a cell; jump:'a cell; length:int; 
-        value:'a; height:int }
-  | Skip of {next:'a cell; jump:'a cell; length:int; 
-        value:'a; height:int; shortcut:'a cell }
+  | Normal of {next:'a cell; jump:'a cell; length:int; value:'a; height:int }
+  | Skip of {next:'a cell; jump:'a cell; length:int; value:'a; height:int; shortcut:'a cell }
 \end{lstlisting}
 
 Nesta variante, as células normais mantêm apenas os dois apontadores já existente na variante Improved Myers List mantendo toda a lógica já existente, 
-enquanto as células skip (células de salto) apresentam um terceiro apontador, denominado shortcut. A decisão de qual célula é criada é baseada na altura 
-(height), sempre que a altura é um divisor de sigma, ou seja height mod sigma = 0, a célula criada é do tipo skip e nas restantes camadas serão do tipo normal. 
-Ao contrario da Advanced Myers List, um sigma maior não indica uma melhor performance no lookup, nesta estrutura a lógica é inversa, ou seja, quanto maior o sigma maior 
+enquanto as células skip (células de salto) apresentam um terceiro apontador, denominado shortcut. A decisão de qual célula é criada é baseada na altura (height), 
+sempre que a altura é um divisor de $\sigma$, ou seja $height mod \sigma = 0$, a célula criada é do tipo skip e nas restantes camadas serão do tipo normal. 
+Ao contrário da Advanced Myers List, um $\sigma$ maior não indica uma melhor performance no lookup, nesta estrutura a lógica é inversa, ou seja, quanto maior o $\sigma$ maior 
 será o número de travessias, mas consequentemente usará menos memória.
 \\
 
 O novo apontador shortcut destas células skip é a contribuição principal para resolver o problema da dupla descida e assume um comportamento diferente 
 dependendo da posição da célula na árvore lógica: \textbf{(i)} quando a altura é diferente de 0, o shortcut aponta para a última célula da região que 
-contém a célula acabada de ser criada. \textbf{(ii)} quando a altura é igual a zero, o shortcut aponta para c.jump.jump, permitindo uma travessia horizontal 
+contém a célula acabada de ser criada. \textbf{(ii)} quando a altura é igual a zero, o shortcut aponta para $c.jump.jump.jump$, permitindo uma travessia horizontal 
 mais rápida do que antes.  
-
 
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.5\linewidth]{Imagens/Iarass-Lista} & \includegraphics[width=0.5\linewidth]{Imagens/Iarass-Arvore} \\
-        (Formato Lista) & (Formato Árvore)\\ 
-    \end{tabular}
-    \caption{Representação da IARASS}
-    \label{fig:dense}
+    
+    \subfloat[Formato de lista]{
+        \includegraphics[width=0.48\linewidth]{Imagens/Iarass-Lista}
+    }
+    \hfill
+    \subfloat[Formato de árvore]{
+        \includegraphics[width=0.4\linewidth]{Imagens/Iarass-Arvore.png}
+    }
+    \caption{Representação da Improved Myers List}
+    \label{fig:Iarass}
 \end{figure}
 
 
@@ -108,14 +113,14 @@ mais rápida do que antes.
 \subsubsection{Cons}
 
 
-A IARASS apresenta um cons em tempo constante e apresenta um cons muito semelhante a Improved Myers List, apenas diferenciando-se na ocasião dos nós 
+A IARASS apresenta um cons em tempo constante $\mathcal{O}(1)$ e apresenta um cons muito semelhante a Improved Myers List, apenas diferenciando-se na ocasião dos nós 
 skip. Durante a inserção de um novo elemento, a altura lógica do novo nó a ser inserido é calculada, esta altura é utilizada para distinguir as 
-células normais das células skip. Sempre que a altura calculada for um divisor do sigma, significa que a célula a ser criada é do tipo Skip, caso 
+células normais das células skip. Sempre que a altura calculada for um divisor de $\sigma$, significa que a célula a ser criada é do tipo Skip, caso 
 contrário, a célula a ser criada é do tipo Normal.
 
 A atribuição do shortcut as células Skip difere dependendo da altura em que esta célula se encontra: \textbf{(i)} para alturas diferente de 0, 
 o shortcut aponta para o ultimo elemento da região onde está inserida \textbf{(ii)} para alturas iguais a 0, o shortcut aponta para 3 jumps mais à frente, 
-ou seja get\_jump (get\_jump (get\_jump c)).
+ou seja $get\_jump (get\_jump (get\_jump c))$.
 
 
 
@@ -123,5 +128,5 @@ ou seja get\_jump (get\_jump (get\_jump c)).
 
 
 O algoritmo de lookup na IARASS mantem-se identido à Improved Myers List nas células do tipo Normal. Nas células Skip, o algoritmo verefica 
-primeiro se é possivel utilizar o shorcut para efetuar um salto maior , caso o shortcut ultapasse a posição desejada, o algoritmo avalia o 
+primeiro se é possivel utilizar o shorcut para efetuar um salto maior, caso o shortcut ultapasse a posição desejada, o algoritmo avalia o 
 apontador jump e caso este também ultapasse a posição desejada, obtamos pela ultima opção de seguir pelo apontador next. 

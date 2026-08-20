@@ -8,18 +8,18 @@ para esta estrutura, com uma complexidade temporal de [INSERIR A COMPLEXIDADE]. 
 exige uma reestruturação da arquitetura, objetivo para futuras investigações.
 
 Apesar de o cons em O(1) não ter sido obtido, a Dense Advanced Myers List apresentou resultados eficazes na leitura, tendo um tempo de execução
-de lookup total de 60,35 ms, valor muito inferior à variante Advanced Myers List com 401,43 ms. Além disso, ainda apresentou um melhoramento no 
+de lookup total de 60,35 ms, valor muito inferior à variante Advanced Myers List com menor valor registado de 362,93 ms. Além disso, ainda apresentou um melhoramento no 
 número de travessias, obtendo o melhor desempenho no pior caso quando comparada a todas as outras estruturas. Este ganho de performance tem um 
 custo direto associado à memória exigindo 75,02 MB para um milhão de elementos, sendo a estrutura mais pesada do nosso estudo. Assim, conclui-se 
 que esta estrutura é ideal para cenários onde a travessia de ponteiros é o principal obstáculo.
 
 Relativamente à segunda pergunta, a implementação da IARASS revelou ser um sucesso na diminuição do problema da dupla descida. Ao introduzir células 
 skip com um apontador adicional, conseguimos reduzir o número de travessias no pior caso de 36 (variante Improved) para 27. Além disso, apresentou um 
-tempo de execução de 65,00 ms, ultrapassando a Improved Myers List (77,46 ms) e a Advanced Myers List (401,43 ms). No que toca a uso de memória, a 
+tempo de execução de 65,00 ms, ultrapassando a Improved Myers List (77,46 ms) e a Advanced Myers List ($\sigma = 8$, 362,93 ms). No que toca a uso de memória, a 
 IARASS utiliza 50,86 MB, valor superior aos 38,15 MB da variante Improved e consumindo menos memória do que a Advanced Myers List (53,41 MB). 
 Assim, conclui-se que esta estrutura apresenta um melhor desempenho global superior ao da Advanced Myers List, otimizando simultaneamente a velocidade
 de execução, o número de travessias e a eficiência de memória.
 
 Estas duas novas estruturas de dados criadas, quando comparadas com a Okasaki List apresentam um ótimo desempenho quando a prioridade é um menor número de
 travessias, no entanto são muito inferiores quando a prioridade é o menor uso de memória ou a velocidade de lookup quando o objetivo é uma maior eficiência de tempo.
-Adicionalmente, a Dense Myers e a Iarass apresentam uma vantagem estrutural quando comparada com a Okasaki List, sendo está a capacidade de suportar path queries ou range queries. 
+Adicionalmente, a Dense Myers e a Iarass apresentam uma vantagem estrutural quando comparadas com a Okasaki List, sendo está a capacidade de suportar path queries ou range queries. 

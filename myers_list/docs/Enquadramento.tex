@@ -2,17 +2,22 @@
 
 \subsection{Basic Myers List}
 
-A Myers List original, proposta por Eugene W. Myers (1983), introduz um apontador jump adicional em cada célula de uma cons list, 
-permitindo lookup em [ 3 log( n )-5 ] apontadores no pior caso. A sua construção iterativa preserva o suporte a cons em tempo O(1), mas o seu desempenho assintótico fica aquém do limite teórico de informação.
+A Myers List original, proposta por Eugene W. Myers (1983) \cite{myers1983}, introduz um apontador jump adicional em cada célula de uma cons list, 
+permitindo lookup em $3 \log( n ) - 5$ apontadores no pior caso. A sua construção iterativa preserva o suporte a cons em tempo $\mathcal{O}(1)$, 
+mas o seu desempenho assintótico fica aquém do limite teórico de informação.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.5\linewidth]{Imagens/Basic-Lista} & \includegraphics[width=0.5\linewidth]{Imagens/Basic-Arvore} \\
-        (Formato Lista) & (Formato Árvore)\\ 
-    \end{tabular}
+    
+    \subfloat[Formato de lista]{
+        \includegraphics[width=0.48\linewidth]{Imagens/Basic-Lista}
+    }
+    \hfill
+    \subfloat[Formato de árvore]{
+        \includegraphics[width=0.4\linewidth]{Imagens/Basic-Arvore.png}
+    }
     \caption{Representação da Basic Myers List}
-    \label{tab:basic}
+    \label{fig:Basic}
 \end{figure}
 
 
@@ -38,17 +43,21 @@ Lookup na Basic Myers List é bastante simples, assume-se que len é um valor v�
 
 \subsection{Improved Myers List}
 
-A Improved Myers List, proposta por Peters, Foo e Adams (2025), introduz uma modificação simples, mas eficaz à maneira como a Basic Myers List 
+A Improved Myers List, proposta por Peters, Foo e Adams (2025) \cite{peters2025}, introduz uma modificação simples, mas eficaz à maneira como a Basic Myers List 
 é construída. O apontador jump da primeira célula de cada região passa a apontar para a primeira célula da segunda sub-região, em vez da última 
-célula. Assim, o resultado é uma melhoria do pior caso de lookup de 3(log n) - 5 para 2(log (n + 1)) - 3 apontadores, igualando ao desempenho das 
-Okasaki List, mas ainda com a vantagem de que permite o lookup a partir de qualquer posição.
+célula. Assim, o resultado é uma melhoria do pior caso de lookup de $3 \log(n) - 5$ para $2 \log(n + 1) - 3$ travessias, igualando ao desempenho da 
+Okasaki List, estrutura de dados puramente funcional proposta por Chris Okasaki \cite{okasaki1995}, mas ainda com a vantagem de que permite o lookup a partir de qualquer posição.
 
 \begin{figure}[H]
     \centering
-    \begin{tabular}{cc}
-        \includegraphics[width=0.5\linewidth]{Imagens/Improved-Lista}  & \includegraphics[width=0.5\linewidth]{Imagens/Improved-Arvore} \\
-        (Formato Lista) & (Formato Árvore)\\ 
-    \end{tabular}
+    
+    \subfloat[Formato de lista]{
+        \includegraphics[width=0.48\linewidth]{Imagens/Improved-Lista}
+    }
+    \hfill
+    \subfloat[Formato de árvore]{
+        \includegraphics[width=0.4\linewidth]{Imagens/Improved-Arvore}
+    }
     \caption{Representação da Improved Myers List}
     \label{fig:Improved}
 \end{figure}
@@ -56,17 +65,17 @@ Okasaki List, mas ainda com a vantagem de que permite o lookup a partir de qualq
 
 \subsubsection{Construção e conceito de região}
 
-Uma região é definida pelo seu grau k:
+Uma região é definida pelo seu grau $k$:
 \begin{itemize}
-    \item Uma região de grau k=0  consiste numa única célula.
-    \item Uma região de grau k>0 é composta por duas sub-regiões de grau k-1 (no paper, estas regiões são denominadas Qk-1 e Rk-1) e uma célula adicional no início.
+    \item Uma região de grau $k = 0$  consiste numa única célula.
+    \item Uma região de grau $k > 0$ é composta por duas sub-regiões de grau $k - 1$ (no paper, estas regiões são denominadas $Q_{k-1}$ e $R_{k-1}$) e uma célula adicional no início.
 \end{itemize}
 
 Na Basic Myers List, o apontador jump da célula inicial de uma região aponta para a última célula dessa mesma região. Adicionalmente, as duas 
 sub-regiões partilham células, o que torna a estrutura menos eficiente.
-A Improved Myers List resolve este problema alterando a regra de construção: as sub-regiões Qk-1 e Rk-1 deixam de partilhar células, e o apontador 
-jump da célula inicial passa a apontar diretamente para a primeira célula de Rk-1. Se visualizarmos a lista como uma árvore, as sub-regiões  Qk-1 e 
-Rk-1 formam, respetivamente, as sub-árvores esquerda e direita. Assim, o acesso à raiz da sub-árvore direita passa a custar apenas a travessia de 
+A Improved Myers List resolve este problema alterando a regra de construção: as sub-regiões $Q_{k-1}$ e $R_{k-1}$ deixam de partilhar células, e o apontador 
+jump da célula inicial passa a apontar diretamente para a primeira célula de $R_{k-1}$. Se visualizarmos a lista como uma árvore, as sub-regiões  $Q_{k-1}$ e 
+$R_{k-1}$ formam, respetivamente, as sub-árvores esquerda e direita. Assim, o acesso à raiz da sub-árvore direita passa a custar apenas a travessia de 
 um único apontador (jump), eliminando a ineficiência da variante clássica.
 
 \begin{figure}[H]
@@ -76,7 +85,7 @@ um único apontador (jump), eliminando a ineficiência da variante clássica.
         \includegraphics[width=0.3\linewidth]{Imagens/Regiao2} & 
         \includegraphics[width=0.3\linewidth]{Imagens/Regiao3}
     \end{tabular}
-    \caption{wrap durante o cons na Improved Myers List}
+    \caption{Evolução do wrap durante o cons na Improved Myers List}
     \label{tab:regioes}
 \end{figure}
 
@@ -87,9 +96,9 @@ caso contrário, percorre next.
 
 \subsection{Advanced Myers List}
 
-A Advanced Myers List, introduzida por Peters et al. (2025), parte da Improved Myers List e introduz apontadores 
+A Advanced Myers List, introduzida por Peters \cite{peters2025}, parte da Improved Myers List e introduz apontadores 
 adicionais (uncle, inc, greater), permitindo assim um lookup que pode ser realizado em tempo aproximadamente logarítmico 
-((1+1/sigma) [log n] + 9 + sigma) à custa de maior complexidade estrutural e de construção.
+$( 1 + \frac{1}{\sigma}) \log(n) + 9 + \sigma$ à custa de maior complexidade estrutural e de construção.
 
 
 \begin{figure}[H]
