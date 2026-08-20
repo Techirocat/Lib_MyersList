@@ -12,7 +12,7 @@
 \contentsline {subsection}{\numberline {3.1}Dense Advanced Myers List}{6}{}%
 \contentsline {subsubsection}{\numberline {3.1.1}Cons}{7}{}%
 \contentsline {subsubsection}{\numberline {3.1.2}Lookup}{7}{}%
-\contentsline {subsection}{\numberline {3.2}Improved Applicative Random-Acces Stack with Sigma Region}{7}{}%
+\contentsline {subsection}{\numberline {3.2}Improved Applicative Random-Access Stack with Sigma region}{7}{}%
 \contentsline {subsubsection}{\numberline {3.2.1}Cons}{8}{}%
 \contentsline {subsubsection}{\numberline {3.2.2}Lookup}{8}{}%
 \contentsline {section}{\numberline {4}Resultados}{8}{}%

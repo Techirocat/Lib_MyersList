@@ -143,13 +143,13 @@ Antes de discutir a construção é importante primeiro compreender os seguintes
 \end{itemize}
 
 A construção da Advanced Myers List perde a função de cons em tempo constante, pois exige saber previamente o número exato de elementos para calcular a altura da árvore lógica e formar uma árvore binária perfeita, utilizando elementos que servem como fillers caso necessário.
-A estrutura é construida recursivamente do head até a camada de folhas e a atribuição dos apontadores depende do tipo de nó:
+A estrutura é construída recursivamente do head até a camada de folhas e a atribuição dos apontadores depende do tipo de nó:
 
 
 \begin{itemize}
     \item Nós normais e skip: O apontador next aponta para a sub-árvore esquerda e o jump para a sub-árvore direita
     \item Nós skip e folhas: O apontador uncle liga a um tio onde a regra RED(s.uncle) = RHD(s) é verificada
-    \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greatere liga à folha mais próxima à direita onde RHD(f') > RHD(f) 
+    \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greater liga à folha mais próxima à direita onde RHD(f') > RHD(f) 
 \end{itemize}
 
 \textbf{NOTA:} Aqui explicamos o funcionamento da Improved Myers List e da Advanced Myers List de uma forma muito superficial mas rápida de compreender, para uma compreensão e para um estudo mais informativo recomenda-se ler o paper original.

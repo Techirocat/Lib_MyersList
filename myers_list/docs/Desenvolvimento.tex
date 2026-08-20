@@ -23,7 +23,7 @@ No entanto, um defeito desta estrutura em relação à original, é que esta gas
 
 O caso uso mais apropriado para esta estrutura seria um ambiente onde a travessia de ponteiros seria muito custosa, tal como referido para a 
 lista original: «Thus, advanced Myers lists may not be appropriate for in-memory lists, but they may be useful for applications where the cost 
-of pointer traversals is high relative to other computations, such as when pointer traversals involve network access.» (Peters et al.,2025, page 13)
+of pointer traversals is high relative to other computations, such as when pointer traversals involve network access.» (Peters et al., 2025, page 13)
 
 
 \begin{figure}[H]
@@ -43,12 +43,12 @@ of pointer traversals is high relative to other computations, such as when point
 
 \subsubsection{Cons}
 
-Na Dense Advanced Myers List, o cons difere das restantes varaiantes, uma vez que este não apresenta um cons em tempo constante. 
-A inserção de um novo elemento exige sempre o calculo de RED e do RHD, além da atribução do apontadores next e jump. 
+Na Dense Advanced Myers List, o cons difere das restantes variantes, uma vez que este não apresenta um cons em tempo constante. 
+A inserção de um novo elemento exige sempre o cálculo de RED e do RHD, além da atribuição dos apontadores next e jump. 
 \\
 
 O algoritmo determina o tipo de nó a ser criado com base na altura lógica e avaliando em relação ao $\sigma$. O motivo desta estrutura não 
-apresentar um cons em tempo constante deve-se a criação de novas células Skip e Leaf, estás células apresentam apontadores extras, inc e 
+apresentar um cons em tempo constante deve-se a criação de novas células Skip e Leaf, estas células apresentam apontadores extras, inc e 
 uncle, que para receberem o valor apropriado é necessário atravessar a própria estrutura da lista à procura das células apropriadas com base 
 nos valores de RED e RHD.
 
@@ -62,13 +62,13 @@ desejado e a distância diminui, ele deixa de usar esses atalhos grandes e entra
 next ou jump, até chegar com exatidão ao elemento procurado.
 
 
-\subsection{Improved Applicative Random-Acces Stack with Sigma Region} \label{subsec:iarass}
+\subsection{Improved Applicative Random-Access Stack with Sigma region} \label{subsec:iarass}
 
 A Improved Applicative Random-Access Stack with Sigma region (IARASS) é uma variante da Improved Myers List que se beneficia da introdução do 
 conceito de sigma layers, introduzido por Peters \cite{peters2025} na Advanced Myers List. Assim, o objetivo da IARASS é utilizar este novo apontador
 para aliviar o problema da dupla descida (double descent) identificado no paper original, sem perder a simplicidade estrutural existente na variante Improved.
 Na secção dos Resultados, mostraremos ainda que esta estrutura, como é de esperado, apresenta um maior uso de memória que a Improved Myers List, 
-no entanto apresenta um menor uso de memória quando comparada com a Advanced Myers List e apresentando um maior desempenho no número de travesias 
+no entanto apresenta um menor uso de memória quando comparada com a Advanced Myers List e apresentando um maior desempenho no número de travessias 
 quando comparada com ambas as variantes.
 \\
 
@@ -104,7 +104,7 @@ mais rápida do que antes.
     \subfloat[Formato de árvore]{
         \includegraphics[width=0.4\linewidth]{Imagens/Iarass-Arvore.png}
     }
-    \caption{Representação da Improved Myers List}
+    \caption{Representação da IARASS}
     \label{fig:Iarass}
 \end{figure}
 
@@ -119,7 +119,7 @@ células normais das células skip. Sempre que a altura calculada for um divisor
 contrário, a célula a ser criada é do tipo Normal.
 
 A atribuição do shortcut as células Skip difere dependendo da altura em que esta célula se encontra: \textbf{(i)} para alturas diferente de 0, 
-o shortcut aponta para o ultimo elemento da região onde está inserida \textbf{(ii)} para alturas iguais a 0, o shortcut aponta para 3 jumps mais à frente, 
+o shortcut aponta para o último elemento da região onde está inserida \textbf{(ii)} para alturas iguais a 0, o shortcut aponta para 3 jumps mais à frente, 
 ou seja $get\_jump (get\_jump (get\_jump c))$.
 
 
@@ -127,6 +127,6 @@ ou seja $get\_jump (get\_jump (get\_jump c))$.
 \subsubsection{Lookup}
 
 
-O algoritmo de lookup na IARASS mantem-se identido à Improved Myers List nas células do tipo Normal. Nas células Skip, o algoritmo verefica 
-primeiro se é possivel utilizar o shorcut para efetuar um salto maior, caso o shortcut ultapasse a posição desejada, o algoritmo avalia o 
-apontador jump e caso este também ultapasse a posição desejada, obtamos pela ultima opção de seguir pelo apontador next. 
+O algoritmo de lookup na IARASS mantém-se idêntico à Improved Myers List nas células do tipo Normal. Nas células Skip, o algoritmo verifica 
+primeiro se é possível utilizar o shortcut para efetuar um salto maior, caso o shortcut ultrapasse a posição desejada, o algoritmo avalia o 
+apontador jump e caso este também ultrapasse a posição desejada, optamos pela última opção de seguir pelo apontador next. 

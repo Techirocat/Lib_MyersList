@@ -1,14 +1,14 @@
 # Fdb version 4
-["bibtex main"] 1787216998.21965 "main.aux" "main.bbl" "main" 1787221041.16755 0
+["bibtex main"] 1787222228.823 "main.aux" "main.bbl" "main" 1787222643.92034 0
   "./referencias.bib" 1787166840.53249 739 b9ab3fe09e481fea106b96efe9127a91 ""
   "/usr/share/texmf-dist/bibtex/bst/base/plain.bst" 1775415801 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "main.aux" 1787221040.83054 8274 84dce73036a1d67ce5c5f47ce97237c2 "pdflatex"
+  "main.aux" 1787222643.62541 8262 f193eb046e3b5f2ba101851b049fa720 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1787221038.34973 "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" "main.pdf" "main" 1787221041.16794 0
-  "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" 1787216139.22372 3300 be2ed52252860e3d5779d4333c4c8b8a ""
+["pdflatex"] 1787222641.17132 "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" "main.pdf" "main" 1787222643.92063 0
+  "/home/guerr/Git/Lib_Myesrs/myers_list/docs/main.tex" 1787222640.90753 3301 caac201ea8926241859f9866a120b43b ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1775415801 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1775415801 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc" 1775415801 7631 5169ff1acd97ff1c4ab83563c99f96f4 ""
@@ -136,9 +136,9 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1781550163 5385779 47c0c393a77fd4a098bacfd57d66b88a ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1781550130 2329406 a847bc93203ca2f1350c77bf73562204 ""
   "Conclusao.tex" 1787166840.49287 501 963c7e57789397469eb1baece0e2d86e ""
-  "Desenvolvimento.tex" 1787217162.64779 7794 2467a837ff889b73f30c591f046d426b ""
-  "Discussao.tex" 1787221038.07225 2870 bd24245ba262964bd15ed6eaa3aca540 ""
-  "Enquadramento.tex" 1787216872.25263 7612 b9cf9d29d5a58ff7157827f1876bae68 ""
+  "Desenvolvimento.tex" 1787222592.75513 7793 48360f60e2ef2e516e24a479919163a9 ""
+  "Discussao.tex" 1787222461.80842 2869 84f6372d9902278f2d0b9cedf389409b ""
+  "Enquadramento.tex" 1787221947.90544 7612 fe92bf5a859ae1ddbe93a963dd8ab77e ""
   "Imagens/1lgn-skip-16.svg" 1787166840.49498 179019 1e186970e2e90b45938533e63d1e2b2d ""
   "Imagens/1lgn-skip-2.svg" 1787166840.49606 175918 e3b8e0bc4fd80cd60c4708513e70139c ""
   "Imagens/1lgn-skip-4.svg" 1787166840.49729 177730 83be91bdb6c98d3ae99021583159da3d ""
@@ -166,13 +166,13 @@
   "Imagens/dense_results.svg" 1787166840.51578 202399 a58891b28015de217f78aed193ae24e5 ""
   "Imagens/iarass_1_000_000.svg" 1787166840.51768 236083 ef1f4f6a4cf9294c81657e9bdb74b152 ""
   "Imagens/simon_cruanes_1_000_000.svg" 1787166840.51975 233974 3f89197930955f475e0eecc1f476b518 ""
-  "Introdução.tex" 1787215027.28883 3052 7835b26c4279c37318c39048d0505e58 ""
+  "Introdução.tex" 1787221871.98676 3053 a0e110df450d2e4dfe0c5fd79aba75b9 ""
   "Referencias.tex" 1787166840.52026 52 6fa9ae2e9e07fe4bdb043eed53e21fb4 ""
-  "Resultados.tex" 1787220494.11122 6794 c6e12a5e204a845644bfbe9b34df7a83 ""
-  "main.aux" 1787221040.83054 8274 84dce73036a1d67ce5c5f47ce97237c2 "pdflatex"
-  "main.bbl" 1787216998.30224 613 89941114d0d8b297756ad2766933e050 "bibtex main"
-  "main.tex" 1787216139.22372 3300 be2ed52252860e3d5779d4333c4c8b8a ""
-  "main.toc" 1787221040.83354 1551 bea19540737b492090e4f3d94b029bc3 "pdflatex"
+  "Resultados.tex" 1787222302.34358 6795 0bc0739c44778d61e94c97a8447f9253 ""
+  "main.aux" 1787222643.62541 8262 f193eb046e3b5f2ba101851b049fa720 "pdflatex"
+  "main.bbl" 1787222228.89589 613 89941114d0d8b297756ad2766933e050 "bibtex main"
+  "main.tex" 1787222640.90753 3301 caac201ea8926241859f9866a120b43b ""
+  "main.toc" 1787222643.62769 1552 dbb47d9536e01b9b92b0f7a8a8270ce6 "pdflatex"
   "svg-inkscape/1lgn-skip-16_svg-tex.pdf" 1787166840.53299 58397 a6e1da3fe38d1efc0ae615a8cc9b144a ""
   "svg-inkscape/1lgn-skip-16_svg-tex.pdf_tex" 1787166840.53307 2096 3d35a8a10bee506076f3f9c42a04ccb2 ""
   "svg-inkscape/1lgn-skip-2_svg-tex.pdf" 1787166840.53347 56539 c9bfdc0fbbd32427df9019cf76acbee6 ""
