@@ -1,5 +1,5 @@
 open Myers_list
-open Advanced_myers
+open Dense_myers
 
 let test_empty () =
 	let l = empty in 

@@ -1,12 +1,10 @@
-(** .mli Advanced Myers List*)
+(** .mli Dense Advanced Myers List*)
 
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
     Copyright (c) 2013, Simon Cruanes
     All rights reserved.
 *)
-
-(** TODO: Colocar para aqui algum texto sobre a Advanced Myers List*)
 
 type +'a t
 (** List containing elements of type ['a] *)

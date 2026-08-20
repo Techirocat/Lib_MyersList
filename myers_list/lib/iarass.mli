@@ -1,4 +1,4 @@
-(* .mli Iarass *)
+(** .mli Iarass *)
 
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli

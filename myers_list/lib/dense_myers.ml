@@ -1,4 +1,5 @@
 (** Additional Pointers: uncle e/ou inc *)
+
 type 'a add_points = 
     | Normal 
     | Skip of 'a cell 
