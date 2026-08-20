@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    
+    defaults:
+      run:
+        working-directory: ./myers_list
+
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -32,4 +37,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_build/default/_doc/_html
+          publish_dir: ./myers_list/_build/default/_doc/_html
