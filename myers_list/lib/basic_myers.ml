@@ -7,9 +7,6 @@ Copyright (c) 2025 Programming Language Innovation Lab @ NUS
 
 type 'a cell = { next : 'a cell; jump : 'a cell; length : int; value : 'a }
 
-(**************************************)
-(* High-performance functions *)
-
 let init (v : 'a) : 'a cell =
   let rec c : 'a cell = { next = c; jump = c; length = 0; value = v } in
   c
@@ -30,21 +27,6 @@ let rec lookup (c : 'a cell) (l : int) : 'a cell =
 
 let index (c : 'a cell) (i : int) : 'a cell = lookup c (c.length - i)
 [@@inline]
-
-
-let find_path (c : 'a cell) (l : int) : 'a cell list =
-  let rec go (c : 'a cell) (l : int) (p : 'a cell list) : 'a cell list =
-    if c.length = l
-    then p
-    else let j = c.jump in
-         let c' = if j.length < l then c.next else j in
-         go c' l (c' :: p) in
-  go c l [c]
-
-let index_path (c : 'a cell) (i : int) : 'a cell list = find_path c (c.length - i)
-[@@inline]
-
-(**************************************)
 
 (* Wrapper *)
 
@@ -115,13 +97,13 @@ let cons' xs x = cons x xs
 let rec fold ~f ~x:acc l = match l with
     | Nil -> acc
     | Cell c -> match c with
-        | {length = 0} -> f acc c.value
+        | {length = 0; _} -> f acc c.value
         | _ -> fold ~f ~x:(f acc c.value) (Cell (c.next))
 
 let rec fold_rev ~f ~x:acc l = match l with
     | Nil -> acc
     | Cell c -> match c with
-        | {length = 0} -> f acc c.value
+        | {length = 0; _} -> f acc c.value
         | _ -> 
             let acc' = fold_rev ~f ~x:acc (Cell (c.next)) in
             f acc' c.value
@@ -134,7 +116,7 @@ let mapi ~f l = match l with
     | Nil -> Nil
     | Cell c -> 
         let rec aux i f acc c = match c with
-            | {length = 0} -> return (f i c.value)
+            | {length = 0; _} -> return (f i c.value)
             | _ -> 
                 let acc' = aux (i+1) f acc c.next in
                 cons (f i c.value) acc'
@@ -228,7 +210,7 @@ let rec take_ n l acc = match l with
             let acc' = take_ (n - 1) (Cell (c.next)) acc in
             cons c.value acc'
 
-let rec take n l = 
+let take n l = 
     if n < 0 then
         Nil
     else
@@ -245,7 +227,7 @@ let rec take_while_ f l acc = match l with
             let acc' = take_while_ f (Cell (c.next)) acc in
             cons c.value acc'
 
-let rec take_while ~f l = take_while_ f l Nil
+let take_while ~f l = take_while_ f l Nil
 
 let rec drop n l = match l with
     | Nil ->
@@ -285,7 +267,7 @@ let rec take_drop_ n l acc = match l with
             let (acc', xs)  = take_drop_ (n - 1) (Cell (c.next)) acc in
             (cons c.value acc', xs)
 
-let rec take_drop n l = 
+let take_drop n l = 
     if n < 0 then
         (Nil, l)
     else
@@ -294,13 +276,13 @@ let rec take_drop n l =
 let rec iter ~f l = match l with
     | Nil -> ()
     | Cell c -> match c with
-        | {length = 0} -> f c.value
+        | {length = 0; _} -> f c.value
         | _ -> f c.value; iter ~f (Cell (c.next))
 
 let rec iteri_ i f l = match l with
     | Nil -> ()
     | Cell c -> match c with
-        | {length = 0} -> f i c.value
+        | {length = 0; _} -> f i c.value
         | _ -> f i c.value; iteri_ (i+1) f (Cell (c.next))
 
 let iteri ~f l = iteri_ 0 f l
@@ -338,13 +320,13 @@ let compare ~cmp l1 l2 = match (l1, l2) with
         else if c1.length > c2.length then
             1
         else
-            let rec compare' comp c1 c2 =
+            let rec compare' c1 c2 =
                 let res = cmp c1.value c2.value in
                 if res <> 0 || c1.length = 0 then
                     res
                 else
-                    compare' cmp c1.next c2.next in
-            compare' cmp c1 c2
+                    compare' c1.next c2.next in
+            compare' c1 c2
 
 let make n x =
     let rec aux n acc x =

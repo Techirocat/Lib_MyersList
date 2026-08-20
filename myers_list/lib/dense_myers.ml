@@ -52,7 +52,7 @@ let calc_rhd (c : 'a cell) (leaf : bool) : int =
   if c.next.rhd < 0 then 
     (k c.length) - 1
   else
-    if leaf && (match c.next.more with | Leaf _ -> true | _ -> false) then 
+    if leaf && (match c.next.more with | Leaf _ -> true | Normal | Skip _ -> false) then 
       0 
     else if not leaf then 
       c.jump.rhd - 1
@@ -68,7 +68,7 @@ let rec find_inc c rhd = match c.more with
             None
         else
             find_inc c.next rhd
-    | _ ->
+    | Normal | Skip _ ->
         let delta = rhd - c.rhd in
         let height = (k c.length) - c.red in
         if delta <> height then
@@ -86,7 +86,7 @@ let rec find_unc c red kn =
         | Normal -> None
         in
         match temp with
-        | Some u -> temp
+        | Some _ -> temp
         | None ->
             if k c.length < kn then
                 None
@@ -194,7 +194,7 @@ let rec lookup_leaf cell len d sigma =
             lookup_descent cell.jump.next len
         else
             lookup_leaf i len d sigma
-    | _ -> failwith "Impossible state: lookup_leaf"
+    | Normal | Skip _ -> failwith "Impossible state: lookup_leaf"
 
 let rec lookup_uncle cell len d sigma =
     let find_branch c =
@@ -229,12 +229,12 @@ let rec lookup_cell list len sigma =
                 lookup_cell list.next len sigma
             else
                 lookup_uncle list len d sigma
-        | _ ->
+        | Normal | Skip _ ->
             (* Case 2: Search Skip *)
             (* Case 3: Search Leafs *)
             lookup_uncle list len d sigma
 
-let rec lookup_wrap list len sigma last = 
+let lookup_wrap list len sigma last = 
     if len >= last.length then
         lookup_descent list len
     else
@@ -245,14 +245,16 @@ let rec lookup_wrap list len sigma last =
                 lookup_cell list.next len sigma
             else
                 lookup_uncle list len d sigma
-        | _ ->
+        | Normal | Skip _ ->
             lookup_uncle list len d sigma
 
 let index l i = lookup_wrap l.head (l.head.length - i) l.sigma l.last
 
+(*
 let lookup_t list len = match list with
     | Nil -> failwith "TODO"    (* TODO *)  
     | Wrap w -> (lookup_wrap w.head len w.sigma w.last).length
+*)
 
 (* Helper Library Functions *)
 
@@ -367,7 +369,7 @@ let mapi ~f l = match l with
     | Nil -> Nil
     | Wrap {head = c; _} -> 
         let rec aux i f acc c = match c with
-            | {length = 1} -> return (f i c.value)
+            | {length = 1; _} -> return (f i c.value)
             | _ -> 
                 let acc' = aux (i+1) f acc c.next in
                 cons (f i c.value) acc'
@@ -461,7 +463,7 @@ let rec take_ n l acc = match l with
             let acc' = take_ (n - 1) (wrap c.next s) acc in
             cons c.value acc'
 
-let rec take n l = 
+let take n l = 
     if n < 0 then
         Nil
     else
@@ -478,7 +480,7 @@ let rec take_while_ f l acc = match l with
             let acc' = take_while_ f (wrap c.next s) acc in
             cons c.value acc'
 
-let rec take_while ~f l = take_while_ f l Nil
+let take_while ~f l = take_while_ f l Nil
 
 let rec drop n l = match l with
     | Nil ->
@@ -518,7 +520,7 @@ let rec take_drop_ n l acc = match l with
             let (acc', xs)  = take_drop_ (n - 1) (wrap c.next s) acc in
             (cons c.value acc', xs)
 
-let rec take_drop n l = 
+let take_drop n l = 
     if n < 0 then
         (Nil, l)
     else
@@ -527,13 +529,13 @@ let rec take_drop n l =
 let rec iter ~f l = match l with
     | Nil -> ()
     | Wrap {head = c; sigma = s; _} -> match c with
-        | {length = 1} -> f c.value
+        | {length = 1; _} -> f c.value
         | _ -> f c.value; iter ~f (wrap c.next s)
 
 let rec iteri_ i f l = match l with
     | Nil -> ()
     | Wrap {head = c; sigma = s; _} -> match c with
-        | {length = 1} -> f i c.value
+        | {length = 1; _} -> f i c.value
         | _ -> f i c.value; iteri_ (i+1) f (wrap c.next s)
 
 let iteri ~f l = iteri_ 0 f l
@@ -571,13 +573,13 @@ let compare ~cmp l1 l2 = match (l1, l2) with
         else if c1.length > c2.length then
             1
         else
-            let rec compare' comp c1 c2 =
+            let rec compare' c1 c2 =
                 let res = cmp c1.value c2.value in
                 if res <> 0 || c1.length = 1 then
                     res
                 else
-                    compare' cmp c1.next c2.next in
-            compare' cmp c1 c2
+                    compare' c1.next c2.next in
+            compare' c1 c2
 
 let make n x =
     let rec aux n acc x =

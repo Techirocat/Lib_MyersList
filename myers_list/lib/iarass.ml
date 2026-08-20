@@ -61,17 +61,13 @@ let get_jump (c : 'a cell) =
   | Skip c -> c.jump 
 [@@inline]
 
+(*
 let get_shortcut (c : 'a cell) = 
   match c with 
   | Normal _ -> invalid_arg "get_shortcut: cell has no shortcut (not a Skip cell)"
   | Skip c -> c.shortcut
 [@@inline]
-
-let get_last wrap = 
-  match wrap with
-  | Empty _ -> failwith "Error"
-  | Wrap {head = _; last = l} -> l
-[@@inline]
+*)
 
 let get_sigma wrap = 
   match wrap with 
@@ -93,6 +89,12 @@ let init ?(sigma= 2) v : 'a t =
     Wrap {head = c; last = c; sigma = sigma} 
 [@@inline]
 
+
+let get_last wrap = 
+  match wrap with
+  | Empty _ -> failwith "Error"
+  | Wrap {head = _; last = l; _} -> get_value l
+[@@inline]
 
 let return ?sigma v : 'a t = init ?sigma v 
 
@@ -167,7 +169,7 @@ let rec lookup c l =
 let get_exn wrap i = 
   match wrap with 
   | Empty _ -> invalid_arg "Empty List"
-  | Wrap {head = h; last = _} -> 
+  | Wrap {head = h; last = _; _} -> 
     let h_len = get_length h in 
     if i < 0 || i > h_len then 
       invalid_arg "Invalid Index"
@@ -180,7 +182,7 @@ let get wrap i = try Some (get_exn wrap i) with Invalid_argument _ -> None
 let index (wrap : 'a t) (i : int) : 'a cell = 
 	match wrap with 
 	| Empty _ -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> 
+	| Wrap {head = h; last = _; _} -> 
     let lenh = get_length h in 
     if i < 0 || i > lenh then 
       invalid_arg "Invalid Index"
@@ -248,13 +250,13 @@ let set wrap i v =
 let hd wrap = 
 	match wrap with 
 	| Empty _ -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> get_value h
+	| Wrap {head = h; last = _; _} -> get_value h
 
 
   let last wrap = 
 	match wrap with 
 	| Empty _ -> invalid_arg "Empty List"
-	| Wrap {head = h; last = _} -> get_exn wrap (get_length h)
+	| Wrap {head = h; last = _; _} -> get_exn wrap (get_length h)
 
 
 let tl wrap = 
@@ -273,7 +275,7 @@ let tl wrap =
 let length wrap = 
 	match wrap with 
 	| Empty _ -> 0 
-	| Wrap {head = h; last = _} -> (get_length h) + 1
+	| Wrap {head = h; last = _; _} -> (get_length h) + 1
 
 
 let front wrap = 
@@ -356,7 +358,7 @@ let remove wrap i =
 let fold ~f ~x wrap = 
 	match wrap with 
 	| Empty _ -> x 
-	| Wrap {head = h; last = _} -> 
+	| Wrap {head = h; last = _; _} -> 
 		let rec aux acc c = 
 			if get_length c = 0 then 
 				f acc (get_value c)
@@ -385,7 +387,7 @@ let map ~f wrap = fold_rev ~x:(empty_with_sigma (get_sigma wrap)) wrap ~f:(fun a
 let to_list_mapi_rev wrap f = 
 	match wrap with 
 	| Empty _-> [] 
-	| Wrap {head = h; last = _} -> 
+	| Wrap {head = h; last = _; _} -> 
     let lenh = get_length h in 
 		let rec aux acc c = 
         let lenc = get_length c in 
@@ -413,7 +415,7 @@ let iter ~f wrap = fold ~f:(fun () x -> f x) ~x:() wrap
 let iteri ~f wrap = 
 	match wrap with 
   	| Empty _-> () 
-  	| Wrap {head = h; last = _} -> 
+  	| Wrap {head = h; last = _; _} -> 
     let lenh = get_length h in 
 		let rec aux c = 
         let lenc = get_length c in
@@ -513,7 +515,7 @@ let drop n wrap =
 let drop_while ~f wrap =
 	match wrap with
 	| Empty s-> empty_with_sigma s
-	| Wrap {head = h; last = _} ->
+	| Wrap {head = h; last = _; _} ->
 		let rec count n c =
 			if f (get_value c) then
 				if (get_length c) = 0 then 
@@ -534,7 +536,7 @@ let equal ~eq w1 w2 =
 	| Empty _, Wrap _ -> false
 	| Wrap _, Empty _ -> false
   | Wrap {sigma=s1;_}, Wrap {sigma=s2;_} when s1 <> s2 -> false
-	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} ->
+	| Wrap {head = h1; last = _; _}, Wrap {head = h2; last = _; _} ->
 		if get_length h1 <> get_length h2 then 
 			false 
 		else 
@@ -598,9 +600,9 @@ type 'a gen = unit -> 'a option
 
 let add_list_map wrap l f = List.fold_left (fun acc v -> cons (f v) acc) wrap (List.rev l)
 
-
+(*
 let to_list_map wrap f = fold_rev ~f:(fun acc v -> (f v) :: acc) ~x:[] wrap
-
+*)
 
 let of_list_map ?(sigma = 2) ~f l = add_list_map (empty_with_sigma sigma) l f
 
@@ -614,7 +616,7 @@ let of_array ?(sigma= 2) arr = add_array (empty_with_sigma sigma) arr
 let to_array wrap = 
 	match wrap with 
 	| Empty _ -> [||]
-	| Wrap {head = h; last = _} -> 
+	| Wrap {head = h; last = _; _} -> 
 		let a = Array.make ((get_length h) + 1) (get_value h) in 
 		let rec fill i c = 
 	  		if (get_length c) = 0 then 
@@ -655,7 +657,7 @@ let of_gen ?(sigma=2) g = add_gen (empty_with_sigma sigma) g
 let to_gen wrap = 
   	match wrap with 
   	| Empty _ -> (fun () -> None)
-  	| Wrap {head = h; last = _} -> 
+  	| Wrap {head = h; last = _; _} -> 
 		let curr = ref h in 
 		let flag = ref false in 
 		let next () = 
@@ -677,7 +679,7 @@ let compare ~cmp w1 w2 =
   	| Empty _ , Empty _ -> 0
   	| Empty _, Wrap _ -> -1 
   	| Wrap _, Empty _-> 1 
-  	| Wrap {head = h1; last = _}, Wrap {head = h2; last = _} -> 
+  	| Wrap {head = h1; last = _; _}, Wrap {head = h2; last = _; _} -> 
 		let rec aux c1 c2 =
 	  	let res = cmp (get_value c1) (get_value c2) in 
 	  		if res <> 0 then 

@@ -22,6 +22,9 @@ val cons : 'a -> 'a t -> 'a t
 val return : 'a -> 'a t
 (** [return x] returns the one-element list [[x]]*)
 
+val return_sigma : 'a -> int -> 'a t
+(** [return_sigma x s] returns the one-element list  [[x]] with sigma [s]*)
+
 val map : f:('a -> 'b) -> 'a t -> 'b t
 (** Map on elements. 
     [map f [a1; ...; an]] applies function [f] to [a1, ..., an], 

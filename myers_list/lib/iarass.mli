@@ -42,6 +42,8 @@ val empty_with_sigma : int -> 'a t
 val get_sigma : 'a t -> int 
 (** [get_sigma l] returns the sigma value [l] was built with. *)
 
+val get_last : 'a t -> 'a
+(** [get_last l] returns the [last] value of the wrap. *)
 
 val init: ?sigma:int -> 'a -> 'a t
 (** [init ?sigma v] returns the one-element list [[v]], using [sigma] 
