@@ -1,4 +1,5 @@
 (library
+ (name myers_list)
  (public_name myers_list)
  (libraries ocaml_intrinsics_kernel)
  (flags :standard -w +A))

@@ -25,5 +25,4 @@
     (alcotest :with-test)
     core_bench)
 
-(tags
-  ("data-structures" "myers-list" "random-access-list" "functional-data-structures")))
+(tags ("data-structures" "myers-list" "random-access-list" "functional-data-structures")))
