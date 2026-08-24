@@ -1,17 +1,15 @@
-(** .mli Improved Myers List*)
+(** Improved Myers List 
+
+    This is an OCaml implementation of the "Improved Myers List" data structure, as described in the paper  
+    "Pushing the Information-Theoretic Limits of Random Access Lists" by Edwars Peter, Yong Qi Foo and Michael D. Adams. 
+    It defines a list-like data structure (that can be visualized as a tree) with O(1) cons/tail operations, and O(log(n)) lookup.
+*)
+
 
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
     Copyright (c) 2013, Simon Cruanes
     All rights reserved.
-*)
-
-(**
-Random-Access Lists 
-
-This is an OCaml implementation of the "Improved Myers List" data structure, as described in the paper  
-"Pushing the Information-Theoretic Limits of Random Access Lists" by Edwars Peter, Yong Qi Foo and Michael D. Adams. 
-It defines a list-like data structure (that can be visualized as a tree) with O(1) cons/tail operations, and O(log(n)) lookup.
 *)
 
 type +'a t

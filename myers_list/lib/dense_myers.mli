@@ -1,4 +1,29 @@
-(** .mli Dense Advanced Myers List*)
+(** Dense Advanced Myers List
+    
+    This is an OCaml implementation of the Dense Advanced Myers List, a variation 
+    of the Advanced Myers List proposed by Peters, Foo, and Adams (2025). 
+    
+    Instead of splitting logical nodes with 2 to 4 pointers into 1 to 3 separate 
+    cells, this structure represents each logical node as a single cell containing 
+    all its respective pointers and metadata (like [rhd] and [red]). 
+    
+    {b Characteristics:}
+    - {b Fast Lookup:} Achieves the best worst-case traversal performance among 
+      the studied variants (e.g., 24 traversals for 1.000.000 elements) and 
+      significantly faster execution times than the original Advanced Myers List.
+    - {b Memory Trade-off:} The consolidation of pointers and metadata into every 
+      cell results in higher memory usage compared to Basic, Improved, or standard 
+      Advanced variants.
+    - {b Non-constant Cons:} Unlike the Basic or Improved variants, the [cons] 
+      operation is NOT O(1), as it requires calculating [RED] and [RHD], and 
+      traversing the structure to correctly assign the extra [inc] and [uncle] pointers.
+      
+    {b Ideal Use Case:}
+    Dense Advanced Myers Lists are best suited for environments where pointer 
+    traversals are exceptionally costly (e.g., involving network access), making 
+    the reduction in traversal steps more valuable than the increased memory footprint.
+*)
+
 
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli

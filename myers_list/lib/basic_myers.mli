@@ -1,5 +1,10 @@
-(** .mli Basic Myers List*)
-
+(** Basic Myers List
+    
+    This is an OCaml implementation of the Random-Access List data structure 
+    as described by Eugene Myers. It defines a purely functional list-like 
+    data structure with O(1) cons/head/tail operations, and efficient 
+    O(log(n)) lookup/modification operations.
+*)
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
     Copyright (c) 2013, Simon Cruanes

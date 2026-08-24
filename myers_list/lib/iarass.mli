@@ -1,4 +1,28 @@
-(** .mli Iarass *)
+(** Improved Applicative Random-Access Stack with Sigma Region
+    
+    This is an OCaml implementation of an Improved Applicative Random-Access Stack 
+    (IARASS) utilizing a Sigma region to optimize random access performance.
+    
+    {b The Sigma ([sigma]) Parameter:}
+    
+    [sigma] controls how often a "Skip" cell (a cell holding an extra 
+    [shortcut] pointer, used to speed up random access) is inserted 
+    while building the list, instead of a plain "Normal" cell. A Skip 
+    cell is created whenever a new cell's height is a multiple of 
+    [sigma] (i.e., [height mod sigma = 0]).
+
+    - A {b smaller} [sigma] creates more shortcuts, which speeds up random 
+      access ({!get}) at the cost of extra memory per cell. 
+    - A {b larger} [sigma] does the opposite, trading access speed for a smaller memory footprint.
+
+    Every list remembers the [sigma] it was built with (retrievable 
+    via {!get_sigma}), so it stays consistent across further insertions 
+    ({!cons}). Functions that build a new list from an existing one 
+    (e.g., {!map}, {!filter}, {!rev}, {!take}, {!drop}) preserve 
+    the input's [sigma] automatically. Functions that build a list 
+    from scratch (e.g., {!make}, {!range}, {!of_list}, {!init}) accept 
+    an optional [?sigma] argument, which defaults to [2] if omitted.
+*)
 
 (*
     Original file in: https://github.com/c-cube/ocaml-containers/blob/main/src/data/CCRAL.mli
@@ -6,27 +30,6 @@
     All rights reserved.
 *)
 
-(*Improved Applicative Random-Access Stack with Sigma region*)
-
-(** 
-    [sigma] controls how often a "Skip" cell (a cell holding an extra 
-    [shortcut] pointer, used to speed up random access) is inserted 
-    while building the list, instead of a plain "Normal" cell: a Skip 
-    cell is created whenever a new cell's height is a multiple of 
-    [sigma] ([height mod sigma = 0]).
-
-    A smaller [sigma] creates more shortcuts, which speeds up random 
-    access ({!get}) at the cost of extra memory per cell. A larger [sigma]
-    does the opposite, trading access speed for a smaller memory.
-
-    Every list remembers the [sigma] it was built with (retrievable 
-    via {!get_sigma}), so it stays consistent across further insertions 
-    ({!cons}). Functions that build a new list from an existing one 
-    (e.g. {!map}, {!filter}, {!rev}, {!take}, {!drop}, ...) preserve 
-    the input's [sigma] automatically. Functions that build a list 
-    from scratch (e.g. {!make}, {!range}, {!of_list}, {!init}) accept 
-    an optional [?sigma] argument, which defaults to [2] if omitted.
-*)
 
 type +'a t
 (** List containing elements of type ['a] *)
