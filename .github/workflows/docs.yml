@@ -25,16 +25,27 @@ jobs:
         with:
           ocaml-compiler: 5.2.1
 
-      - name: Instalar dependências e Odoc
+      - name: Instalar dependências
         run: |
           opam install . --deps-only --with-doc
-          opam install odoc
+          opam install odoc odig
 
-      - name: Gerar Documentação
-        run: opam exec -- dune build @doc
+      - name: Gerar Documentação com Odig
+        run: |
+          # 1. Instala o pacote localmente (necessário para o odig encontrá-lo)
+          opam install . --working-dir
+          
+          # 2. Executa o SEU comando exato do Odig
+          opam exec -- odig odoc --no-tag-index --no-pkg-deps myers_list
+          
+          # 3. Copia o resultado (o HTML + o tema CSS do Odig) para uma pasta local chamada "odig_html"
+          cp -r $(opam exec -- odig cache path)/html ./odig_html
+          
+          # 4. Cria um redirecionamento na raiz para abrir a sua biblioteca automaticamente
+          echo '<meta http-equiv="refresh" content="0; url=myers_list/index.html">' > ./odig_html/index.html
 
       - name: Publicar no GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./myers_list/_build/default/_doc/_html
+          publish_dir: ./myers_list/odig_html

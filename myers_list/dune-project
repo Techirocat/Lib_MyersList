@@ -4,25 +4,26 @@
 
 (generate_opam_files true)
 
+(homepage "https://github.com/Techirocat/Lib_MyersList")
+
 (source
- (github username/reponame))
+ (github Techirocat/Lib_MyersList))
 
-(authors "Author Name <author@example.com>")
+(authors "Guilherme Guerreiro" "Miguel Alvito")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
-
-(license LICENSE)
+(maintainers "Techirocat" "m-alvito")
 
 (documentation https://url/to/documentation)
 
 (package
  (name myers_list)
- (synopsis "A short synopsis")
- (description "A longer description")
+ (synopsis "Random-Access Lists")
+ (description "An OCaml library providing efficient Random-Access Lists based on Myers's approach. It offers a 
+               collection of functional list data structures that combine O(1) cons/head/tail operations with 
+               fast O(log n) random access.")
  (depends ocaml
     (alcotest :with-test)
     core_bench)
- (tags
-  ("add topics" "to describe" your project)))
 
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+(tags
+  ("data-structures" "myers-list" "random-access-list" "functional-data-structures")))
