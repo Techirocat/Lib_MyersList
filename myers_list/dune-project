@@ -22,7 +22,6 @@
                collection of functional list data structures that combine O(1) cons/head/tail operations with 
                fast O(log n) random access.")
  (depends ocaml
-    (alcotest :with-test)
-    core_bench)
+    (alcotest :with-test))
 
 (tags ("data-structures" "myers-list" "random-access-list" "functional-data-structures")))
