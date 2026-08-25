@@ -20,6 +20,7 @@ depends: [
   "dune" {>= "3.22"}
   "ocaml"
   "alcotest" {with-test}
+  "ocaml_intrinsics_kernel"
   "odoc" {with-doc}
 ]
 build: [
