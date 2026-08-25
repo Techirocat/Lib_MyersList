@@ -1,4 +1,4 @@
-(** An OCaml library providing efficient Random-Access Lists based on Myers's approach. It offers a 
+(** - An OCaml library providing efficient Random-Access Lists based on Myers's approach. It offers a 
     collection of functional list data structures that combine O(1) cons/head/tail operations with 
     fast O(log n) random access.
 *)
