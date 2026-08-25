@@ -35,7 +35,7 @@ jobs:
       - name: Gerar Documentação com Odig
         run: |
           # 1. Instala o pacote localmente
-          opam reinstall . --working-dir
+          opam install . --working-dir
           
           # 2. Executa o SEU comando exato do Odig
           opam exec -- odig odoc --no-tag-index --no-pkg-deps myers_list
