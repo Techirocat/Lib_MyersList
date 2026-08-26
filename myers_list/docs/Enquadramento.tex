@@ -138,18 +138,29 @@ Existem três tipos de nós:
 
 Antes de discutir a construção é importante primeiro compreender os seguintes conceitos:
 \begin{itemize}
-    \item Right-Handed Depth (RHD) - Corresponde à distância do ancestral mais próximo que é um filho esquerdo.
-    \item Right-Edge Depth (RED) - Corresponde à distância ao ancestral mais próximo que se encontra no caminho mais à direita a partir da raiz da árvore.
+    \item Right-Handed Depth (RHD) -- Corresponde à distância do ancestral mais próximo que é um filho esquerdo.
+    \item Right-Edge Depth (RED) -- Corresponde à distância ao ancestral mais próximo que se encontra no caminho mais à direita a partir da raiz da árvore.
+    \item \textit{Target uncle} -- Durante o algoritmo de \textit{lookup}, o \textit{target uncle} refere-se à criança direita do nó ancestral comum entre o nó de origem e o nó de destino.
 \end{itemize}
 
 A construção da Advanced Myers List perde a função de cons em tempo constante, pois exige saber previamente o número exato de elementos para calcular a altura da árvore lógica e formar uma árvore binária perfeita, utilizando elementos que servem como fillers caso necessário.
 A estrutura é construída recursivamente do head até a camada de folhas e a atribuição dos apontadores depende do tipo de nó:
 
-
 \begin{itemize}
     \item Nós normais e skip: O apontador next aponta para a sub-árvore esquerda e o jump para a sub-árvore direita
     \item Nós skip e folhas: O apontador uncle liga a um tio onde a regra RED(s.uncle) = RHD(s) é verificada
     \item Nós folha: O apontador inc liga a uma folha mais próxima à direita tal que RHD(f') = RHD(f) + 1. O apontador greater liga à folha mais próxima à direita onde RHD(f') > RHD(f) 
+\end{itemize}
+
+\subsubsection{\textit{Lookup}}
+
+O algoritmo de \textit{lookup} na Advanced Myers List determina dinamicamente o percurso ideal com base na posição relativa entre a célula de origem e a de destino, ramificando-se em três cenários fundamentais:
+
+\begin{itemize}
+    \item Descida Direta: Se o destino é um descendente direto da origem na árvore lógica, o algoritmo realiza uma descida através dos ponteiros até alcançar o índice pretendido;
+    \item Salto via \texttt{uncle}: Se existir um nó \textit{skip} ou folha descendente da origem cujo RHD coincida com o RED do \textit{target uncle}, o algoritmo salta diretamente para o \textit{target uncle} através do ponteiro \texttt{uncle};
+    \item Travessia Lateral: Caso as condições de descendência não se apliquem, o algoritmo recorre aos ponteiros \texttt{inc} para navegar horizontalmente entre nós folha adjacentes, ou ao ponteiro \texttt{greater} para saltar para a extremidade da subárvore corrente antes de transitar para a região seguinte da lista;
+    \item Transição Ascendente: Quando nenhum dos três cenários anteriores é aplicável (por exemplo, quando a origem é uma folha cujo RHD já excede o RED necessário para o \textit{target uncle}), o algoritmo segue o apontador \texttt{next} para avançar para um nó não-folha. A partir dessa nova posição, é garantido que um dos três primeiros cenários será acionado.
 \end{itemize}
 
 \textbf{NOTA:} Aqui explicamos o funcionamento da Improved Myers List e da Advanced Myers List de uma forma muito superficial mas rápida de compreender, para uma compreensão e para um estudo mais informativo recomenda-se ler o paper original.

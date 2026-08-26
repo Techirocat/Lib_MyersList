@@ -8,14 +8,15 @@
 \contentsline {subsection}{\numberline {2.3}Advanced Myers List}{5}{}%
 \contentsline {subsubsection}{\numberline {2.3.1}Tipos de Nós}{5}{}%
 \contentsline {subsubsection}{\numberline {2.3.2}Construção}{6}{}%
-\contentsline {section}{\numberline {3}Estruturas Propostas}{6}{}%
-\contentsline {subsection}{\numberline {3.1}Dense Advanced Myers List}{6}{}%
+\contentsline {subsubsection}{\numberline {2.3.3}\textit {Lookup}}{6}{}%
+\contentsline {section}{\numberline {3}Estruturas Propostas}{7}{}%
+\contentsline {subsection}{\numberline {3.1}Dense Advanced Myers List}{7}{}%
 \contentsline {subsubsection}{\numberline {3.1.1}Cons}{7}{}%
-\contentsline {subsubsection}{\numberline {3.1.2}Lookup}{7}{}%
-\contentsline {subsection}{\numberline {3.2}Improved Applicative Random-Access Stack with Sigma region}{7}{}%
-\contentsline {subsubsection}{\numberline {3.2.1}Cons}{8}{}%
-\contentsline {subsubsection}{\numberline {3.2.2}Lookup}{8}{}%
-\contentsline {section}{\numberline {4}Resultados}{8}{}%
+\contentsline {subsubsection}{\numberline {3.1.2}Lookup}{8}{}%
+\contentsline {subsection}{\numberline {3.2}Improved Applicative Random-Access Stack with Sigma region}{8}{}%
+\contentsline {subsubsection}{\numberline {3.2.1}Cons}{9}{}%
+\contentsline {subsubsection}{\numberline {3.2.2}Lookup}{9}{}%
+\contentsline {section}{\numberline {4}Resultados}{9}{}%
 \contentsline {subsection}{\numberline {4.1}Número de Travessias}{9}{}%
 \contentsline {subsection}{\numberline {4.2}Tempo de Execução}{11}{}%
 \contentsline {subsection}{\numberline {4.3}Uso de Memória}{12}{}%
