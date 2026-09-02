@@ -8,7 +8,7 @@ Nesta secção, ainda incluímos os resultados para a estrutura de dados Okasaki
 
 Os gráficos das Figuras \ref{fig:travessias_1} e \ref{fig:travessias_2} comparam o número de travessias do pior caso com o limite 
 teórico da estrutura, para listas de comprimento entre 1 e 1.000.000 elementos. O teste foi efetuado criando listas de diferentes tamanhos,
-de 1 elemento até 1.000.000 de elementos, e efetuando um lookup sobre todos os elementos, registando o maior número de travessias efetuadas.
+de 1 elemento até 1.000.000 de elementos, e efetuando um \textit{lookup} sobre todos os elementos, registando o maior número de travessias efetuadas.
 
 \begin{figure}[H]
     \centering
@@ -46,7 +46,7 @@ de 1 elemento até 1.000.000 de elementos, e efetuando um lookup sobre todos os 
     \label{fig:travessias_1}
 \end{figure}
 
-Os resultados confirmam a hierarquia Basic > Improved >= Advanced, mas mostram também que a escolha
+Os resultados confirmam a hierarquia Basic $>$ Improved $\ge$ Advanced, mas mostram também que a escolha
 de um $\sigma$ tem um impacto direto no ponto a partir do qual a Advanced Myers List compensa mais face 
 à Improved. 
 
@@ -75,7 +75,7 @@ de um $\sigma$ tem um impacto direto no ponto a partir do qual a Advanced Myers 
 
 
 A Tabela \ref{tab:pior_caso} apresenta o número máximo de travessias observado 
-para n = 1.000.000, valores retirados da leitura dos gráficos 
+para $n = 1.000.000$, valores retirados da leitura dos gráficos 
 anteriores com valores exatos para comparação direta entre estruturas.
 
 
@@ -110,16 +110,16 @@ anteriores com valores exatos para comparação direta entre estruturas.
 
 \subsection{Tempo de Execução}
 
-A Tabela \ref{tab:tempo_execucao} apresenta o tempo total de execução de lookups sobre todos os elementos de uma lista 
+A Tabela \ref{tab:tempo_execucao} apresenta o tempo total de execução de \textit{lookups} sobre todos os elementos de uma lista 
 com 1.000.000 de elementos para todas as variantes. O teste calcula o tempo total necessário para pesquisar todos os elementos
-de uma lista com 1.000.000 de elementos, ou seja, é efetuado get 0, get 1, ... get 999999, estando apresentado na tabela o tempo total.
-O tempo de construção da lista não está incluído
+de uma lista com 1.000.000 de elementos, ou seja, é efetuado \texttt{get 0}, \texttt{get 1}, \ldots \texttt{get 999999}, estando apresentado na tabela o tempo total.
+O tempo de construção da lista não está incluído.
 
 % TODO: Adicionamos mais alguma coluna?
 \begin{table}[H]
     \centering
     \begin{tabular}{cc}
-        \textbf{Variante} & \textbf{Lookup All 1.000.000 (ms)} \\
+        \textbf{Variante} & \textbf{\textit{Lookup All} 1.000.000 (ms)} \\
         \hline
          Basic Myers List & 57,42\\
          \hline
@@ -151,22 +151,22 @@ O tempo de construção da lista não está incluído
 
     A Tabela \ref{tab:memoria} apresenta o uso de memória de cada variante para uma lista de 1.000.000 de elementos.
 Como era esperado, a Basic e a Improved Myers List apresentam exatamente o mesmo uso de memória 
-(38,15 MB), uma vez que ambas mantêm o mesmo número de apontadores por célula, sendo apenas diferentes na maneira como o apontador jump é atribuído durante o cons.
-A Okasaki List  apresenta o menor uso de memória de todas as variantes (22,89 MB).
+(38,15 MB), uma vez que ambas mantêm o mesmo número de apontadores por célula, sendo apenas diferentes na maneira como o apontador \texttt{jump} é atribuído durante o \textit{cons}.
+A Okasaki List apresenta o menor uso de memória de todas as variantes (22,89 MB).
 
 A Advanced Myers List (53,41 MB) apresenta um uso de memória superior ao das variantes Basic e Improved não por introduzir novos apontadores, 
-a estrutura de célula mantém-se igual, reaproveitando o próprio apontador jump para servir de uncle/inc/greater consoante o tipo de nó lógico, mas por 
-cada célula ter de guardar explicitamente a informação de RHD e RED necessária para a sua construção e para a otimização do lookup face as variantes anteriores. 
+a estrutura de célula mantém-se igual, reaproveitando o próprio apontador \texttt{jump} para servir de \texttt{uncle}/\texttt{inc}/\texttt{greater} consoante o tipo de nó lógico, mas por 
+cada célula ter de guardar explicitamente a informação de RHD e RED necessária para a sua construção e para a otimização do \textit{lookup} face as variantes anteriores. 
 
-A Dense Advanced Myers List (75,02 MB) leva esta ideia mais longe, ao consolidar cada nó lógico numa única célula, os campos rhd, red e o  identificador do 
-tipo de nó (o campo more, com os construtores Normal, Skip e Leaf) passam a estar presentes em todas as células, que consequentemente exige um consumo de memória ainda
+A Dense Advanced Myers List (75,02 MB) leva esta ideia mais longe, ao consolidar cada nó lógico numa única célula, os campos \texttt{rhd}, \texttt{red} e o  identificador do 
+tipo de nó (o campo \texttt{more}, com os construtores \texttt{Normal}, \texttt{Skip} e \texttt{Leaf}) passam a estar presentes em todas as células, que consequentemente exige um consumo de memória ainda
 superior ao da Advanced original.
 
 
 \begin{table}[H]
     \centering
     \begin{tabular}{cc}
-        \textbf{Variante} & \textbf{Memória 1\_000\_000 elementos (MB)} \\
+        \textbf{Variante} & \textbf{Memória 1.000.000 elementos (MB)} \\
         \hline
          Basic Myers List & 38,15\\
          \hline
